@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: 4845f8c1852c21a4f83819d87afb6cfe
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - FFF Forward
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 2
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/fonts/FFFFORWA.TTF
+  uploadId: 937670

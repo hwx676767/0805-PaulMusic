@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0a4dbf58d51507c4183f4a4b818337af
+ShaderIncludeImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Shaders/Include/AllInOneKeywordsForceDefine.hlsl
+  uploadId: 937670

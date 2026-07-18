@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3d4ecbd0d21f14e4980f340571580fee
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/URP/Scripts/RenderFeatures/DataGlitch_Feature.cs"
+  uploadId: 878348

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d7bc029a9308403a9ff8f56693d09f59
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/CustomTexture_20X.shader
+  uploadId: 899938

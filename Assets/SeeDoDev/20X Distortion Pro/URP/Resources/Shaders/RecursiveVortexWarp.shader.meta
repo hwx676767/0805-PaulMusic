@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7d6444489cfa4da78696ca0fefac1453
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/RecursiveVortexWarp.shader
+  uploadId: 899938

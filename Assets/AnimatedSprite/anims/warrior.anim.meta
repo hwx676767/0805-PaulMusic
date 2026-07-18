@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f6da1d14264c02246b6eea0ce4cec223
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/anims/warrior.anim
+  uploadId: 937670

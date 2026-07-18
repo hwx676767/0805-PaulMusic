@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b5e3aad2983379e47bd903061c4168c6
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/URP/Resources/Shaders/AnalogChromaGlitch.shader"
+  uploadId: 878348

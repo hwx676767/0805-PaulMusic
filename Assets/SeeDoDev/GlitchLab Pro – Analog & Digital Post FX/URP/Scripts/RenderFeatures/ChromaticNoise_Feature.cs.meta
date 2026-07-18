@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a5838288d88281442b4b937048cc6674
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/URP/Scripts/RenderFeatures/ChromaticNoise_Feature.cs"
+  uploadId: 878348

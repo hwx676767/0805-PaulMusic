@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 41a4fd8d9f0c08d4bab3e82df7e5a884
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/HDRP/Example Scenes/ExampleSceneUI/UI
+    Render Texture.renderTexture
+  uploadId: 899938

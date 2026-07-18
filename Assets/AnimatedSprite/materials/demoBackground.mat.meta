@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 349674fc66a69f0418704c419f3cada2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/materials/demoBackground.mat
+  uploadId: 937670

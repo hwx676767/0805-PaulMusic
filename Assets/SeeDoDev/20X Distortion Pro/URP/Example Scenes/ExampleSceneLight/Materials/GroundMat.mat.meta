@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 73f59c7e84cd4ed7b31110e34db28652
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Example Scenes/ExampleSceneLight/Materials/GroundMat.mat
+  uploadId: 899938

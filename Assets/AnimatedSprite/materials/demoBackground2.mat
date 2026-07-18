@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: demoBackground2
+  m_Shader: {fileID: 4800000, guid: 3b0ed5c0894f1104186b1368a04b624a, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Progress: 0.508
+    - _Scale: 40.42
+    - _Smoothness: 0.01
+    - _Spread: 1.84
+    m_Colors:
+    - _GradientColor: {r: 0.028123887, g: 0.054118752, b: 0.0754717, a: 1}
+    - _MainColor: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
+    - _MainGradientColor: {r: 0.0026013996, g: 0.0012904982, b: 0.009433985, a: 1}
+    - _ScrollSpeed: {r: 0.005, g: 0, b: 0, a: 0}
+    - _SecondaryColor: {r: 0.9575472, g: 0.99283266, b: 1, a: 1}
+  m_BuildTextureStacks: []

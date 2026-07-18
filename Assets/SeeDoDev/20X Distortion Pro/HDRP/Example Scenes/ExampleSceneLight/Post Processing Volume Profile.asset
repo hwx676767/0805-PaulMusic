@@ -1,0 +1,2582 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9028529669823862576
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef1ebea8ed204014abef14bd8fea8f71, type: 3}
+  m_Name: VortexSwirlDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Iterations:
+    m_OverrideState: 1
+    m_Value: 2.859
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1.74
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-8805125163447897378
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661e3e9afd4e8f84aa491a538bc3b176, type: 3}
+  m_Name: FlowMosh_20X
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 1
+    m_Value: 0.778
+  FlowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.848
+  FlowGain:
+    m_OverrideState: 1
+    m_Value: 0.432
+  FlowXScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  BrightnessThreshold:
+    m_OverrideState: 1
+    m_Value: 0.4
+  MicroContrastBoost:
+    m_OverrideState: 1
+    m_Value: 0.4
+  BlockSize:
+    m_OverrideState: 1
+    m_Value: 0.0001
+  NoiseAmplitude:
+    m_OverrideState: 1
+    m_Value: 0
+  ChromaShift:
+    m_OverrideState: 1
+    m_Value: 0.5
+--- !u!114 &-8566960539054361468
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd5985b057e6bb94e84ce2372bed4311, type: 3}
+  m_Name: DripMeltDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Strength:
+    m_OverrideState: 1
+    m_Value: 2
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.319
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.058
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-8295750166021663927
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895833796716d6946ba10a85e12548c4, type: 3}
+  m_Name: FracturedNoiseDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 2.68
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 2.34
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-7796403804784619421
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3b719ffefa7f0438f5abd0f66325df, type: 3}
+  m_Name: PrismaticDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 2
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  ColorOffset:
+    m_OverrideState: 1
+    m_Value: 0.02
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-7048165454225455154
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0cc4cf823c3f54c91c607d8d7ab268, type: 3}
+  m_Name: DripMeltDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Strength:
+    m_OverrideState: 1
+    m_Value: 1.3
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.05
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-6701965250290265730
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3eeddceca47a7a4aa4fd0d93d988292, type: 3}
+  m_Name: FlowMosh
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 1
+    m_Value: 1
+  FlowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.854
+  BrightnessThreshold:
+    m_OverrideState: 1
+    m_Value: 0.792
+  MicroContrastBoost:
+    m_OverrideState: 1
+    m_Value: 0.86
+  BlockSize:
+    m_OverrideState: 1
+    m_Value: 0.0001
+  NoiseAmplitude:
+    m_OverrideState: 1
+    m_Value: 0
+  ChromaShift:
+    m_OverrideState: 1
+    m_Value: 0.58
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-6691758930734771954
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e55d7d24607f836469aae4cf781d2dab, type: 3}
+  m_Name: CenteredFractalDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.939
+  CenterFocus:
+    m_OverrideState: 1
+    m_Value: 0
+  CubicNoise:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.6
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-6529676331562927162
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53e2e681a87fcaf419723e3cd409ae51, type: 3}
+  m_Name: TwistShrinkDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Delay:
+    m_OverrideState: 1
+    m_Value: 6
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-6507898517769799777
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e93093cb13e5d5045962a74b98627784, type: 3}
+  m_Name: FluidworleyDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.412
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-6438088019199894142
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1532a27d9dbecb9488764d74645476a7, type: 3}
+  m_Name: CircularRippleWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  RingsCount:
+    m_OverrideState: 1
+    m_Value: 5
+  Zoom:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5904507199511595384
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9313030c8f893d0458334b27aee123ef, type: 3}
+  m_Name: ZigzagJitterDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.034
+  Size:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-5457789320422560838
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f505a524444255f4990198befe576621, type: 3}
+  m_Name: CenteredFractalDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.17
+  CenterFocus:
+    m_OverrideState: 1
+    m_Value: 0
+  CubicNoise:
+    m_OverrideState: 1
+    m_Value: 0
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.6
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5226313773867218491
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a6b1a7e784011d4c98a4efbd1940ba7, type: 3}
+  m_Name: PrismaticDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 4.38
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1.05
+  ColorOffset:
+    m_OverrideState: 1
+    m_Value: 0.02
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5215806137899646836
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 635e31a9e2f34aa4abb8d023d3d24592, type: 3}
+  m_Name: ZigzagJitterDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.053
+  Size:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4961572691192388157
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1fdfe6d13d9024799b24e13a21eef7, type: 3}
+  m_Name: FluidWorleyDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.86
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4905908855331181647
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cbe5c6ccf7a42047a88955a3b1e35f5, type: 3}
+  m_Name: WorleyDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.576
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.014
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4400342887466853352
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82cdc565e0b56f440be3e6c23aabc651, type: 3}
+  m_Name: CircularRippleWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  RingsCount:
+    m_OverrideState: 1
+    m_Value: 5
+  Zoom:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4181411045309142904
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7eabfb6eb605ee4a9e293e0dcfb32cf, type: 3}
+  m_Name: VortexPixelShatter
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.704
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-3555249198446652595
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa131fec08d203469e5f752d9be0a25, type: 3}
+  m_Name: RadialSliceShifter
+  m_EditorClassIdentifier: 
+  active: 0
+  LineWidth:
+    m_OverrideState: 1
+    m_Value: 0.034
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  AnimateLine:
+    m_OverrideState: 1
+    m_Value: 1
+  Mask:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  MaskChannel:
+    m_OverrideState: 0
+    m_Value: 0
+  MaskEdgeFineTuning:
+    m_OverrideState: 0
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-2894783040095426515
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59713ce2b58f4864a8047d3a09e227b9, type: 3}
+  m_Name: FluidNoiseDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.465
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-2711509246474714933
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 595a3de7595a557439c807226a4f5d6b, type: 3}
+  m_Name: TinyPlanetWarp_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  _Blend:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-2113637574025259827
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca5382990b109a44292a41f95a0fd3a5, type: 3}
+  m_Name: PrismaticDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 30
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  ColorOffset:
+    m_OverrideState: 1
+    m_Value: 0.01
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-2048210950574570157
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41fefbbab7bd5be479d31327f3327f92, type: 3}
+  m_Name: VortexPixelShatter_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.719
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-1408567268281199150
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab89929daf578194182206fa080f7baa, type: 3}
+  m_Name: SpiralSliceKaleidoscope
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Images:
+    m_OverrideState: 1
+    m_Value: 12
+  Scale:
+    m_OverrideState: 1
+    m_Value: 1
+  Rotation:
+    m_OverrideState: 1
+    m_Value: 45
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.7
+  NoiseWarpStrength:
+    m_OverrideState: 1
+    m_Value: 0.114
+  Black:
+    m_OverrideState: 1
+    m_Value: 0
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-1109826378846043773
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acf651632ce59b84885e79d1736581be, type: 3}
+  m_Name: RecursiveVortexWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  MaximumImages:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-1018997874854406809
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f855aaf251d0042be531a192e23fba, type: 3}
+  m_Name: VortexSwirlDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Iterations:
+    m_OverrideState: 1
+    m_Value: 2
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  CenterOffset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  RotationScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Falloff:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-844005098757583447
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9919f23f68a9e24c903e2d70c9de0fb, type: 3}
+  m_Name: CircularRippleWarp_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 0.991
+  RingsCount:
+    m_OverrideState: 1
+    m_Value: 5
+  Zoom:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-740782096122549423
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29048448a70aa6949b37f4d658c0ebc7, type: 3}
+  m_Name: VoronoiPatterns
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  DisplaceMode:
+    m_OverrideState: 1
+    m_Value: 0
+  Size:
+    m_OverrideState: 1
+    m_Value: 78
+  Thikness:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-484689039115196613
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3eeddceca47a7a4aa4fd0d93d988292, type: 3}
+  m_Name: DatamoshLite
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 0
+    m_Value: 1
+  FlowThreshold:
+    m_OverrideState: 0
+    m_Value: 0.9
+  BrightnessThreshold:
+    m_OverrideState: 0
+    m_Value: 0.4
+  MicroContrastBoost:
+    m_OverrideState: 0
+    m_Value: 0.4
+  BlockSize:
+    m_OverrideState: 0
+    m_Value: 0.002
+  NoiseAmplitude:
+    m_OverrideState: 0
+    m_Value: 0.9
+  ChromaShift:
+    m_OverrideState: 0
+    m_Value: 0.5
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-270661307962045906
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fccc8c5358c9da40ac58ac04c169018, type: 3}
+  m_Name: TiledDriftDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.199
+  Size:
+    m_OverrideState: 1
+    m_Value: 12.2
+  Speed:
+    m_OverrideState: 1
+    m_Value: 8
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Post Processing Volume Profile
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -8805125163447897378}
+  - {fileID: 7169401738769229632}
+  - {fileID: 2975325515738919706}
+  - {fileID: 7782463662133139861}
+  - {fileID: -2711509246474714933}
+--- !u!114 &883971245404171579
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ff1b6119bdfe4c4a86dbd44757b9669, type: 3}
+  m_Name: TiledDriftDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.825
+  Size:
+    m_OverrideState: 1
+    m_Value: 10
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &934836889894483039
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc1d962deaf6f4443b1dccaab384ca86, type: 3}
+  m_Name: TwistShrinkDistortion_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 0.985
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Delay:
+    m_OverrideState: 1
+    m_Value: 6
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &1147226469098797300
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6dc79e101e2d8644a0f1589ee1219ce, type: 3}
+  m_Name: ZigzagJitterDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.044
+  Size:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &1692131362872303119
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8682c764501662d4989b773894168582, type: 3}
+  m_Name: SpeedWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1.623
+  Frequency:
+    m_OverrideState: 1
+    m_Value: 64
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &1964519383345410408
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147e7389eb4382248823716c10f08fb1, type: 3}
+  m_Name: SpeedWarp_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.67
+  Frequency:
+    m_OverrideState: 1
+    m_Value: 64
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &2275877706010753567
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e3bdb62e4144a449f107fdf98df1d9, type: 3}
+  m_Name: TwistShrinkDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.654
+  Delay:
+    m_OverrideState: 1
+    m_Value: 13.35
+  Speed:
+    m_OverrideState: 1
+    m_Value: 9.62
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &2397468452982720989
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfaf16384b848449feef718e269f1a, type: 3}
+  m_Name: SmearDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Invert:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &2975325515738919706
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b2472e23eebdd4fb3f05b20e400492, type: 3}
+  m_Name: LiquidGlass_20X
+  m_EditorClassIdentifier: 
+  active: 1
+  _Amount:
+    m_OverrideState: 1
+    m_Value: 1
+  _RingSize:
+    m_OverrideState: 1
+    m_Value: 0.709
+  _RingWidth:
+    m_OverrideState: 1
+    m_Value: 0.979
+  _RingDistortion:
+    m_OverrideState: 1
+    m_Value: 0.081
+  _RingNoise:
+    m_OverrideState: 1
+    m_Value: 0.14
+  _Speed:
+    m_OverrideState: 1
+    m_Value: 3.58
+  _RimRing:
+    m_OverrideState: 1
+    m_Value: 0
+  _Bulge:
+    m_OverrideState: 1
+    m_Value: 0.51
+--- !u!114 &3272550743768369825
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a76fa9f9b6908b143a0feb64f4ab7fcc, type: 3}
+  m_Name: SmearDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.509
+  Invert:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &3924031568962350449
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1418908a8f7e2d47badc03f7812bb86, type: 3}
+  m_Name: VoronoiPatterns
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  DisplaceMode:
+    m_OverrideState: 1
+    m_Value: 2
+  Size:
+    m_OverrideState: 1
+    m_Value: 64
+  Thikness:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &3927186888220483242
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e3abb0122cec442ab715ac7a504048, type: 3}
+  m_Name: CenteredFractalDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.29
+  CenterFocus:
+    m_OverrideState: 1
+    m_Value: 0
+  CubicNoise:
+    m_OverrideState: 1
+    m_Value: 0
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.6
+  Speed:
+    m_OverrideState: 1
+    m_Value: 3.58
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &4210513216162912826
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b345e032a28bbfa48a6b8682be043d89, type: 3}
+  m_Name: WorleyDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.289
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.056
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &4225657903517974228
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55848e9a74a1a8b42b3807c945b51a61, type: 3}
+  m_Name: VortexSwirlDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Iterations:
+    m_OverrideState: 1
+    m_Value: 3
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  CenterOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  RotationScale:
+    m_OverrideState: 0
+    m_Value: 0.5
+  Falloff:
+    m_OverrideState: 0
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &4433007518098533434
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd6b71c5f044f04c91fe3976a7465fc, type: 3}
+  m_Name: RecursiveVortexWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  MaximumImages:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &4623452610104231515
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9565ce5a10e1a904bba7a90f0e8a98b0, type: 3}
+  m_Name: RadialSliceShifter_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  LineWidth:
+    m_OverrideState: 1
+    m_Value: 0.039
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  AnimateLine:
+    m_OverrideState: 1
+    m_Value: 1
+  Mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  MaskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  MaskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &4918607540627032302
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddef1def65550eb409a4eb5c4e70aaf2, type: 3}
+  m_Name: RadialSliceShifter
+  m_EditorClassIdentifier: 
+  active: 0
+  LineWidth:
+    m_OverrideState: 1
+    m_Value: 0.035
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  AnimateLine:
+    m_OverrideState: 1
+    m_Value: 1
+  Mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  MaskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  MaskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &5501338986926515918
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b532af9c1fc726242bafcae55c97944a, type: 3}
+  m_Name: FracturedNoiseDisplacement_20x
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 7.76
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &5544729736992056053
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f23c77cfdf01814c87237b898e7e135, type: 3}
+  m_Name: SpiralSliceKaleidoscope
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Images:
+    m_OverrideState: 1
+    m_Value: 20
+  Scale:
+    m_OverrideState: 1
+    m_Value: 1.038
+  Rotation:
+    m_OverrideState: 1
+    m_Value: 77.8
+  Offset:
+    m_OverrideState: 1
+    m_Value: 1.516
+  NoiseWarpStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  Black:
+    m_OverrideState: 1
+    m_Value: 0
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.26
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &5661283793507482269
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 019751547df1ee34b86dab7b4865544b, type: 3}
+  m_Name: FlowMosh
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 1
+    m_Value: 1
+  FlowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.577
+  FlowGain:
+    m_OverrideState: 1
+    m_Value: 0.683
+  FlowXScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  BrightnessThreshold:
+    m_OverrideState: 1
+    m_Value: 0.151
+  MicroContrastBoost:
+    m_OverrideState: 1
+    m_Value: 0.089
+  BlockSize:
+    m_OverrideState: 1
+    m_Value: 0.0001
+  NoiseAmplitude:
+    m_OverrideState: 1
+    m_Value: 0
+  ChromaShift:
+    m_OverrideState: 1
+    m_Value: 0.5
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &5728474252438837325
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7711de183748645bf8c84d18b02bd5, type: 3}
+  m_Name: SectorKaleidoDistort_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  InnerRadius:
+    m_OverrideState: 1
+    m_Value: 0.1
+  OuterRadius:
+    m_OverrideState: 1
+    m_Value: 0.49
+  Fill:
+    m_OverrideState: 1
+    m_Value: 0.9
+  Black:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &5890326513943113920
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe78a531bc59fd2499fbf35365bcdf51, type: 3}
+  m_Name: FracturedNoiseDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 30
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &6166328022782473566
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3eeddceca47a7a4aa4fd0d93d988292, type: 3}
+  m_Name: Datamosh
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 0
+    m_Value: 1
+  FlowThreshold:
+    m_OverrideState: 0
+    m_Value: 0.9
+  BrightnessThreshold:
+    m_OverrideState: 0
+    m_Value: 0.4
+  MicroContrastBoost:
+    m_OverrideState: 0
+    m_Value: 0.4
+  BlockSize:
+    m_OverrideState: 0
+    m_Value: 0.002
+  NoiseAmplitude:
+    m_OverrideState: 0
+    m_Value: 0.9
+  ChromaShift:
+    m_OverrideState: 0
+    m_Value: 0.5
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &6260385515900936591
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f129d0a973cb745ad81d244a2dc3dd, type: 3}
+  m_Name: SectorKaleidoDistort
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  InnerRadius:
+    m_OverrideState: 1
+    m_Value: 0.237
+  OuterRadius:
+    m_OverrideState: 1
+    m_Value: 0.49
+  Fill:
+    m_OverrideState: 1
+    m_Value: -0.937
+  Black:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &6437367752483684107
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e6654f3f34813647807eb18d6e9d9c7, type: 3}
+  m_Name: TiledDriftDistortion_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.57
+  Size:
+    m_OverrideState: 1
+    m_Value: 10
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &6655767695678766187
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9700fd773e4cc8429343f67705834f1, type: 3}
+  m_Name: WorleyDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.251
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.056
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &6676825415778367141
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b043099953a981445aea5df758d3e0da, type: 3}
+  m_Name: SpiralSliceKaleidoscope_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Images:
+    m_OverrideState: 1
+    m_Value: 5
+  Scale:
+    m_OverrideState: 1
+    m_Value: 1
+  Rotation:
+    m_OverrideState: 1
+    m_Value: 45
+  Offset:
+    m_OverrideState: 1
+    m_Value: 1
+  NoiseWarpStrength:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Black:
+    m_OverrideState: 1
+    m_Value: 0
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7169401738769229632
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b844f40b7625e04b8837d209b44177d, type: 3}
+  m_Name: DripMeltDistortion_20X
+  m_EditorClassIdentifier: 
+  active: 1
+  Strength:
+    m_OverrideState: 1
+    m_Value: 0.736
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.05
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7233957087154768576
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9eb3b3ab5f823469cb1efb5c336739, type: 3}
+  m_Name: SpeedWarp
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 2
+  Frequency:
+    m_OverrideState: 1
+    m_Value: 200
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &7679859253278811521
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f2637a509f40e46b74de1bd8548879, type: 3}
+  m_Name: SectorKaleidoDistort
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  InnerRadius:
+    m_OverrideState: 1
+    m_Value: 0.333
+  OuterRadius:
+    m_OverrideState: 1
+    m_Value: 0.596
+  Fill:
+    m_OverrideState: 1
+    m_Value: -0.68
+  Black:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &7701503779071017419
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a6fc063ee098724c9921980051f1112, type: 3}
+  m_Name: VoronoiPatterns_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  DisplaceMode:
+    m_OverrideState: 1
+    m_Value: 0
+  Size:
+    m_OverrideState: 1
+    m_Value: 64
+  Thikness:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7780060119237570448
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e8313e82f0db98418b71bc2dd7d69e6, type: 3}
+  m_Name: RecursiveVortexWarp_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  MaximumImages:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7782463662133139861
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfaf16384b848449feef718e269f1a, type: 3}
+  m_Name: SmearDisplacement_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Invert:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7926570810588173223
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd5a9e04aa851c4db54737ddb71f088, type: 3}
+  m_Name: FluidWorleyDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.157
+  Speed:
+    m_OverrideState: 1
+    m_Value: 3.76
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.053
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8042387977117067194
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661e3e9afd4e8f84aa491a538bc3b176, type: 3}
+  m_Name: FlowMoshHDRPVolume
+  m_EditorClassIdentifier: 
+  active: 0
+  Blend:
+    m_OverrideState: 1
+    m_Value: 1
+  FlowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.79
+  FlowGain:
+    m_OverrideState: 1
+    m_Value: 0.35
+  FlowXScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  BrightnessThreshold:
+    m_OverrideState: 1
+    m_Value: 0.027
+  MicroContrastBoost:
+    m_OverrideState: 1
+    m_Value: 0
+  BlockSize:
+    m_OverrideState: 1
+    m_Value: 0.0001
+  NoiseAmplitude:
+    m_OverrideState: 1
+    m_Value: 0
+  ChromaShift:
+    m_OverrideState: 1
+    m_Value: 0.5
+--- !u!114 &8223886606302268614
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b844f40b7625e04b8837d209b44177d, type: 3}
+  m_Name: DripMeltDistortion_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Strength:
+    m_OverrideState: 1
+    m_Value: 0.85
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.05
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &8237770695544869534
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ba6dbd5db697749a0989aa82c60c2e, type: 3}
+  m_Name: SmearDisplacement
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Invert:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8384621080752458642
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f78d601cd557945ab1e1bff6f14d74, type: 3}
+  m_Name: FluidNoiseDistortion_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.259
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &8616579892754097654
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b2bb84938f4b574396bfbf72b2c2ee2, type: 3}
+  m_Name: VortexPixelShatter
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.711
+  Center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &9184313671866792494
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a537bdec366dab4887231cc7ac658b6, type: 3}
+  m_Name: FluidNoiseDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1.9
+  Size:
+    m_OverrideState: 1
+    m_Value: 0.8
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0

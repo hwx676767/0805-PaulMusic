@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f2a247fe3952a3743a94b9ab469b5d22
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/HDRP/Scripts/RenderFeatures/GlitchLabCustomTexture.cs"
+  uploadId: 878348

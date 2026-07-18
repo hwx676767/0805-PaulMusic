@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ecabcf9c09a1415f8aa3cee123061d6c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Example Scenes/Scripts/FirstPersonController.cs
+  uploadId: 899938

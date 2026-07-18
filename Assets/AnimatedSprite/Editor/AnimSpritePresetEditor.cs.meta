@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 520e6d5bdb470c94299896171299ff79
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Editor/AnimSpritePresetEditor.cs
+  uploadId: 937670

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 00ae8b39d55684748ae1518cb98ef5a2
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/HDRP/Resources/Shaders/NoiseEdgeShift.shader"
+  uploadId: 878348

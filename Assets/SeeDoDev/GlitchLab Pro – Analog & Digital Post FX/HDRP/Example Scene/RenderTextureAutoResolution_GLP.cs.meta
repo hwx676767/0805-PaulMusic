@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 43a4ef60be0c15e4a84b04342d625d2d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/HDRP/Example
+    Scene/RenderTextureAutoResolution_GLP.cs"
+  uploadId: 878348

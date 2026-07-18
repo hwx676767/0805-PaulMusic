@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e6ee413964930574fabe99c70ad41c61
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/runtime/AnimatedSpriteShader/AnimatedSpriteShader.Generated.cs
+  uploadId: 937670

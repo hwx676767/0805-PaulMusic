@@ -1,0 +1,17 @@
+{
+    "name": "DistortionsX.URP.Editor",
+    "references": [
+        "GUID:2eebd0cc2118dee4fbadd50f0a8c3a67"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

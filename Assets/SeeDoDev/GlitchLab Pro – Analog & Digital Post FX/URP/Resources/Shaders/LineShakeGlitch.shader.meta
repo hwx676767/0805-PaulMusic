@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 92405d78e66c54c46bdbe000809436f0
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/URP/Resources/Shaders/LineShakeGlitch.shader"
+  uploadId: 878348

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8b7700d02f70a204b94a4fa71a267455
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/URP/Resources/Shaders/ColorFoldGlitch.shader"
+  uploadId: 878348

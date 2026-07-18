@@ -1,0 +1,17 @@
+{
+    "name": "GlitchLabPro.URP.Editor",
+    "references": [
+        "GUID:07111b9815e5b2a4597205bb3cad621b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

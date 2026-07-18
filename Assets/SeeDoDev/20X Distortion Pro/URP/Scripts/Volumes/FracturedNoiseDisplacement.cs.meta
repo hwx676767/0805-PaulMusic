@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: cb21435723154873b8193426c79a2079
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Scripts/Volumes/FracturedNoiseDisplacement.cs
+  uploadId: 899938

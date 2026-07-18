@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 72cd78834610087419e2f5d2fa476087
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/HDRP/Resources/Shaders/CompressionCodecGlitch.shader"
+  uploadId: 878348

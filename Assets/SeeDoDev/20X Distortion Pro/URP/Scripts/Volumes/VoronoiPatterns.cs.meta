@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9369f4229d294d25b6271912f32b8856
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Scripts/Volumes/VoronoiPatterns.cs
+  uploadId: 899938

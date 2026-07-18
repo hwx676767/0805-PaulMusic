@@ -1,0 +1,1978 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9179158868817712163
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 647bc9abd4c9a63449277735b8b3bd4e, type: 3}
+  m_Name: DecoderSlipGlitch
+  m_EditorClassIdentifier: 
+  active: 1
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.298
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.35
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Bands:
+    m_OverrideState: 1
+    m_Value: 17
+  HoldChance:
+    m_OverrideState: 1
+    m_Value: 0.1
+  resM:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-8853792337251933755
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc76814ba70d5c4ca097c88e851267c, type: 3}
+  m_Name: GlitchLabCustomTexture
+  m_EditorClassIdentifier: 
+  active: 0
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  texture:
+    m_OverrideState: 1
+    m_Value: {fileID: 8400000, guid: 406fb2f3245ecb34680d026b51d331d7, type: 2}
+    dimension: 1
+  useAlpha:
+    m_OverrideState: 1
+    m_Value: 0
+  fade:
+    m_OverrideState: 1
+    m_Value: 1
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-8481748850867788073
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f675543667ec4449873191513095fa3, type: 3}
+  m_Name: AnalogChromaGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.202
+  speed:
+    m_OverrideState: 1
+    m_Value: 85
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-7859578248406014152
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe6a5f8367faa4cf0b002fa2c5d958b9, type: 3}
+  m_Name: ScanlineJitter
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 15
+  interval:
+    m_OverrideState: 1
+    m_Value: 2
+  minMax:
+    m_OverrideState: 1
+    m_Value: {x: 0.1, y: 2}
+  frequency:
+    m_OverrideState: 1
+    m_Value: 0.7
+  rate:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 2.18
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-7657610292240931449
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72cb7e116a93d4ff0b78baa15ccecc05, type: 3}
+  m_Name: ChromaticNoise
+  m_EditorClassIdentifier: 
+  active: 0
+  x:
+    m_OverrideState: 1
+    m_Value: 127.1
+  y:
+    m_OverrideState: 1
+    m_Value: 10002
+  z:
+    m_OverrideState: 1
+    m_Value: 200
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.22
+  stretch:
+    m_OverrideState: 1
+    m_Value: 0
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  rMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  gMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  bMultiplier:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-7117939198068956693
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774dea15d42308e40b25c97995d35262, type: 3}
+  m_Name: MosaicGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.03
+  speed:
+    m_OverrideState: 1
+    m_Value: 16
+  size:
+    m_OverrideState: 1
+    m_Value: 1
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 1
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-6806467147086761369
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bfb38325b816c845836f99167feaa22, type: 3}
+  m_Name: RGBDesyncGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  linesWidth:
+    m_OverrideState: 1
+    m_Value: 0.81
+  LinesAmount:
+    m_OverrideState: 1
+    m_Value: 0.51
+  offset:
+    m_OverrideState: 1
+    m_Value: 0.35
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 3
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-6335886375080368526
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f044f3f7369c37439934cb0e1904aac, type: 3}
+  m_Name: RGBDesyncGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  linesWidth:
+    m_OverrideState: 1
+    m_Value: 0.19
+  LinesAmount:
+    m_OverrideState: 1
+    m_Value: 0.11
+  offset:
+    m_OverrideState: 1
+    m_Value: 0.07
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.9
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-6109178379429390289
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff95cf1d0718947139b6da7e010fe7ea, type: 3}
+  m_Name: SignalCrushGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Amount:
+    m_OverrideState: 1
+    m_Value: 4.09
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-5655028917011186361
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4855cad5f7da5a44d9f55f73408a4750, type: 3}
+  m_Name: UVEchoGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.69
+  speed:
+    m_OverrideState: 1
+    m_Value: 34.8
+  RandomActivationSpeed:
+    m_OverrideState: 1
+    m_Value: 0.17
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5508467926194582100
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 490f739a8d0cca341ba886c4819a2841, type: 3}
+  m_Name: VHSTrackingGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 2
+  BandShift:
+    m_OverrideState: 1
+    m_Value: 0.0204
+  BandWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  ChromaSplit:
+    m_OverrideState: 1
+    m_Value: 0
+  BandYPos:
+    m_OverrideState: 1
+    m_Value: 0.5
+  Speed:
+    m_OverrideState: 1
+    m_Value: 15.6
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4295093455056585875
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c11dae1f2688bd45bf175953a6068e1, type: 3}
+  m_Name: VHSTrackingGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 2
+  BandShift:
+    m_OverrideState: 1
+    m_Value: 0.0224
+  BandWidth:
+    m_OverrideState: 1
+    m_Value: 2.12
+  ChromaSplit:
+    m_OverrideState: 1
+    m_Value: 2.06
+  BandYPos:
+    m_OverrideState: 1
+    m_Value: 1.02
+  Speed:
+    m_OverrideState: 1
+    m_Value: 5.8
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-4290449961421303098
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fcc6243e52b743b9ae7306d7216ff2e, type: 3}
+  m_Name: LineShakeGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 50
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  offsetAxis:
+    m_OverrideState: 1
+    m_Value: 0
+  shiftMode:
+    m_OverrideState: 1
+    m_Value: 0
+  stretchResolution:
+    m_OverrideState: 1
+    m_Value: 220
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-4186438567002087248
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2bd335b2a053ac4dba080dfcbda37a1, type: 3}
+  m_Name: SoftRGBGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  SpikeExponent:
+    m_OverrideState: 1
+    m_Value: 1.19
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.424
+  amplitude:
+    m_OverrideState: 1
+    m_Value: 0.087
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.9
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4177653305039330072
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bba514a314b5dcd45a0ced5fe2de779b, type: 3}
+  m_Name: VHSNoise
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.02
+  Noise:
+    m_OverrideState: 1
+    m_Value: 0
+  linesAmount:
+    m_OverrideState: 1
+    m_Value: 2.47
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-2833337680879814077
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2fa3ea3473ee846b9a11b82948f405, type: 3}
+  m_Name: DecoderSlipGlitch
+  m_EditorClassIdentifier: 
+  active: 1
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.102
+  Offset:
+    m_OverrideState: 1
+    m_Value: 0.547
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.618
+  Bands:
+    m_OverrideState: 1
+    m_Value: 8
+  HoldChance:
+    m_OverrideState: 1
+    m_Value: 0.111
+  resM:
+    m_OverrideState: 1
+    m_Value: 1000
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-2421030807954145187
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd84c3f878364be3971400192cf0d1b, type: 3}
+  m_Name: LineShakeGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 6.6
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 0.657
+  offsetAxis:
+    m_OverrideState: 1
+    m_Value: 1
+  shiftMode:
+    m_OverrideState: 1
+    m_Value: 0
+  stretchResolution:
+    m_OverrideState: 1
+    m_Value: 1920
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-2418166160480995676
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baefd3c1c47f54fe19f095166c0dd36f, type: 3}
+  m_Name: DataGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.707
+  speed:
+    m_OverrideState: 1
+    m_Value: 5.9
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  blockSize:
+    m_OverrideState: 1
+    m_Value: 10
+  maxOffsetX:
+    m_OverrideState: 1
+    m_Value: 8
+  maxOffsetY:
+    m_OverrideState: 1
+    m_Value: 4.3
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-2266775893809111076
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b6f0dbe155ef431087be0d8f78655c4, type: 3}
+  m_Name: ScanlineJitter
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 200
+  interval:
+    m_OverrideState: 1
+    m_Value: 0
+  minMax:
+    m_OverrideState: 1
+    m_Value: {x: 0.1, y: 2}
+  frequency:
+    m_OverrideState: 1
+    m_Value: 1
+  rate:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-2007355763067153807
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4051eb1a21289c4082846c39cf2b4ac, type: 3}
+  m_Name: CompressionCodecGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 1.5
+  speed:
+    m_OverrideState: 1
+    m_Value: 7.1
+  posterize:
+    m_OverrideState: 1
+    m_Value: 56
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  size:
+    m_OverrideState: 1
+    m_Value: 16
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-1418319367800504383
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed77f9df84125dd46803bb5ed59c23a7, type: 3}
+  m_Name: VHSNoise
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.02
+  Noise:
+    m_OverrideState: 1
+    m_Value: 1
+  linesAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-846919283509359600
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c70d62a7ad464887a68e38ecf6835, type: 3}
+  m_Name: DigitalGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.411
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  LinesWidth:
+    m_OverrideState: 1
+    m_Value: 7.8
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.988
+  Offset:
+    m_OverrideState: 1
+    m_Value: 1.05
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-772128864967772769
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63eddb8b2bf98b4598a476547a73462, type: 3}
+  m_Name: MosaicGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.003
+  speed:
+    m_OverrideState: 1
+    m_Value: 2.3
+  size:
+    m_OverrideState: 1
+    m_Value: 1.37
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 1.77
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.63
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-693453644133207810
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34543c025a8a30649abd1d949a68db88, type: 3}
+  m_Name: NoiseEdgeShift
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  width:
+    m_OverrideState: 1
+    m_Value: 0.296
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-547224357596170143
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6edf2f8aaa7a147b76a597b5c7cd95, type: 3}
+  m_Name: LimitlessGlitch15
+  m_EditorClassIdentifier: 
+  active: 1
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.138
+  Speed:
+    m_OverrideState: 1
+    m_Value: 44
+  dropoutIntensity:
+    m_OverrideState: 1
+    m_Value: 0.48
+  DisplaceIntesnsity:
+    m_OverrideState: 1
+    m_Value: 6
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 4.17
+  interlaceIntesnsity:
+    m_OverrideState: 1
+    m_Value: 6
+  InterlaceScale:
+    m_OverrideState: 1
+    m_Value: 900
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-335946270438252156
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2e65c0520bba78448d79fc3264abcc5, type: 3}
+  m_Name: RFInterferenceGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 21.7
+  speed:
+    m_OverrideState: 1
+    m_Value: 2.7
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &-302265719923576364
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bae5ef5e700a4208be7236164f4ff60, type: 3}
+  m_Name: SignalCrushGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.99
+  Speed:
+    m_OverrideState: 1
+    m_Value: 0.081
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-39799746434854351
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86d2f4b113a4f994b80cb7cbdf46ce83, type: 3}
+  m_Name: SoftRGBGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  SpikeExponent:
+    m_OverrideState: 1
+    m_Value: 1.48
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.11
+  amplitude:
+    m_OverrideState: 1
+    m_Value: 0.516
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Main Volume 1
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -8481748850867788073}
+  - {fileID: 4902039465195767792}
+  - {fileID: -7657610292240931449}
+  - {fileID: 6304679836521664207}
+  - {fileID: -2007355763067153807}
+  - {fileID: 4918594564871741674}
+  - {fileID: -9179158868817712163}
+  - {fileID: 3497792128037009496}
+  - {fileID: 8920190177831085952}
+  - {fileID: -4290449961421303098}
+  - {fileID: -7117939198068956693}
+  - {fileID: 8035156393842627757}
+  - {fileID: -335946270438252156}
+  - {fileID: -6806467147086761369}
+  - {fileID: 5173836002058454477}
+  - {fileID: -2266775893809111076}
+  - {fileID: -6109178379429390289}
+  - {fileID: 1132610266629949892}
+  - {fileID: -39799746434854351}
+  - {fileID: 2961422292814482750}
+  - {fileID: -1418319367800504383}
+  - {fileID: -4295093455056585875}
+--- !u!114 &1121156021348059472
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d773c43cd3a96489e482dc86a93b4e, type: 3}
+  m_Name: CompressionCodecGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.64
+  speed:
+    m_OverrideState: 1
+    m_Value: 17.8
+  posterize:
+    m_OverrideState: 1
+    m_Value: 10
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  size:
+    m_OverrideState: 1
+    m_Value: 19.3
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &1132610266629949892
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9616df0d4cad0cb4dbbd4341986f59a7, type: 3}
+  m_Name: SignalShock
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.511
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.9
+  size:
+    m_OverrideState: 1
+    m_Value: {x: 2.53, y: 9.43}
+  light:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &2122314149479010738
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99dd963ec21614789b8ed8440a428102, type: 3}
+  m_Name: BrokenSignal
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.728
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.081
+  resolutionMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  stretchMultiplier:
+    m_OverrideState: 1
+    m_Value: 0.994
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &2413202187407437006
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 626f01b573819c44996f56ae5014db91, type: 3}
+  m_Name: LimitlessGlitch16
+  m_EditorClassIdentifier: 
+  active: 0
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 30
+  speed:
+    m_OverrideState: 1
+    m_Value: 5
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.107
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &2423001116011525040
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 473525764cfb24c478506d91f2d7dab8, type: 3}
+  m_Name: SignalShock
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.152
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.838
+  size:
+    m_OverrideState: 1
+    m_Value: {x: 100, y: 100}
+  light:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &2698358490601084307
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f14c19c43772f4ca126fde571ce638, type: 3}
+  m_Name: AnalogChromaGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.004
+  speed:
+    m_OverrideState: 1
+    m_Value: 85
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.709
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &2961422292814482750
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adbf8518e844c7341ac062fa89a4c9d3, type: 3}
+  m_Name: UVEchoGlitch
+  m_EditorClassIdentifier: 
+  active: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.04
+  speed:
+    m_OverrideState: 1
+    m_Value: 4
+  RandomActivationSpeed:
+    m_OverrideState: 1
+    m_Value: 5
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &3417396084909053659
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69ff7d8e84451b8489404f58e9b80d3c, type: 3}
+  m_Name: ColorFoldGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  offset:
+    m_OverrideState: 1
+    m_Value: 0.035
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.896
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &3497792128037009496
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b06d9efe3584c3da0d75b6f227a2a8, type: 3}
+  m_Name: DigitalGlitch
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 1
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  LinesWidth:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1
+  Offset:
+    m_OverrideState: 1
+    m_Value: 1
+  unscaledTime:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &3844539519397532507
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: 
+  active: 0
+  skipIterations:
+    m_OverrideState: 1
+    m_Value: 1
+  threshold:
+    m_OverrideState: 1
+    m_Value: 0.91
+  intensity:
+    m_OverrideState: 1
+    m_Value: 8.07
+  scatter:
+    m_OverrideState: 1
+    m_Value: 0.7
+  clamp:
+    m_OverrideState: 1
+    m_Value: 65472
+  tint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  highQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 0
+  downscale:
+    m_OverrideState: 0
+    m_Value: 0
+  maxIterations:
+    m_OverrideState: 0
+    m_Value: 6
+  dirtTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  dirtIntensity:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &4902039465195767792
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7480afaef67144a72a4fc83de198c35a, type: 3}
+  m_Name: BrokenSignal
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0.723
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  resolutionMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  stretchMultiplier:
+    m_OverrideState: 1
+    m_Value: 0.88
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &4918594564871741674
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573b22c9621704065a756f4dbb165eef, type: 3}
+  m_Name: DataGlitch
+  m_EditorClassIdentifier: 
+  active: 1
+  Amount:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 19.8
+  randAmount:
+    m_OverrideState: 1
+    m_Value: 1
+  blockSize:
+    m_OverrideState: 1
+    m_Value: 133
+  maxOffsetX:
+    m_OverrideState: 1
+    m_Value: 5.7
+  maxOffsetY:
+    m_OverrideState: 1
+    m_Value: 5.1
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &4954688450018191844
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
+  m_Name: WhiteBalance
+  m_EditorClassIdentifier: 
+  active: 0
+  temperature:
+    m_OverrideState: 1
+    m_Value: 45
+  tint:
+    m_OverrideState: 1
+    m_Value: 24
+--- !u!114 &5173836002058454477
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfd11eaf5a7344b85b6b79e194c79aaf, type: 3}
+  m_Name: RGBPulse
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 2
+  interval:
+    m_OverrideState: 1
+    m_Value: 1
+  rate:
+    m_OverrideState: 1
+    m_Value: 1
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 1
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  customResolution:
+    m_OverrideState: 1
+    m_Value: 0
+  resolution:
+    m_OverrideState: 1
+    m_Value: {x: 640, y: 480}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &6304679836521664207
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 610caeb0c790c6d4fade7be9f9b31457, type: 3}
+  m_Name: ColorFoldGlitch
+  m_EditorClassIdentifier: 
+  active: 1
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  stop:
+    m_OverrideState: 1
+    m_Value: 0
+  offset:
+    m_OverrideState: 1
+    m_Value: 0.033
+  randomActivateAmount:
+    m_OverrideState: 1
+    m_Value: 0.357
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &7706583704671679254
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92daa5b70632645848cb7b95d6eee444, type: 3}
+  m_Name: RGBPulse
+  m_EditorClassIdentifier: 
+  active: 0
+  Amount:
+    m_OverrideState: 1
+    m_Value: 0.26
+  interval:
+    m_OverrideState: 1
+    m_Value: 1
+  rate:
+    m_OverrideState: 1
+    m_Value: 1
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 43.2
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  customResolution:
+    m_OverrideState: 1
+    m_Value: 0
+  resolution:
+    m_OverrideState: 1
+    m_Value: {x: 640, y: 480}
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8035156393842627757
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb5a2d558dd236468ba05904eb55a8a, type: 3}
+  m_Name: NoiseEdgeShift
+  m_EditorClassIdentifier: 
+  active: 0
+  Fade:
+    m_OverrideState: 1
+    m_Value: 1
+  width:
+    m_OverrideState: 1
+    m_Value: 0.204
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+--- !u!114 &8404948350733261414
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b973f681804446538903cfc706fff30, type: 3}
+  m_Name: ChromaticNoise
+  m_EditorClassIdentifier: 
+  active: 0
+  x:
+    m_OverrideState: 1
+    m_Value: 127.1
+  y:
+    m_OverrideState: 1
+    m_Value: 10002
+  z:
+    m_OverrideState: 1
+    m_Value: 200
+  Fade:
+    m_OverrideState: 1
+    m_Value: 0.976
+  amount:
+    m_OverrideState: 1
+    m_Value: 0.07
+  stretch:
+    m_OverrideState: 1
+    m_Value: 0.24
+  speed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  rMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  gMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  bMultiplier:
+    m_OverrideState: 1
+    m_Value: 0
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8920190177831085952
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 795a3d5bf45ce694faf66f1906501260, type: 3}
+  m_Name: DTVSignalBreakup
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  Speed:
+    m_OverrideState: 1
+    m_Value: 1.8
+  dropoutIntensity:
+    m_OverrideState: 1
+    m_Value: 1.31
+  DisplaceIntesnsity:
+    m_OverrideState: 1
+    m_Value: 1.23
+  RGBSplit:
+    m_OverrideState: 1
+    m_Value: 1.38
+  interlaceIntesnsity:
+    m_OverrideState: 1
+    m_Value: 1.7
+  InterlaceScale:
+    m_OverrideState: 1
+    m_Value: 260
+  mask:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 1
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 1
+    m_Value: 0.15

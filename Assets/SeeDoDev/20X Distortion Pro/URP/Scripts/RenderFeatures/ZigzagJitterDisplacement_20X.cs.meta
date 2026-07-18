@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 70e9185c754447d784bb7bbe1d12e54d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Scripts/RenderFeatures/ZigzagJitterDisplacement_20X.cs
+  uploadId: 899938

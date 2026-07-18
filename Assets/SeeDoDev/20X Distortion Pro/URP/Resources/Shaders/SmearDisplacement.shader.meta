@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 432c2c0382ea4220b0d8974bdae0a595
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/SmearDisplacement.shader
+  uploadId: 899938

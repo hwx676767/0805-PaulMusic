@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 1b6cd3da1f694349ac906cae69fdd89e
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/TiledDriftDistortion.shader
+  uploadId: 899938

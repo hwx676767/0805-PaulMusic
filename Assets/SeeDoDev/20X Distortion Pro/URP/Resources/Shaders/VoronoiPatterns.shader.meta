@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 20b6ee9b014140b2a50cf0769b5de49f
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/VoronoiPatterns.shader
+  uploadId: 899938

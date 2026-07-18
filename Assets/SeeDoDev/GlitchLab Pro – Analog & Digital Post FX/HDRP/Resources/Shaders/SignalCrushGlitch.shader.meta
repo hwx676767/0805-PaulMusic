@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a6d4c9e4926c44463a1b6171fc087751
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 359344
+  packageName: "GlitchLab Pro \u2013 Analog & Digital Post FX"
+  packageVersion: 1.0
+  assetPath: "Assets/SeeDoDev/GlitchLab Pro \u2013 Analog & Digital Post FX/HDRP/Resources/Shaders/SignalCrushGlitch.shader"
+  uploadId: 878348

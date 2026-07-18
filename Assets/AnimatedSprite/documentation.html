@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlexiSprite Documentation</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+    --page: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #f0f2f5;
+    --text: #151922;
+    --muted: #5d6472;
+    --soft: #858d9c;
+    --line: #dfe3ea;
+    --line-2: #edf0f4;
+    --accent: #2f65d9;
+    --accent-soft: #e9efff;
+    --good: #18794e;
+    --warn: #a15c00;
+    --danger: #b42318;
+    --radius: 14px;
+    --radius-sm: 9px;
+    --mono: 'JetBrains Mono', Consolas, monospace;
+    --body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --sidebar: 280px;
+    --topbar: 58px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 86px; }
+body { margin: 0; font-family: var(--body); background: var(--page); color: var(--text); font-size: 15px; line-height: 1.62; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--mono); font-size: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; color: #27324a; }
+pre { margin: 0; overflow: auto; }
+
+.topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--topbar); background: rgba(255,255,255,.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); z-index: 30; display: flex; align-items: center; padding: 0 28px; }
+.brand { font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.brand span { font-weight: 500; color: var(--soft); margin-left: 8px; }
+.toplinks { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.toplinks a { color: var(--muted); font-size: 13px; font-weight: 600; padding: 7px 11px; border-radius: 8px; }
+.toplinks a:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
+.menu-button { display: none; margin-right: 12px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; height: 34px; width: 38px; font-size: 18px; cursor: pointer; }
+
+.sidebar { position: fixed; top: var(--topbar); left: 0; bottom: 0; width: var(--sidebar); background: #fbfcfd; border-right: 1px solid var(--line); overflow-y: auto; padding: 22px 18px 40px; z-index: 20; }
+.nav-group { margin-bottom: 22px; }
+.nav-title { font-size: 11px; line-height: 1; text-transform: uppercase; letter-spacing: .11em; font-weight: 800; color: var(--soft); margin: 0 0 8px; }
+.nav-link { display: block; color: var(--muted); font-size: 13px; font-weight: 600; padding: 7px 9px; border-radius: 8px; }
+.nav-link:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
+
+.content { margin-left: var(--sidebar); padding: 94px 58px 120px; max-width: 1120px; }
+.hero { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 44px; margin-bottom: 28px; }
+.kicker { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+h1 { font-size: clamp(36px, 5vw, 58px); line-height: 1.02; letter-spacing: -.055em; margin: 0 0 18px; }
+.lead { font-size: 18px; color: var(--muted); max-width: 770px; margin: 0; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-weight: 700; font-size: 13px; }
+.button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.button:hover { text-decoration: none; transform: translateY(-1px); }
+
+.quick-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 34px; }
+.quick-stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.quick-stat b { display: block; font-size: 24px; letter-spacing: -.04em; margin-bottom: 2px; }
+.quick-stat span { display: block; color: var(--soft); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+
+.section { margin: 0 0 54px; }
+.section-head { margin-bottom: 18px; }
+h2 { font-size: 29px; line-height: 1.15; letter-spacing: -.035em; margin: 0 0 8px; }
+h3 { font-size: 17px; line-height: 1.3; letter-spacing: -.015em; margin: 0 0 8px; }
+h4 { font-size: 14px; line-height: 1.3; margin: 18px 0 6px; }
+p { color: var(--muted); margin: 0 0 12px; }
+.muted { color: var(--soft); }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.card.compact { padding: 18px; }
+.card p:last-child { margin-bottom: 0; }
+
+.steps { display: grid; gap: 12px; counter-reset: step; }
+.step { counter-increment: step; display: grid; grid-template-columns: 36px 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.step:before { content: counter(step); width: 34px; height: 34px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); border-radius: 10px; font-family: var(--mono); font-weight: 700; font-size: 14px; }
+.step h3 { margin-top: 3px; }
+.step p { margin-bottom: 0; }
+
+.note { border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; margin: 16px 0; color: #223763; }
+.note.warn { border-left-color: var(--warn); background: #fff4df; color: #633d00; }
+.note.danger { border-left-color: var(--danger); background: #fff0ee; color: #641d18; }
+
+.media { background: #0f1117; border-radius: var(--radius); overflow: hidden; border: 1px solid #1e2430; margin: 20px 0; }
+.media iframe { display: block; width: 100%; min-height: 560px; border: 0; }
+.wide-image { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); margin: 18px 0 34px; }
+.wide-image img { width: 100%; display: block; object-fit: cover; }
+
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; }
+th, td { text-align: left; vertical-align: top; padding: 12px 15px; border-bottom: 1px solid var(--line-2); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--soft); background: #fafbfc; }
+td { color: var(--muted); font-size: 14px; }
+tr:last-child td { border-bottom: 0; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip { display: inline-flex; align-items: center; min-height: 29px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: #374151; font-size: 12px; font-weight: 600; }
+.effect-group { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
+.effect-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.effect-group-head span { color: var(--soft); font-size: 12px; font-weight: 700; }
+
+.code-block { background: #10131a; border-radius: var(--radius); border: 1px solid #202636; overflow: hidden; margin: 16px 0; }
+.code-title { padding: 10px 14px; border-bottom: 1px solid #202636; color: #9aa3b4; font-size: 12px; font-weight: 700; }
+.code-block pre { color: #d7deea; font-family: var(--mono); font-size: 13px; line-height: 1.6; padding: 16px; }
+
+.checklist { display: grid; gap: 9px; padding: 0; margin: 0; list-style: none; }
+.checklist li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; color: var(--muted); }
+.checklist strong { color: var(--text); }
+.footer-card { background: #10131a; color: #d7deea; border-radius: 20px; padding: 28px; }
+.footer-card p { color: #9aa3b4; }
+.footer-card a { color: #bcd1ff; }
+
+@media (max-width: 980px) {
+    .menu-button { display: inline-grid; place-items: center; }
+    .sidebar { transform: translateX(-100%); transition: transform .2s ease; }
+    .sidebar.open { transform: translateX(0); box-shadow: 20px 0 50px rgba(15,17,23,.14); }
+    .content { margin-left: 0; padding: 82px 20px 90px; }
+    .toplinks { display: none; }
+    .hero { padding: 28px; }
+    .quick-strip, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .media iframe { min-height: 460px; }
+}
+
+
+.doc-image {
+    margin-top: 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    overflow: hidden;
+}
+.doc-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.doc-image figcaption {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-soft);
+    border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+<button class="menu-button" onclick="document.querySelector('.sidebar').classList.toggle('open')">=</button>
+<div class="brand">Leafo Studio <span>FlexiSprite docs</span></div>
+<nav class="toplinks">
+<a href="#quick-start">Start</a>
+<a href="#pipeline-setup">Pipeline</a>
+<a href="#inspector">Inspector</a>
+<a href="#reference-migration">Reference</a>
+<a href="#support">Support</a>
+</nav>
+</header>
+<aside class="sidebar">
+<div class="nav-group">
+<p class="nav-title">Start</p>
+<a class="nav-link" href="#overview">Overview</a>
+<a class="nav-link" href="#quick-start">Quick start</a>
+<a class="nav-link" href="#pipeline-setup">Pipeline setup</a>
+<a class="nav-link" href="#demo">Demo scene</a>
+</div>
+<div class="nav-group">
+<p class="nav-title">Features</p>
+<a class="nav-link" href="#inspector">Inspector</a>
+<a class="nav-link" href="#master-setup">Master Setup</a>
+<a class="nav-link" href="#effects">Effects</a>
+<a class="nav-link" href="#outline-sdf">Outline and SDF</a>
+<a class="nav-link" href="#masks">Masks</a>
+<a class="nav-link" href="#animation">Animation</a>
+<a class="nav-link" href="#presets">Presets</a>
+<a class="nav-link" href="#scripting">Scripting</a>
+<a class="nav-link" href="#performance">Performance</a>
+</div>
+<div class="nav-group">
+<p class="nav-title">Reference</p>
+<a class="nav-link" href="#reference-migration">Migrate pipelines</a>
+<a class="nav-link" href="#variant-choice">Choose a variant</a>
+<a class="nav-link" href="#common-problems">Common problems</a>
+<a class="nav-link" href="#faq">FAQ</a>
+<a class="nav-link" href="#support">Support</a>
+</div>
+</aside>
+<main class="content">
+<section class="hero" id="overview">
+<div class="kicker">FlexiSprite documentation</div>
+<h1>Animated sprite effects for Unity.</h1>
+<p class="lead">A practical setup guide for SpriteRenderer, UI Image, particles, render pipelines, presets, masks, animation, and runtime control.</p>
+<div class="hero-actions">
+<a class="button primary" href="#quick-start">Start setup</a>
+<a class="button" href="#variant-choice">Pick a shader variant</a>
+<a class="button" href="#reference-migration">Migrate pipeline</a>
+</div>
+</section>
+<div class="quick-strip">
+<div class="quick-stat"><b>120+</b><span>effects</span></div>
+<div class="quick-stat"><b>24</b><span>shader variants</span></div>
+<div class="quick-stat"><b>3</b><span>pipelines</span></div>
+<div class="quick-stat"><b>1</b><span>manager component</span></div>
+</div>
+<div class="wide-image">
+<img alt="FlexiSprite effect preview" src="sprites/doc/1.png"/>
+</div>
+<section class="section" id="quick-start">
+<div class="section-head">
+<h2>Quick start</h2>
+<p>Use this path for a new project or a clean import.</p>
+</div>
+<div class="steps">
+<div class="step"><div><h3>Import the package</h3><p>Import the Unity package. Keep the folder structure under <code>Assets/AnimatedSprite/</code>.</p></div></div>
+<div class="step"><div><h3>Run first setup</h3><p>Open <code>Tools &gt; AnimatedSprite &gt; First Import Setup</code>. Select the render pipeline used by your project.</p></div></div>
+<div class="step"><div><h3>Add the manager</h3><p>Select a SpriteRenderer or UI Image object, then add <code>AnimatedSpriteShader</code>. You can also use <code>GameObject &gt; Animated Sprite &gt; Add Manager</code>.</p></div></div>
+<div class="step"><div><h3>Pick the variant</h3><p>Choose the variant that matches the renderer. Use <a href="#variant-choice">the variant table</a> if you are not sure.</p></div></div>
+<div class="step"><div><h3>Enable effects</h3><p>Open an effect group, enable one effect, adjust its fields, then press Play or preview it in the Scene view.</p></div></div>
+</div>
+<div class="note">For most SpriteRenderer objects, start with <code>Standard</code> in Built-in, <code>Standard URP</code> in URP, or <code>HDRP Unlit</code> in HDRP.</div>
+</section>
+<section class="section" id="pipeline-setup">
+<div class="section-head">
+<h2>Pipeline setup</h2>
+<p>FlexiSprite supports Built-in, URP, and HDRP. The shader files must be built for the same pipeline as the Unity project.</p>
+</div>
+<div class="grid-2">
+<div class="card">
+<h3>Set the active pipeline</h3>
+<p>Open <code>Tools &gt; AnimatedSprite &gt; Master Setup</code>. In the state bar, compare Unity's project pipeline with FlexiSprite's shader build.</p>
+<p>If they do not match, press <code>Set Target to Project Pipeline</code>, then <code>Full Rebuild for Project Pipeline</code>.</p>
+</div>
+<div class="card">
+<h3>Import matching demos</h3>
+<p>Use <code>Import Demo Packages for Project Pipeline</code>. This imports demo scenes that use the current pipeline variants.</p>
+<p>Do not mix URP demo materials into a Built-in project or Built-in materials into a URP project.</p>
+</div>
+</div>
+<div class="note warn">Pink materials usually mean the project pipeline and shader build do not match. Rebuild first, then migrate materials if needed.</div>
+</section>
+<section class="section" id="demo">
+<div class="section-head">
+<h2>Demo scene</h2>
+<p>Use the demo to test effects before adding them to your own assets.</p>
+</div>
+<div class="media">
+<iframe allowfullscreen="" src="https://itch.io/embed-upload/17490104?color=288bdd"><a href="https://leafousio.itch.io/flexisprite-demo">Play the FlexiSprite demo</a></iframe>
+</div>
+</section>
+<section class="section" id="inspector">
+<div class="section-head">
+<h2>Inspector</h2>
+<p>This is the main workflow. Add the component, pick effects, and tune them here.</p>
+</div>
+<div class="grid-3">
+<div class="card compact"><h3>Search and filters</h3><p>Search by effect name or keyword to find the control you need faster.</p></div>
+<div class="card compact"><h3>Performance dots</h3><p>Green, yellow, and red dots show the relative cost of an effect before you commit to it.</p></div>
+<div class="card compact"><h3>Active summary</h3><p>The top summary shows which effects are enabled on the selected object.</p></div>
+<div class="card compact"><h3>Keyframe buttons</h3><p>Use the keyframe button next to supported fields to animate values without manual setup.</p></div>
+<div class="card compact"><h3>Copy, paste, reset</h3><p>Copy one effect, paste it to another sprite, or reset only that effect instead of the whole component.</p></div>
+<div class="card compact"><h3>Code copy</h3><p>Use the C# copy button or <code>Copy All Active Settings</code> to generate field assignments for scripts.</p></div>
+<div class="card compact"><h3>Tools</h3><p>Use the tools area for presets, sprite atlas setup, and SDF baking.</p></div>
+<div class="card compact"><h3>Global settings</h3><p>Mask textures, global fade, pixel snap, stencil, and lighting controls are grouped in one place.</p></div>
+<div class="card compact"><h3>Live preview</h3><p>Expanded effects show a live preview so you can tune values without guessing.</p></div>
+</div>
+<figure class="doc-image">
+<img alt="FlexiSprite inspector overview" src="sprites/doc/2.png"/>
+<figcaption>Inspector overview.</figcaption>
+</figure>
+</section>
+<section class="section" id="master-setup">
+<div class="section-head">
+<h2>Master Setup</h2>
+<p>Use this window for project-wide setup, rebuilds, migration, and effect ordering.</p>
+</div>
+<div class="steps">
+<div class="step"><div><h3>Project and shader state</h3><p>Check whether the Unity project pipeline matches the current FlexiSprite shader build target.</p></div></div>
+<div class="step"><div><h3>Variant selection</h3><p>Compile all variants, keep only the active pipeline, or scan Build Settings scenes to auto-enable the variants you actually use.</p></div></div>
+<div class="step"><div><h3>Full rebuild</h3><p>Use this after changing the shader build target. It regenerates HLSL, C# bindings, and shader files.</p></div></div>
+<div class="step"><div><h3>Pipeline migration</h3><p>Migrate AnimatedSprite objects between Built-in, URP, and HDRP. You can target open scenes, all scenes, or a selected folder.</p></div></div>
+<div class="step"><div><h3>Import matching demos</h3><p>Import demo packages that match the current project pipeline so the example scenes work out of the box.</p></div></div>
+<div class="step"><div><h3>Global lighting</h3><p>Adjust project-wide direct and ambient multipliers. HDRP also exposes extra environment controls for lit variants.</p></div></div>
+<div class="step"><div><h3>Effect order</h3><p>Reorder groups or individual effects when you need a different stack order for the final look.</p></div></div>
+</div>
+</section>
+<section class="section" id="effects">
+<div class="section-head">
+<h2>Effects</h2>
+<p>Start with one or two effects, then add more only when needed. Heavy blur, glow, and trail effects cost more than simple color changes.</p>
+</div>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Color Basic</h3>
+<span>13 effects</span>
+</div>
+<div class="chips"><span class="chip">Strong Tint</span><span class="chip">Add Color</span><span class="chip">Alpha Tint</span><span class="chip">Hit Effect</span><span class="chip">Negative</span><span class="chip">Greyscale</span><span class="chip">Saturation</span><span class="chip">Brightness</span><span class="chip">Contrast</span><span class="chip">Color Grading</span><span class="chip">Sepia</span><span class="chip">Ping Pong Glow</span><span class="chip">Color Cycle</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Color Extended</h3>
+<span>24 effects</span>
+</div>
+<div class="chips"><span class="chip">Bloom</span><span class="chip">Color Replace</span><span class="chip">LUT Replace</span><span class="chip">Hue Shift</span><span class="chip">Add Hue</span><span class="chip">Split Toning</span><span class="chip">Posterize</span><span class="chip">Poison</span><span class="chip">Frozen</span><span class="chip">Metal</span><span class="chip">Camouflage</span><span class="chip">Rainbow</span><span class="chip">Black Tint</span><span class="chip">Chromatic Aberration</span><span class="chip">Palette Swap</span><span class="chip">Dithering</span><span class="chip">CRT Scanlines</span><span class="chip">Vignette</span><span class="chip">Thermal Vision</span><span class="chip">Recolor RGB</span><span class="chip">Water Reflection</span><span class="chip">Gradient</span><span class="chip">Radial Gradient</span><span class="chip">Color Ramp</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Edges</h3>
+<span>15 effects</span>
+</div>
+<div class="chips"><span class="chip">Outline</span><span class="chip">Inner Outline</span><span class="chip">Texture Outline</span><span class="chip">Rainbow Outline</span><span class="chip">Distort Outline</span><span class="chip">Glow</span><span class="chip">Shadow</span><span class="chip">Soft Shadow</span><span class="chip">Directional Outline</span><span class="chip">Outline Only</span><span class="chip">Gradient Outline</span><span class="chip">Anim Outline Thickness</span><span class="chip">Selection Highlight</span><span class="chip">Energy Aura</span><span class="chip">Fake Lighting</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>UV and Motion</h3>
+<span>23 effects</span>
+</div>
+<div class="chips"><span class="chip">Pixelate</span><span class="chip">Wave</span><span class="chip">Twist</span><span class="chip">UV Distort</span><span class="chip">Full Distort</span><span class="chip">Directional Distort</span><span class="chip">UV Scroll</span><span class="chip">Rotate</span><span class="chip">Squeeze</span><span class="chip">Squish</span><span class="chip">Wiggle</span><span class="chip">Wind</span><span class="chip">World Tiling</span><span class="chip">UV Scale Offset</span><span class="chip">Curl Noise</span><span class="chip">FBM Noise</span><span class="chip">Shockwave</span><span class="chip">Sine Scale</span><span class="chip">Heartbeat</span><span class="chip">Breathing</span><span class="chip">Liquid Wobble</span><span class="chip">Smooth Pixel Art</span><span class="chip">UV Bend Point</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Filters</h3>
+<span>5 effects</span>
+</div>
+<div class="chips"><span class="chip">Sharpen</span><span class="chip">Gaussian Blur</span><span class="chip">Directional Blur</span><span class="chip">UV Scroll Overlay</span><span class="chip">Flip Book Blend</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Dissolves</h3>
+<span>16 effects</span>
+</div>
+<div class="chips"><span class="chip">Dissolve</span><span class="chip">Glow Dissolve</span><span class="chip">Source Dissolve</span><span class="chip">Directional Fade</span><span class="chip">Dir Glow Fade</span><span class="chip">Full Alpha Dissolve</span><span class="chip">Halftone</span><span class="chip">Radial Wipe</span><span class="chip">Blinds</span><span class="chip">Diamond Dissolve</span><span class="chip">Scanline Dissolve</span><span class="chip">Spread Fade</span><span class="chip">Pixel Dissolve</span><span class="chip">Spiral Wipe</span><span class="chip">Hex Dissolve</span><span class="chip">Burn Direction</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>VFX</h3>
+<span>20 effects</span>
+</div>
+<div class="chips"><span class="chip">Hologram</span><span class="chip">Glitch</span><span class="chip">Flicker</span><span class="chip">Shine</span><span class="chip">Smoke</span><span class="chip">Flame</span><span class="chip">Enchanted</span><span class="chip">Shifting</span><span class="chip">Shift Rainbow</span><span class="chip">Overlay</span><span class="chip">Dialogue Emphasis</span><span class="chip">Voronoi Crackle</span><span class="chip">Motion Smear</span><span class="chip">Global Smoke</span><span class="chip">Holographic Card</span><span class="chip">Cloud Shadows</span><span class="chip">Trail - Speed Color</span><span class="chip">Trail - Afterimage</span><span class="chip">Trail - Rainbow</span><span class="chip">Charging Ability</span></div>
+</section>
+<section class="effect-group">
+<div class="effect-group-head">
+<h3>Gameplay</h3>
+<span>8 effects</span>
+</div>
+<div class="chips"><span class="chip">Checkerboard</span><span class="chip">UV Visualize</span><span class="chip">Health Tint</span><span class="chip">X-Ray Silhouette</span><span class="chip">Minimap Ping</span><span class="chip">Blueprint</span><span class="chip">Ghosting</span><span class="chip">Retro Palette</span></div>
+</section>
+</section>
+<section class="section" id="outline-sdf">
+<div class="section-head">
+<h2>Outline and SDF</h2>
+<p>Use the normal outline for quick borders. Use SDF when the outline needs to stay smooth at different sizes.</p>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Fast outline</h3><p>Enable <code>Outline</code>, choose the color, set the width, and adjust softness. This is enough for most sprites.</p></div>
+<div class="card"><h3>SDF outline</h3><p>Set outline style to SDF, assign or bake an SDF texture, then tune width and edge softness.</p></div>
+</div>
+<div class="note">Bake the SDF after changing the sprite texture. Reuse the baked SDF texture for identical sprites.</div>
+</section>
+<section class="section" id="masks">
+<div class="section-head">
+<h2>Masks</h2>
+<p>Masks limit effects to selected parts of the sprite.</p>
+</div>
+<div class="steps">
+<div class="step"><div><h3>Enable masks</h3><p>Open <code>Global Settings &gt; Effect Masks</code> and enable masks.</p></div></div>
+<div class="step"><div><h3>Assign mask textures</h3><p>Use R, G, B, and A channels as four separate mask slots.</p></div></div>
+<div class="step"><div><h3>Choose a mask per effect</h3><p>Open an effect and set its mask channel. Channel 0 means no mask.</p></div></div>
+</div>
+</section>
+<section class="section" id="animation">
+<div class="section-head">
+<h2>Animation</h2>
+<p>Animate effect fields with Unity's Animation window or control them from code.</p>
+</div>
+<div class="grid-2">
+<div class="card">
+<h3>Unity Animation window</h3>
+<p>Select the object, open <code>Window &gt; Animation &gt; Animation</code>, add an AnimatedSpriteShader property, and keyframe the value.</p>
+</div>
+<div class="card">
+<h3>Animation browser</h3>
+<p>If the object has an Animator, the inspector can show clips that animate shader properties and open the selected clip.</p>
+</div>
+</div>
+</section>
+<section class="section" id="presets">
+<div class="section-head">
+<h2>Presets</h2>
+<p>Use presets when the same effect setup is used by multiple sprites.</p>
+</div>
+<ul class="checklist">
+<li><strong>Create:</strong> right-click in Project, then use <code>Create &gt; Animated Sprite &gt; Effect Preset</code>.</li>
+<li><strong>Save from object:</strong> open the component context menu and choose <code>Save as Effect Preset</code>.</li>
+<li><strong>Load to object:</strong> use <code>Load Effect Preset</code> on another AnimatedSpriteShader component.</li>
+<li><strong>Reuse:</strong> keep presets for common states such as hit flash, poison, frozen, glow, selected, or dissolve.</li>
+</ul>
+</section>
+<section class="section" id="scripting">
+<div class="section-head">
+<h2>Scripting</h2>
+<p>All effect fields are public. After changing one effect at runtime, call <code>MarkEffectDirty(EffectId.YourEffect)</code>. Use <code>MarkDirty()</code> only when you need a broader refresh.</p>
+</div>
+<div class="grid-2">
+<div class="card compact"><h3>Use this most of the time</h3><p>When you change one effect such as Hit Effect, Outline, or Dissolve, call <code>MarkEffectDirty</code> for that effect.</p></div>
+<div class="card compact"><h3>Use full refresh rarely</h3><p>Use <code>MarkDirty()</code> for wider changes such as variant switches or other full component refresh cases.</p></div>
+</div>
+<div class="code-block">
+<div class="code-title">Example: damage flash</div>
+<pre>using UnityEngine;
+using FlexiSprite;
+
+public class DamageFlash : MonoBehaviour
+{
+    [SerializeField] private AnimatedSpriteShader spriteFx;
+
+    public void ShowHitFlash()
+    {
+        if (!spriteFx)
+            spriteFx = GetComponent&lt;AnimatedSpriteShader&gt;();
+
+        spriteFx.hitEffectEnabled = true;
+        spriteFx.hitEffectBlend = 1f;
+        spriteFx.MarkEffectDirty(EffectId.HitEffect);
+    }
+}</pre>
+</div>
+<p>To find field names, set up the effect in the inspector and use <code>Copy All Active Settings</code> or the per-effect C# copy button.</p>
+</section>
+<section class="section" id="performance">
+<div class="section-head">
+<h2>Performance</h2>
+<p>Keep the setup simple on objects that appear many times on screen.</p>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Use cheap effects first</h3><p>Color changes, tint, hue shift, saturation, brightness, UV scroll, and simple dissolve are usually safe.</p></div>
+<div class="card"><h3>Limit expensive effects</h3><p>Blur, bloom, soft shadow, glow, trails, heavy noise, and multi-sample outlines should be used on fewer objects.</p></div>
+<div class="card"><h3>Use the right variant</h3><p>Do not use lit variants unless the sprite needs lights. Do not use GUI variants on SpriteRenderer objects.</p></div>
+<div class="card"><h3>Reduce unique materials</h3><p>Share presets and settings where possible. UI Images use their own material instance for per-object control.</p></div>
+</div>
+</section>
+<section class="section" id="reference-migration">
+<div class="section-head">
+<h2>Reference: migrate pipelines</h2>
+<p>Use this when moving a project between Built-in, URP, and HDRP.</p>
+</div>
+<div class="steps">
+<div class="step"><div><h3>Back up the project</h3><p>Commit to version control or duplicate the project before migration.</p></div></div>
+<div class="step"><div><h3>Switch Unity pipeline first</h3><p>Set the render pipeline in Unity project settings. Built-in uses no SRP asset.</p></div></div>
+<div class="step"><div><h3>Rebuild FlexiSprite shaders</h3><p>Open <code>Tools &gt; AnimatedSprite &gt; Master Setup</code> and run <code>Full Rebuild for Project Pipeline</code>.</p></div></div>
+<div class="step"><div><h3>Choose migration scope</h3><p>Use <code>Open Scenes</code> for a small test, <code>All Scenes</code> for the full project, or <code>Selected Folder</code> for a scene folder.</p></div></div>
+<div class="step"><div><h3>Run migration</h3><p>Choose the source and target pipeline. Run the migration. Save changed scenes and prefabs.</p></div></div>
+<div class="step"><div><h3>Check one sprite and one UI object</h3><p>Confirm that a SpriteRenderer uses a sprite variant and a UI Image uses a GUI variant.</p></div></div>
+</div>
+<div class="note danger">If materials stay pink after migration, rebuild the shaders for the active pipeline again. Migration changes object variants; it does not replace a wrong shader build.</div>
+</section>
+<section class="section" id="variant-choice">
+<div class="section-head">
+<h2>Reference: choose a shader variant</h2>
+<p>Match the variant to the renderer first, then to the visual style.</p>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Pipeline</th><th>Variant</th><th>Use on</th><th>When to use</th></tr></thead>
+<tbody><tr><td>Built-in</td><td><code>Standard</code></td><td>SpriteRenderer</td><td>Default choice for normal sprites.</td></tr>
+<tr><td>Built-in</td><td><code>Additive</code></td><td>SpriteRenderer</td><td>Glows, magic, fire, particles, light-only VFX.</td></tr>
+<tr><td>Built-in</td><td><code>Multiply</code></td><td>SpriteRenderer</td><td>Darkening, decals, shadow-like overlays.</td></tr>
+<tr><td>Built-in</td><td><code>Standard Premultiply</code></td><td>SpriteRenderer</td><td>Sprites exported with premultiplied alpha.</td></tr>
+<tr><td>Built-in</td><td><code>Additive Soft</code></td><td>SpriteRenderer</td><td>Softer additive VFX with less blown-out edges.</td></tr>
+<tr><td>Built-in</td><td><code>GUI</code></td><td>UI Image</td><td>Default UI Image variant.</td></tr>
+<tr><td>Built-in</td><td><code>GUI Additive</code></td><td>UI Image</td><td>Glowing UI Images.</td></tr>
+<tr><td>Built-in</td><td><code>GUI Premultiply</code></td><td>UI Image</td><td>Premultiplied alpha UI sprites.</td></tr>
+<tr><td>Built-in</td><td><code>Screen Space Overlay</code></td><td>UI / Overlay</td><td>Use when a Built-in Canvas overlay needs the dedicated overlay path.</td></tr>
+<tr><td>Built-in</td><td><code>3D Lit</code></td><td>SpriteRenderer / Mesh</td><td>Sprites affected by Built-in scene lighting.</td></tr>
+<tr><td>Built-in</td><td><code>3D Lit Cutout</code></td><td>SpriteRenderer / Mesh</td><td>Lit sprites that need hard alpha and depth sorting.</td></tr>
+<tr><td>URP</td><td><code>Standard URP</code></td><td>SpriteRenderer</td><td>Default unlit URP sprite.</td></tr>
+<tr><td>URP</td><td><code>Additive URP</code></td><td>SpriteRenderer</td><td>URP glow and VFX sprites.</td></tr>
+<tr><td>URP</td><td><code>Premultiply URP</code></td><td>SpriteRenderer</td><td>Premultiplied alpha in URP.</td></tr>
+<tr><td>URP</td><td><code>GUI URP</code></td><td>UI Image</td><td>Default UI Image variant in URP.</td></tr>
+<tr><td>URP</td><td><code>GUI Additive URP</code></td><td>UI Image</td><td>Glowing UI Images in URP.</td></tr>
+<tr><td>URP</td><td><code>2D Lit URP</code></td><td>SpriteRenderer</td><td>Use with URP 2D Renderer lights.</td></tr>
+<tr><td>URP</td><td><code>2D Lit Additive URP</code></td><td>SpriteRenderer</td><td>Additive sprites that still react to URP 2D lights.</td></tr>
+<tr><td>URP</td><td><code>3D Lit URP</code></td><td>SpriteRenderer / Mesh</td><td>Use in URP scenes with 3D lights.</td></tr>
+<tr><td>URP</td><td><code>3D Lit Cutout URP</code></td><td>SpriteRenderer / Mesh</td><td>URP lit sprites with hard alpha and depth.</td></tr>
+<tr><td>URP</td><td><code>3D Lit Additive URP</code></td><td>SpriteRenderer / Mesh</td><td>URP lit additive VFX.</td></tr>
+<tr><td>HDRP</td><td><code>HDRP Unlit</code></td><td>SpriteRenderer / Mesh</td><td>Default HDRP sprite path.</td></tr>
+<tr><td>HDRP</td><td><code>HDRP Additive</code></td><td>SpriteRenderer / Mesh</td><td>HDRP glow and VFX sprites.</td></tr>
+<tr><td>HDRP</td><td><code>HDRP Lit</code></td><td>SpriteRenderer / Mesh</td><td>Sprites affected by HDRP lighting. No dedicated HDRP UI variant.</td></tr></tbody>
+</table>
+</div>
+<div class="note">Rule of thumb: SpriteRenderer uses Standard, Additive, Lit, or 2D Lit variants. UI Image uses GUI variants. HDRP has no dedicated GUI variant.</div>
+</section>
+<section class="section" id="common-problems">
+<div class="section-head">
+<h2>Common problems</h2>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Sprite is pink</td><td>Open Master Setup and run <code>Full Rebuild for Project Pipeline</code>. Then check that the object uses a variant from the same pipeline.</td></tr>
+<tr><td>UI Image does not show the effect</td><td>Use a GUI variant. SpriteRenderer variants are not for Canvas UI.</td></tr>
+<tr><td>URP 2D lights do not affect the sprite</td><td>Use <code>2D Lit URP</code> or <code>2D Lit Additive URP</code> and make sure the project uses the URP 2D Renderer.</td></tr>
+<tr><td>Outline looks rough when scaled</td><td>Use SDF outline and bake an SDF texture for that sprite.</td></tr>
+<tr><td>Runtime value changed but visual did not update</td><td>Call <code>MarkEffectDirty(EffectId.YourEffect)</code> after changing one effect from code. Use <code>MarkDirty()</code> only for a full refresh.</td></tr>
+<tr><td>Too many sprites are expensive</td><td>Reduce blur, glow, soft shadow, trails, heavy noise, and thick outlines on repeated objects.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section" id="faq">
+<div class="section-head"><h2>FAQ</h2></div>
+<div class="grid-2">
+<div class="card"><h3>Can I combine effects?</h3><p>Yes. Enable multiple effects on the same component. Use Master Setup only if you need to change global effect order.</p></div>
+<div class="card"><h3>Can I animate effects?</h3><p>Yes. Use Unity Animation clips or change public fields from scripts.</p></div>
+<div class="card"><h3>Should every sprite have its own material?</h3><p>No. Use shared settings when possible. Use per-object settings only where needed.</p></div>
+<div class="card"><h3>Which variant should I try first?</h3><p>Use Standard for normal SpriteRenderers, GUI for UI Images, and 2D Lit URP only when using URP 2D lights.</p></div>
+</div>
+</section>
+<section class="section" id="support">
+<div class="footer-card">
+<h2>Support</h2>
+<p>When reporting an issue, include your Unity version, render pipeline, shader variant, renderer type, and a screenshot of the component settings.</p>
+<p><a href="https://assetstore.unity.com/publishers/72230" target="_blank">Leafo Studio on Unity Asset Store</a> | <a href="https://leafousio.itch.io/" target="_blank">Leafo Studio on itch.io</a></p>
+</div>
+</section>
+</main>
+<script>
+document.querySelectorAll('.sidebar a').forEach(a => a.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+}));
+</script>
+</body>
+</html>

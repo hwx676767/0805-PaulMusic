@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b593d1a2b0d69da4782352a1914e41da
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/anims/warguy (1).controller
+  uploadId: 937670

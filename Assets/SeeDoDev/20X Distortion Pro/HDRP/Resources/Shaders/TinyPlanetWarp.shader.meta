@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5c368e76c1cafea4283c41d38b86df01
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/HDRP/Resources/Shaders/TinyPlanetWarp.shader
+  uploadId: 899938

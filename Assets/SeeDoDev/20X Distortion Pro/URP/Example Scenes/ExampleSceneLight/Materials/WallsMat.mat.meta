@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cc53ac63cf0c4a17aa82b737b6bbd07e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Example Scenes/ExampleSceneLight/Materials/WallsMat.mat
+  uploadId: 899938

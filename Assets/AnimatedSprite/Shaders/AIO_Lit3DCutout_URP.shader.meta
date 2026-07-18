@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b951e9170e0c072448d80e9c98f1af0a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Shaders/AIO_Lit3DCutout_URP.shader
+  uploadId: 937670

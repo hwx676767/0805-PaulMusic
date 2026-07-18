@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 41285b5d80a64f35ad9bd5dfc42ce6cd
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/SpeedWarp.shader
+  uploadId: 899938

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c3ccab2792f8d17438fbd5937fb8631f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Generated/PackedLookupAtlases/masks_warguy_26156_PackedLookup.asset
+  uploadId: 937670

@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e8074b2da0bcf4e9fe5f43485d7eec, type: 3}
+  m_Name: AnimSpriteProjectSettings
+  m_EditorClassIdentifier: 
+  editorKeywordMode: 0
+  buildKeywordMode: 0
+  _buildKeywordModeInitialized: 1
+  excludedVariants: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a000000150000001600000017000000
+  globalLightIntensity: 1
+  ambientLightIntensity: 1.21
+  hdrpExposureCompensation: 0
+  hdrpAmbientMultiplier: 1
+  hdrpIndirectMultiplier: 1
+  _pipeline: 1
+  _groups:
+  - group: 3
+    enabled: 1
+    renderOrder: 0
+    foldout: 0
+  - group: 4
+    enabled: 1
+    renderOrder: 1
+    foldout: 0
+  - group: 0
+    enabled: 1
+    renderOrder: 2
+    foldout: 0
+  - group: 1
+    enabled: 1
+    renderOrder: 3
+    foldout: 0
+  - group: 2
+    enabled: 1
+    renderOrder: 4
+    foldout: 0
+  - group: 5
+    enabled: 1
+    renderOrder: 5
+    foldout: 0
+  - group: 6
+    enabled: 1
+    renderOrder: 6
+    foldout: 0
+  - group: 7
+    enabled: 1
+    renderOrder: 7
+    foldout: 0
+  _effectOrders:
+  - enableShader: _Bloom_En
+    order: 6
+  - enableShader: _ColorReplace_En
+    order: 7
+  - enableShader: _LUTReplace_En
+    order: 8
+  - enableShader: _Gradient_En
+    order: 9
+  - enableShader: _AddHue_En
+    order: 10
+  - enableShader: _StrongTint_En
+    order: 0
+  - enableShader: _AddColor_En
+    order: 1
+  - enableShader: _AlphaTint_En
+    order: 2
+  - enableShader: _HitEffect_En
+    order: 3
+  - enableShader: _Negative_En
+    order: 4
+  - enableShader: _Greyscale_En
+    order: 5
+  - enableShader: _HueShift_En
+    order: 108
+  - enableShader: _Saturation_En
+    order: 11
+  - enableShader: _Brightness_En
+    order: 12
+  - enableShader: _Contrast_En
+    order: 13
+  - enableShader: _SplitToning_En
+    order: 14
+  - enableShader: _Posterize_En
+    order: 15
+  - enableShader: _Poison_En
+    order: 16
+  - enableShader: _Frozen_En
+    order: 17
+  - enableShader: _Metal_En
+    order: 18
+  - enableShader: _Camouflage_En
+    order: 19
+  - enableShader: _Rainbow_En
+    order: 20
+  - enableShader: _BlackTint_En
+    order: 21
+  - enableShader: _Chromatic_En
+    order: 22
+  - enableShader: _PaletteSwap_En
+    order: 23
+  - enableShader: _Dithering_En
+    order: 24
+  - enableShader: _CRTScanlines_En
+    order: 25
+  - enableShader: _Vignette_En
+    order: 26
+  - enableShader: _ColorGrading_En
+    order: 27
+  - enableShader: _Sepia_En
+    order: 28
+  - enableShader: _ThermalVision_En
+    order: 29
+  - enableShader: _RecolorRGB_En
+    order: 30
+  - enableShader: _PingPongGlow_En
+    order: 31
+  - enableShader: _ColorCycle_En
+    order: 32
+  - enableShader: _Outline_En
+    order: 33
+  - enableShader: _InnerOutline_En
+    order: 34
+  - enableShader: _TexOutline_En
+    order: 35
+  - enableShader: _RainbowOutline_En
+    order: 36
+  - enableShader: _DistortOutline_En
+    order: 37
+  - enableShader: _Glow_En
+    order: 38
+  - enableShader: _Shadow_En
+    order: 39
+  - enableShader: _SoftShadow_En
+    order: 40
+  - enableShader: _DirOutline_En
+    order: 41
+  - enableShader: _OutlineOnly_En
+    order: 42
+  - enableShader: _GradOutline_En
+    order: 43
+  - enableShader: _AnimOutline_En
+    order: 44
+  - enableShader: _SelectHighlight_En
+    order: 45
+  - enableShader: _Pixelate_En
+    order: 46
+  - enableShader: _Wave_En
+    order: 47
+  - enableShader: _Twist_En
+    order: 48
+  - enableShader: _UVDistort_En
+    order: 49
+  - enableShader: _FullDistort_En
+    order: 50
+  - enableShader: _DirDistort_En
+    order: 51
+  - enableShader: _UVScroll_En
+    order: 52
+  - enableShader: _Rotate_En
+    order: 53
+  - enableShader: _Squeeze_En
+    order: 54
+  - enableShader: _Squish_En
+    order: 55
+  - enableShader: _Wiggle_En
+    order: 56
+  - enableShader: _Wind_En
+    order: 57
+  - enableShader: _Sharpen_En
+    order: 58
+  - enableShader: _GaussBlur_En
+    order: 59
+  - enableShader: _DirBlur_En
+    order: 60
+  - enableShader: _WorldTiling_En
+    order: 61
+  - enableShader: _UVScaleOffset_En
+    order: 62
+  - enableShader: _CurlNoise_En
+    order: 63
+  - enableShader: _FBMNoise_En
+    order: 64
+  - enableShader: _UVScrollOverlay_En
+    order: 65
+  - enableShader: _Shockwave_En
+    order: 66
+  - enableShader: _SineScale_En
+    order: 67
+  - enableShader: _Heartbeat_En
+    order: 68
+  - enableShader: _Breathing_En
+    order: 69
+  - enableShader: _LiquidWobble_En
+    order: 70
+  - enableShader: _FlipBookBlend_En
+    order: 71
+  - enableShader: _SmoothPixelArt_En
+    order: 72
+  - enableShader: _Dissolve_En
+    order: 73
+  - enableShader: _GlowDissolve_En
+    order: 74
+  - enableShader: _SrcDissolve_En
+    order: 75
+  - enableShader: _DirFade_En
+    order: 76
+  - enableShader: _DirGlowFade_En
+    order: 77
+  - enableShader: _FullAlphaDissolve_En
+    order: 78
+  - enableShader: _Halftone_En
+    order: 79
+  - enableShader: _RadialWipe_En
+    order: 80
+  - enableShader: _Blinds_En
+    order: 81
+  - enableShader: _DiamondDissolve_En
+    order: 82
+  - enableShader: _ScanlineDissolve_En
+    order: 83
+  - enableShader: _SpreadFade_En
+    order: 84
+  - enableShader: _PixelDissolve_En
+    order: 85
+  - enableShader: _SpiralWipe_En
+    order: 86
+  - enableShader: _HexDissolve_En
+    order: 87
+  - enableShader: _Hologram_En
+    order: 88
+  - enableShader: _Glitch_En
+    order: 89
+  - enableShader: _Flicker_En
+    order: 90
+  - enableShader: _Shine_En
+    order: 91
+  - enableShader: _Smoke_En
+    order: 92
+  - enableShader: _Flame_En
+    order: 93
+  - enableShader: _Enchanted_En
+    order: 94
+  - enableShader: _Shifting_En
+    order: 95
+  - enableShader: _ShiftRainbow_En
+    order: 96
+  - enableShader: _Overlay_En
+    order: 97
+  - enableShader: _Checkerboard_En
+    order: 98
+  - enableShader: _UVVisualize_En
+    order: 99
+  - enableShader: _HealthTint_En
+    order: 100
+  - enableShader: _XRaySilhouette_En
+    order: 101
+  - enableShader: _MinimapPing_En
+    order: 102
+  - enableShader: _DialogueEmphasis_En
+    order: 103
+  - enableShader: _VoronoiCrackle_En
+    order: 104
+  - enableShader: _WaterReflect_En
+    order: 105
+  - enableShader: _MotionSmear_En
+    order: 106
+  - enableShader: _EnergyAura_En
+    order: 107
+  - enableShader: _RadialGradient_En
+    order: 109
+  - enableShader: _ColorRamp_En
+    order: 110
+  - enableShader: _FakeLighting_En
+    order: 111
+  - enableShader: _UVBendPoint_En
+    order: 112
+  - enableShader: _BurnDirection_En
+    order: 113
+  - enableShader: _GlobalSmoke_En
+    order: 114
+  - enableShader: _HoloCard_En
+    order: 115
+  - enableShader: _CloudShadows_En
+    order: 116
+  - enableShader: _TrailA_En
+    order: 117
+  - enableShader: _TrailB_En
+    order: 118
+  - enableShader: _TrailC_En
+    order: 119
+  - enableShader: _Charging_En
+    order: 120
+  - enableShader: _Blueprint_En
+    order: 121
+  - enableShader: _Ghosting_En
+    order: 122
+  - enableShader: _RetroPalette_En
+    order: 123
+  _shaderFolder: Assets/AnimatedSprite/Shaders

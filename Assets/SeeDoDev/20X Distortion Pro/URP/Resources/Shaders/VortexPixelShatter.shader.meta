@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2432d514e8f24426817457ff42f0ad48
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/VortexPixelShatter.shader
+  uploadId: 899938

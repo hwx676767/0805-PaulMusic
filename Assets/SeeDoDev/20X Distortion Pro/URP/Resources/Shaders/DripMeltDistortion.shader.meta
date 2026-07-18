@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c0f5d65e99f44ab3b99f0aa36429827d
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/DripMeltDistortion.shader
+  uploadId: 899938

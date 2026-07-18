@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a350f0d46c60462fbb9b1220ebd36110
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/PrismaticDisplacement.shader
+  uploadId: 899938

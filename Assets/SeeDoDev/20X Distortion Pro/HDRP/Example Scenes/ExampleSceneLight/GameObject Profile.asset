@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7150810444827042491
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f505a524444255f4990198befe576621, type: 3}
+  m_Name: CenteredFractalDistortion
+  m_EditorClassIdentifier: 
+  active: 0
+  Intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  CenterFocus:
+    m_OverrideState: 0
+    m_Value: 0
+  CubicNoise:
+    m_OverrideState: 0
+    m_Value: 0
+  Size:
+    m_OverrideState: 0
+    m_Value: 0.6
+  Speed:
+    m_OverrideState: 0
+    m_Value: 1
+  mask:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  maskChannel:
+    m_OverrideState: 0
+    m_Value: 0
+  maskEdgeFineTuning:
+    m_OverrideState: 0
+    m_Value: 0.15
+  GlobalPostProcessingSettings:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-6893493968248355517
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661e3e9afd4e8f84aa491a538bc3b176, type: 3}
+  m_Name: FlowMosh_20X
+  m_EditorClassIdentifier: 
+  active: 0
+  Blend:
+    m_OverrideState: 1
+    m_Value: 0.957
+  FlowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.9
+  FlowGain:
+    m_OverrideState: 1
+    m_Value: 0.8
+  FlowXScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  BrightnessThreshold:
+    m_OverrideState: 1
+    m_Value: 0.4
+  MicroContrastBoost:
+    m_OverrideState: 1
+    m_Value: 0.4
+  BlockSize:
+    m_OverrideState: 1
+    m_Value: 0.002
+  NoiseAmplitude:
+    m_OverrideState: 1
+    m_Value: 0.9
+  ChromaShift:
+    m_OverrideState: 1
+    m_Value: 0.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: GameObject Profile
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -7150810444827042491}
+  - {fileID: -6893493968248355517}

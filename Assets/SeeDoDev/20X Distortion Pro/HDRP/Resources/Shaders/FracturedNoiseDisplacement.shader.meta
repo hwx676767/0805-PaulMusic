@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 9458872bbaebc2c49811eee186a53b6e
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/HDRP/Resources/Shaders/FracturedNoiseDisplacement.shader
+  uploadId: 899938

@@ -1,0 +1,28 @@
+{
+  "title": "Sample Chart",
+  "artist": "DeusExMachina",
+  "laneCount": 4,
+  "bpm": 120,
+  "offset": 0,
+  "notes": [
+    { "lane": 0, "time": 2.0, "duration": 0 },
+    { "lane": 1, "time": 2.5, "duration": 0 },
+    { "lane": 2, "time": 3.0, "duration": 0 },
+    { "lane": 3, "time": 3.5, "duration": 0 },
+    { "lane": 0, "time": 4.0, "duration": 0 },
+    { "lane": 2, "time": 4.0, "duration": 0 },
+    { "lane": 1, "time": 4.5, "duration": 0 },
+    { "lane": 3, "time": 4.5, "duration": 0 },
+    { "lane": 0, "time": 5.0, "duration": 1.0 },
+    { "lane": 3, "time": 5.0, "duration": 1.0 },
+    { "lane": 1, "time": 6.0, "duration": 0 },
+    { "lane": 2, "time": 6.25, "duration": 0 },
+    { "lane": 1, "time": 6.5, "duration": 0 },
+    { "lane": 2, "time": 6.75, "duration": 0 },
+    { "lane": 0, "time": 7.0, "duration": 0 },
+    { "lane": 1, "time": 7.25, "duration": 0 },
+    { "lane": 2, "time": 7.5, "duration": 0 },
+    { "lane": 3, "time": 7.75, "duration": 0 },
+    { "lane": 0, "time": 8.0, "duration": 2.0 }
+  ]
+}

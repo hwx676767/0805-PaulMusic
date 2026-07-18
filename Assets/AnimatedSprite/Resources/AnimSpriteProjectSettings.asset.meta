@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a41459bf31dfc6144894e30488fdb1d8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Resources/AnimSpriteProjectSettings.asset
+  uploadId: 937670

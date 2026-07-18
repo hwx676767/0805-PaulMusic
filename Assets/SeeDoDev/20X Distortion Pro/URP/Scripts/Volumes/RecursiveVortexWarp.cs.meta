@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7b68d691ef2543ee9272a640871fcf1b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Scripts/Volumes/RecursiveVortexWarp.cs
+  uploadId: 899938

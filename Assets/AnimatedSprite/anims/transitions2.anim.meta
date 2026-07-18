@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 69f2e5a1b23382641919080fe263d1d6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/anims/transitions2.anim
+  uploadId: 937670

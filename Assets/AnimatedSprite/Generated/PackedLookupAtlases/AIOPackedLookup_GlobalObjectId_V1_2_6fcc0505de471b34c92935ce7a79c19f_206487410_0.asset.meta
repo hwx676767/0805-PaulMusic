@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0015fa665d6317b4086487f96e73c08e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 360086
+  packageName: FlexiSprite All-in-1 shader
+  packageVersion: 1.0.6v
+  assetPath: Assets/AnimatedSprite/Generated/PackedLookupAtlases/AIOPackedLookup_GlobalObjectId_V1_2_6fcc0505de471b34c92935ce7a79c19f_206487410_0.asset
+  uploadId: 937670

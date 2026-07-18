@@ -1,0 +1,226 @@
+THIRD-PARTY NOTICES
+
+Last updated: 2026-06-07
+
+FIRST-PARTY / PUBLISHER-CREATED CONTENT
+The publisher declares that the sprites, demo art, custom shaders, scripts, materials, animations, generated masks, generated SDF/outline resources, and original demo resources in this package were created by the publisher unless listed below as third-party content.
+
+The following folders/files are treated as publisher-created/generated content based on the publisher's declaration:
+- Assets/AnimatedSprite/sprites/
+- Assets/AnimatedSprite/Resources/uiSprites/
+- Assets/AnimatedSprite/Resources/doc/
+- Assets/AnimatedSprite/Resources/other/1unit.png
+- Assets/AnimatedSprite/Resources/other/testLUT.png
+- Assets/AnimatedSprite/Resources/textures/generated/bookOutline.exr
+- Assets/AnimatedSprite/Resources/textures/generated/OutlineSDF3.exr
+- Assets/AnimatedSprite/Resources/textures/generated/PackedMasks.png
+- Assets/AnimatedSprite/Resources/textures/masks/cat1.png
+- Assets/AnimatedSprite/Resources/textures/masks/cat2.png
+- Assets/AnimatedSprite/Resources/textures/masks/cat3.png
+- Assets/AnimatedSprite/Resources/textures/masks/cat4.png
+- Assets/AnimatedSprite/Resources/textures/masks/corona.png
+- Assets/AnimatedSprite/Resources/textures/masks/extend.png
+- Assets/AnimatedSprite/Resources/textures/masks/extendring.png
+- Assets/AnimatedSprite/Resources/textures/masks/gradient.png
+- Assets/AnimatedSprite/Resources/textures/masks/gradientBayer.png
+- Assets/AnimatedSprite/Resources/textures/masks/gradientBayerRev.png
+- Assets/AnimatedSprite/Resources/textures/masks/gradientRev.png
+- Assets/AnimatedSprite/Resources/textures/masks/hexangle_1.png
+- Assets/AnimatedSprite/Resources/textures/masks/iris.png
+- Assets/AnimatedSprite/Resources/textures/masks/pearl_0.png
+- Assets/AnimatedSprite/Resources/textures/masks/star_1.png
+- Assets/AnimatedSprite/Resources/other/blocks1.png
+- Assets/AnimatedSprite/Resources/other/tileable2a.png
+
+
+TRAILER AUDIO
+Audio used in the promotional trailer is not included in this Unity package and is not licensed as part of this Asset Store product.
+
+DEMO-SHOWCASE-ONLY / RESTRICTED THIRD-PARTY CONTENT
+The following third-party components are included only to display the supplied demo scenes, sample visuals, screenshots, or showcase materials. They are not part of the reusable licensed asset content sold to customers. The publisher does not grant Asset Store customers the right to reuse, extract, redistribute, modify, resell, include in their games/products, or treat these components as production assets unless the customer obtains their own license from the original rightsholder or the original license independently allows that use.
+
+Restricted demo-showcase-only components:
+- FFF Forward font / FFFORWA.TTF and generated FFFORWA.asset
+- metaltile1.png
+- fire2.png
+- CADhatch water normal textures listed below
+
+Important: This publisher-side restriction does not replace or override the original third-party licenses. Customers must follow the original rightsholder licenses for any independent use.
+
+------------------------------------------------------------
+Component Name: Super Crawler
+Component Type: Font
+Author: fsuarez913
+Source: DaFont - Super Crawler font page
+Source URL: https://www.dafont.com/super-crawler.font
+License Type: 100% Free / free for personal and commercial use
+Use Scope In This Package: Reusable package font asset
+Used In Package:
+- Assets/AnimatedSprite/fonts/Super Crawler.ttf
+- Assets/AnimatedSprite/fonts/Super Crawler SDF.asset
+License File:
+- Licenses/Super_Crawler_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: FFF Forward
+Component Type: Font
+Author: Fonts For Flash / FFF Web Media Inc.
+Source: 1001 Fonts / BlogFonts license mirrors
+Source URLs:
+- https://www.1001fonts.com/fff-forward-font.html
+- https://blogfonts.com/fff-forward.font
+License Type: Custom Fonts For Flash license
+Use Scope In This Package: DEMO SHOWCASE ONLY - PROHIBITED FOR CUSTOMER PRODUCTION USE THROUGH THIS ASSET
+Used In Package:
+- Assets/AnimatedSprite/fonts/FFFFORWA.TTF
+- Assets/AnimatedSprite/fonts/FFFFORWA.asset
+License File:
+- Licenses/FFF_Forward_LICENSE.txt
+Package Restriction:
+FFF Forward is included only for demo showcase display. It is not sold, sublicensed, or granted to customers as reusable asset content. Customers may not reuse, extract, modify, redistribute, resell, or include this font or the generated SDF asset in their own projects through this Asset Store package unless they obtain their own permission/license from the original rightsholder.
+
+------------------------------------------------------------
+Component Name: brushwalker437
+Component Type: Texture
+Author: qubodup
+Source: OpenGameArt - 3 live procedurally generated tiling water textures (512px, running brushes)
+Source URL: https://opengameart.org/content/3-live-proceduraly-generated-tiling-water-textures-512px-running-brushes
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/brushwalker437.png
+License File:
+- Licenses/OpenGameArt_CC0_Textures_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: bomber_metal1b
+Component Type: Texture
+Author: Crack.com, submitted by bart
+Source: OpenGameArt - Golgotha Textures: bomber_metal1b.jpg
+Source URL: https://opengameart.org/content/golgotha-textures-bombermetal1bjpg
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/bomber_metal1b.png
+License File:
+- Licenses/OpenGameArt_CC0_Textures_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: bunker_galvanized
+Component Type: Texture
+Author: Crack.com, submitted by bart
+Source: OpenGameArt - Camouflage from Golgotha Textures: bunker_galvanized.jpg
+Source URL: https://opengameart.org/node/7653
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/bunker_galvanized.png
+License File:
+- Licenses/OpenGameArt_CC0_Textures_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: infrared
+Component Type: Texture
+Author: Ghoulsblade, submitted by bart
+Source: OpenGameArt - Ground Textures: infrared.jpg
+Source URL: https://opengameart.org/content/ground-textures-infraredjpg
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/infrared.png
+License File:
+- Licenses/OpenGameArt_CC0_Textures_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: smoke_ring
+Component Type: Texture
+Author: Crack.com, submitted by bart
+Source: OpenGameArt - Golgotha Effects Textures: smoke_ring.jpg
+Source URL: https://opengameart.org/content/cc0-textures-uploader-bart
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/smoke_ring.png
+License File:
+- Licenses/OpenGameArt_CC0_Textures_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: metaltile1
+Component Type: Texture
+Author: Osmic
+Source: OpenGameArt - Audio knobs, button, sliders etc. - metaltile1.png
+Source URL: https://opengameart.org/content/audio-knobs-button-sliders-etc-metaltile1png
+License Type: Creative Commons Attribution 3.0 (CC BY 3.0)
+Use Scope In This Package: DEMO SHOWCASE ONLY - PROHIBITED FOR CUSTOMER PRODUCTION USE THROUGH THIS ASSET
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/metaltile1.png
+License File:
+- Licenses/OpenGameArt_CC_BY_Textures_LICENSE.txt
+Package Restriction:
+metaltile1.png is included only for demo showcase display. It is not sold, sublicensed, or granted to customers as reusable asset content. Customers may not reuse it as production content through this Asset Store package unless they independently comply with the original CC BY 3.0 license and attribution requirements or obtain separate permission from the rightsholder.
+
+------------------------------------------------------------
+Component Name: fire2
+Component Type: Texture / particle effect texture
+Author: HenriqueGibi
+Source: OpenGameArt - Magic Effect Particle System
+Source URL: https://opengameart.org/content/magic-effect-particle-system
+License Type: Creative Commons Attribution 4.0 International (CC BY 4.0)
+Use Scope In This Package: DEMO SHOWCASE ONLY - PROHIBITED FOR CUSTOMER PRODUCTION USE THROUGH THIS ASSET
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/fire2.png
+License File:
+- Licenses/OpenGameArt_CC_BY_Textures_LICENSE.txt
+Package Restriction:
+fire2.png is included only for demo showcase display. It is not sold, sublicensed, or granted to customers as reusable asset content. Customers may not reuse it as production content through this Asset Store package unless they independently comply with the original CC BY 4.0 license and attribution requirements or obtain separate permission from the rightsholder.
+
+------------------------------------------------------------
+Component Name: Stone Tiles 02
+Component Type: PBR texture maps
+Author/Source: Poly Haven / Texture Haven
+Source URL: https://polyhaven.com/a/stone_tiles_02
+License Type: CC0 / Public Domain
+Use Scope In This Package: Reusable package texture asset
+Used In Package:
+- Assets/AnimatedSprite/Resources/other/stone_tiles_02_disp_1k.png
+- Assets/AnimatedSprite/Resources/other/stone_tiles_02_rough_1k.exr
+- Assets/AnimatedSprite/Resources/water distortion/stone_tiles_02_nor_gl_1k.exr
+License File:
+- Licenses/PolyHaven_Stone_Tiles_02_LICENSE.txt
+
+------------------------------------------------------------
+Component Name: CADhatch water normal textures
+Component Type: Water normal map textures
+Author/Source: CADhatch.com
+Source URL: https://www.cadhatch.com/seamless-water-textures
+License URL: https://www.cadhatch.com/terms-of-use
+License Type: CADhatch Royalty-Free Commercial License
+Use Scope In This Package: DEMO SHOWCASE ONLY - PROHIBITED FOR CUSTOMER PRODUCTION USE THROUGH THIS ASSET
+Used In Package:
+- Assets/AnimatedSprite/Resources/water distortion/Water 0175bnormal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0175normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0236normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0325bnormal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0325normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0326normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0339normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0340normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0341normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0342normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0344normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0346bnormal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0346normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0347normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0397bnormal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0397cbormal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0397normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0398normal.png
+- Assets/AnimatedSprite/Resources/water distortion/water 0399normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0400bnormal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0400normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 0401normal.png
+- Assets/AnimatedSprite/Resources/water distortion/Water 2837normal.png
+License File:
+- Licenses/CADhatch_Water_Textures_LICENSE.txt
+Package Restriction:
+These CADhatch water normal textures are included only for demo showcase display. They are not sold, sublicensed, or granted to customers as reusable asset content. Customers may not reuse, extract, modify, redistribute, resell, or include these textures in their own projects through this Asset Store package unless they obtain their own license or written permission from CADhatch.

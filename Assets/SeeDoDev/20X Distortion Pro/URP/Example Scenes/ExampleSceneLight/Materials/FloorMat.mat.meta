@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 576dccc1faea48ed9dd2b8e702f7f070
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Example Scenes/ExampleSceneLight/Materials/FloorMat.mat
+  uploadId: 899938

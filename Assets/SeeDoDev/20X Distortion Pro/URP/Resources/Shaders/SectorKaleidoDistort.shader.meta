@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 9abbeba76d6147608e8c34bf3256eb56
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/SectorKaleidoDistort.shader
+  uploadId: 899938

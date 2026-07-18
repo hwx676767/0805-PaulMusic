@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: eae019dccb434c5aa383e8a22ff64ceb
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Resources/Shaders/CircularRippleWarp.shader
+  uploadId: 899938

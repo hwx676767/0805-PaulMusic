@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7af1ea516c1f470b859923f5e94a178b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/URP/Scripts/RenderFeatures/SpiralSliceKaleidoscope_20X.cs
+  uploadId: 899938

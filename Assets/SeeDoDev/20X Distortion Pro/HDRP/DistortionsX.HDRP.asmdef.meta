@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8eb3048915065ff4c8d6ce2be06628b3
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326585
+  packageName: 20X Distortion Pro
+  packageVersion: 1.2
+  assetPath: Assets/SeeDoDev/20X Distortion Pro/HDRP/DistortionsX.HDRP.asmdef
+  uploadId: 899938
