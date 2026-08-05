@@ -84,6 +84,8 @@ namespace DeusEx.Rhythm
         public Color outlineColor = new Color(0f, 0f, 0f, 0.85f);
         [Tooltip("第一张（高亮）外框颜色。")]
         public Color activeOutlineColor = new Color(1f, 0.95f, 0.5f, 1f);
+        [Tooltip("当前卡图片加载完成、但 combo 尚不足时的就绪边框颜色。")]
+        public Color readyOutlineColor = new Color(0.25f, 0.9f, 1f, 1f);
         [Tooltip("费用够时的角标颜色。")]
         public Color affordColor = new Color(1f, 1f, 1f, 1f);
         [Tooltip("费用不足时的角标颜色。")]
@@ -215,6 +217,7 @@ namespace DeusEx.Rhythm
                 ApplySlot(s, i);
             }
 
+            UpdateActiveCardLoading();
             RefreshOutlines();
             UpdateAffordability(manager != null ? manager.Combo : 0);
         }
@@ -279,7 +282,8 @@ namespace DeusEx.Rhythm
                 if (s.view != null && s.view.HasUsableBorders)
                 {
                     bool affordable = s.Card != null && manager != null && manager.Combo >= s.Card.Cost;
-                    s.view.SetUsableHighlight(!s.exiting && s.isActive && affordable, activeOutlineColor);
+                    bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
+                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
                 }
                 else
                 {
@@ -294,6 +298,7 @@ namespace DeusEx.Rhythm
                 // 飞出且已基本透明 → 销毁回收
                 if (s.exiting && (group == null || group.alpha < 0.03f))
                 {
+                    if (s.view != null) s.view.ImageLoadCompleted -= OnCardImageLoadCompleted;
                     Destroy(rect.gameObject);
                     _slots.RemoveAt(i);
                 }
@@ -307,16 +312,16 @@ namespace DeusEx.Rhythm
             foreach (var s in _slots)
             {
                 TMP_Text cost = s.view != null ? s.view.costText : null;
-                if (s.exiting || cost == null) continue;
-                if (s.isActive)
+                if (!s.exiting && cost != null && s.isActive)
                     cost.color = (s.Card != null && combo >= s.Card.Cost) ? affordColor : notAffordColor;
-                else
+                else if (!s.exiting && cost != null)
                     cost.color = affordColor;
 
                 if (s.view != null && s.view.HasUsableBorders)
                 {
                     bool affordable = s.Card != null && combo >= s.Card.Cost;
-                    s.view.SetUsableHighlight(s.isActive && affordable, activeOutlineColor);
+                    bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
+                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
                 }
             }
         }
@@ -329,7 +334,8 @@ namespace DeusEx.Rhythm
                 {
                     int combo = manager != null ? manager.Combo : 0;
                     bool affordable = s.Card != null && combo >= s.Card.Cost;
-                    s.view.SetUsableHighlight(!s.exiting && s.isActive && affordable, activeOutlineColor);
+                    bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
+                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
                     continue;
                 }
 
@@ -428,6 +434,7 @@ namespace DeusEx.Rhythm
 
             view.name = $"Card_{card.uid}";
             view.EnsureRefs();
+            view.ImageLoadCompleted += OnCardImageLoadCompleted;
 
             // 卡牌需绕自身中心旋转/缩放并按 anchoredPosition 定位到弧线点，统一把锚点/轴心设为居中
             RectTransform rect = view.rectTransform;
@@ -439,6 +446,24 @@ namespace DeusEx.Rhythm
             var slot = new CardSlot { view = view };
             _slots.Add(slot);
             return slot;
+        }
+
+        private void UpdateActiveCardLoading()
+        {
+            foreach (var s in _slots)
+            {
+                if (s.exiting || s.view == null || s.Card == null || !s.isActive) continue;
+                s.view.SetCurrentCardLoading(true);
+                if (cardSystem != null) cardSystem.SetActiveCardReady(s.Card, s.view.IsImageLoaded);
+                return;
+            }
+        }
+
+        private void OnCardImageLoadCompleted(CardView view)
+        {
+            if (view == null || view.Card == null || cardSystem == null) return;
+            cardSystem.SetActiveCardReady(view.Card, true);
+            UpdateAffordability(manager != null ? manager.Combo : 0);
         }
 
         // ---------------- 程序化默认卡面 ----------------

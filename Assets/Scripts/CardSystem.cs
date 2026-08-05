@@ -57,6 +57,8 @@ namespace DeusEx.Rhythm
         public bool reshuffleDiscardWhenEmpty = true;
         [Tooltip("仅在歌曲进行中才允许出牌/弃牌（留空 manager 或未开始时可自行放开）。")]
         public bool requireSongPlaying = false;
+        [Tooltip("当前首张卡需要完成卡面加载后才能打出。由 CardWheelUI 报告加载状态。")]
+        public bool requireActiveCardVisualLoad = true;
 
         [Header("按键")]
         [Tooltip("打出手牌第一张的按键。")]
@@ -74,6 +76,9 @@ namespace DeusEx.Rhythm
         private readonly List<CardInstance> _discardPile = new List<CardInstance>();
         private int _nextUid;
         private bool _built;
+        // 有 CardWheelUI 时由 UI 在当前卡的图片加载期间设为 false；无 UI 时保持 true，兼容原有逻辑。
+        private int _activeReadyUid = -1;
+        private bool _activeCardReady = true;
 
         // ---- 对外只读状态 ----
         /// <summary>当前手牌（轮盘），索引 0 为可被打出/弃掉的"第一张"。</summary>
@@ -83,6 +88,10 @@ namespace DeusEx.Rhythm
         public int DrawPileCount => _drawPile.Count;
         public int DiscardPileCount => _discardPile.Count;
         public int HandCount => _hand.Count;
+
+        /// <summary>当前可出牌卡是否完成了它的视觉加载。</summary>
+        public bool IsActiveCardReady => !requireActiveCardVisualLoad || ActiveCard == null ||
+            (_activeReadyUid == ActiveCard.uid && _activeCardReady);
 
         // ---- 对外事件（供 UI 订阅，避免直接耦合） ----
         /// <summary>手牌内容发生变化（出牌/弃牌补位、开局发牌）后触发，供 UI 重建/刷新轮盘。</summary>
@@ -191,6 +200,13 @@ namespace DeusEx.Rhythm
             var active = ActiveCard;
             if (active == null) return false;
 
+            // 图片加载也是当前卡的就绪条件；未完成时不消耗 combo、不移动任何牌。
+            if (!IsActiveCardReady)
+            {
+                CardPlayBlocked?.Invoke(active);
+                return false;
+            }
+
             // combo 作为费用：交给音游管理器扣除（无 manager 时视为免费，便于独立测试）
             if (manager != null && !manager.TrySpendCombo(active.Cost))
             {
@@ -206,6 +222,14 @@ namespace DeusEx.Rhythm
             HandChanged?.Invoke();
             PilesChanged?.Invoke();
             return true;
+        }
+
+        /// <summary>仅供卡牌 UI 报告当前首张卡的图片加载状态，不改变任何牌库或效果规则。</summary>
+        public void SetActiveCardReady(CardInstance card, bool ready)
+        {
+            if (card == null || ActiveCard == null || card.uid != ActiveCard.uid) return;
+            _activeReadyUid = card.uid;
+            _activeCardReady = ready;
         }
 
         /// <summary>

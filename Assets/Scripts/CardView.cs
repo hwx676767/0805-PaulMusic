@@ -44,6 +44,10 @@ namespace DeusEx.Rhythm
         private bool _highlightRequested;
         private Color _highlightColor = Color.white;
         private Coroutine _loadRoutine;
+        private bool _loadStarted;
+
+        /// <summary>当前卡的图片填充完毕时触发，供 CardWheelUI 解锁出牌。</summary>
+        public event System.Action<CardView> ImageLoadCompleted;
 
         private void Awake() => EnsureRefs();
 
@@ -88,19 +92,29 @@ namespace DeusEx.Rhythm
                 background.color = c;
             }
 
-            StartImageLoad(def != null ? def.icon : null);
+            PrepareImage(def != null ? def.icon : null);
         }
 
-        /// <summary>由 CardWheelUI 调用。只有当前卡、费用足够且加载完成时才真正发光。</summary>
+        /// <summary>由 CardWheelUI 调用。非当前卡不会开始图片加载。</summary>
+        public void SetCurrentCardLoading(bool isCurrent)
+        {
+            if (!isCurrent || _loadStarted || IsImageLoaded || iconImage == null || iconImage.sprite == null) return;
+            _loadStarted = true;
+            _loadRoutine = StartCoroutine(LoadImage());
+        }
+
+        /// <summary>由 CardWheelUI 调用。高亮本身只在图片加载完成后显示。</summary>
         public void SetUsableHighlight(bool usable, Color color)
         {
             _highlightRequested = usable;
             _highlightColor = color;
         }
 
-        private void StartImageLoad(Sprite sprite)
+        private void PrepareImage(Sprite sprite)
         {
             if (_loadRoutine != null) StopCoroutine(_loadRoutine);
+            _loadRoutine = null;
+            _loadStarted = false;
             IsImageLoaded = sprite == null;
 
             if (iconImage == null) return;
@@ -111,8 +125,6 @@ namespace DeusEx.Rhythm
             iconImage.fillMethod = Image.FillMethod.Vertical;
             iconImage.fillOrigin = (int)Image.OriginVertical.Bottom;
             iconImage.fillAmount = sprite != null ? 0f : 1f;
-
-            if (sprite != null) _loadRoutine = StartCoroutine(LoadImage());
         }
 
         private IEnumerator LoadImage()
@@ -129,6 +141,7 @@ namespace DeusEx.Rhythm
             iconImage.fillAmount = 1f;
             IsImageLoaded = true;
             _loadRoutine = null;
+            ImageLoadCompleted?.Invoke(this);
         }
 
         private void EnsureSharedVisualTemplate()
