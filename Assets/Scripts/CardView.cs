@@ -47,6 +47,7 @@ namespace DeusEx.Rhythm
         private Color _highlightColor = Color.white;
         private Coroutine _loadRoutine;
         private bool _loadStarted;
+        private static Sprite _oneUnitMaskSprite;
 
         private void Awake() => EnsureRefs();
 
@@ -149,6 +150,7 @@ namespace DeusEx.Rhythm
 
             loadingMask = loadingMask != null ? loadingMask : FindOrCreateImage("LoadingMask");
             SetRect(loadingMask.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            loadingMask.sprite = OneUnitMaskSprite;
             loadingMask.color = new Color(0.35f, 0.35f, 0.38f, 0.68f);
             loadingMask.raycastTarget = false;
 
@@ -188,6 +190,27 @@ namespace DeusEx.Rhythm
             var go = new GameObject(childName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             go.transform.SetParent(transform, false);
             return go.GetComponent<Image>();
+        }
+
+        /// <summary>显式创建 1×1、PPU=1 的白色 Sprite，供 UI Image 的 Filled 模式可靠裁切。</summary>
+        private static Sprite OneUnitMaskSprite
+        {
+            get
+            {
+                if (_oneUnitMaskSprite != null) return _oneUnitMaskSprite;
+
+                var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false)
+                {
+                    name = "CardLoadingMask_1Unit"
+                };
+                texture.SetPixel(0, 0, Color.white);
+                texture.filterMode = FilterMode.Point;
+                texture.Apply(false, true);
+                _oneUnitMaskSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f),
+                    new Vector2(0.5f, 0.5f), 1f);
+                _oneUnitMaskSprite.name = "CardLoadingMask_1Unit";
+                return _oneUnitMaskSprite;
+            }
         }
 
         private void SetBorderColor(Color color)
