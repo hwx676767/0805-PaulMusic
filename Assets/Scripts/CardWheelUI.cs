@@ -34,6 +34,11 @@ namespace DeusEx.Rhythm
         public RhythmGameManager manager;
         [Tooltip("留空则自动创建一个覆盖式 Canvas；也可指定一个已有 Canvas 作为父级。")]
         public Canvas canvas;
+        [Tooltip("公共信息区的 TMP 文本。留空时按名称自动查找场景中的 DisplayText。")]
+        public TMP_Text displayText;
+        [TextArea]
+        [Tooltip("{0}=当前卡名，{1}=当前卡简介。")]
+        public string displayTextFormat = "<b>{0}</b>\n{1}";
 
         [Header("轮盘根节点（手动摆放，脚本只引用不实例化）")]
         [Tooltip("手动摆放在场景 Canvas 下的轮盘根节点：卡牌的父级，其本地原点即轮盘圆心（可在里面放背景美术）。\n" +
@@ -129,6 +134,7 @@ namespace DeusEx.Rhythm
         {
             if (cardSystem == null) cardSystem = FindObjectOfType<CardSystem>();
             if (manager == null) manager = cardSystem != null ? cardSystem.manager : FindObjectOfType<RhythmGameManager>();
+            ResolveDisplayText();
 
             // 安全防护：卡牌 prefab 不能带 CardWheelUI，否则每张牌又会生成一套轮盘 → 无限递归卡死
             if (cardPrefab != null && cardPrefab.GetComponentInChildren<CardWheelUI>(true) != null)
@@ -220,6 +226,7 @@ namespace DeusEx.Rhythm
             UpdateActiveCardLoading();
             RefreshOutlines();
             UpdateAffordability(manager != null ? manager.Combo : 0);
+            UpdateDisplayText();
         }
 
         private void ApplySlot(CardSlot s, int index)
@@ -464,6 +471,29 @@ namespace DeusEx.Rhythm
             if (view == null || view.Card == null || cardSystem == null) return;
             cardSystem.SetActiveCardReady(view.Card, true);
             UpdateAffordability(manager != null ? manager.Combo : 0);
+        }
+
+        private void ResolveDisplayText()
+        {
+            if (displayText != null) return;
+            foreach (var label in FindObjectsOfType<TMP_Text>(true))
+            {
+                if (label.gameObject.name != "DisplayText") continue;
+                displayText = label;
+                return;
+            }
+        }
+
+        private void UpdateDisplayText()
+        {
+            ResolveDisplayText();
+            if (displayText == null) return;
+
+            CardDefinition def = cardSystem != null && cardSystem.ActiveCard != null
+                ? cardSystem.ActiveCard.definition : null;
+            displayText.text = def == null
+                ? string.Empty
+                : string.Format(displayTextFormat, def.cardName, def.description);
         }
 
         // ---------------- 程序化默认卡面 ----------------

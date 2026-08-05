@@ -6,8 +6,8 @@ using UnityEngine.UI;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// 卡牌的纯视觉视图。它不会修改牌库、费用或卡牌效果；只负责将 CardDefinition
-    /// 显示成统一的图像卡面，并在抽到新牌时播放图片加载与可用状态反馈。
+    /// 单张卡的视觉视图：插画始终完整显示；仅灰色遮罩使用 Filled 表现加载。
+    /// 卡名与说明由 CardWheelUI 输出到场景中的公共 DisplayText，不显示在卡面上。
     /// </summary>
     [DisallowMultipleComponent]
     public class CardView : MonoBehaviour
@@ -17,19 +17,20 @@ namespace DeusEx.Rhythm
         public RectTransform rectTransform;
         public Image background;
         public Graphic outline;
+        // 保留这两个字段以兼容旧的自定义 prefab；本项目的公共信息不再写入卡面。
         public TMP_Text nameText;
         public TMP_Text descriptionText;
         public TMP_Text costText;
 
         [Header("卡面加载")]
-        [Tooltip("卡牌插画。新卡抽到时会以 Image Filled 模式由 0% 加载至 100%。")]
+        [Tooltip("完整显示的卡图，不使用 Filled。")]
         public Image iconImage;
+        [Tooltip("盖在卡图上方的半透明灰色遮罩；只有此 Image 使用 Filled。")]
+        public Image loadingMask;
         [Min(0.05f)]
-        [Tooltip("插画加载动画时长（秒）。")]
         public float imageLoadDuration = 0.65f;
 
         [Header("可用高亮")]
-        [Tooltip("可用状态的四条边框；留空时会由本组件在运行时创建统一版式。")]
         public Image topBorder;
         public Image bottomBorder;
         public Image leftBorder;
@@ -40,28 +41,24 @@ namespace DeusEx.Rhythm
         public bool IsImageLoaded { get; private set; }
         public bool HasUsableBorders => topBorder != null && bottomBorder != null &&
                                         leftBorder != null && rightBorder != null;
+        public event System.Action<CardView> ImageLoadCompleted;
 
         private bool _highlightRequested;
         private Color _highlightColor = Color.white;
         private Coroutine _loadRoutine;
         private bool _loadStarted;
 
-        /// <summary>当前卡的图片填充完毕时触发，供 CardWheelUI 解锁出牌。</summary>
-        public event System.Action<CardView> ImageLoadCompleted;
-
         private void Awake() => EnsureRefs();
 
         private void Update()
         {
             if (!HasUsableBorders) return;
-
             float alpha = _highlightRequested && IsImageLoaded
                 ? 0.72f + Mathf.Sin(Time.unscaledTime * 7f) * 0.22f
                 : 0f;
             SetBorderColor(new Color(_highlightColor.r, _highlightColor.g, _highlightColor.b, alpha));
         }
 
-        /// <summary>保证手工 prefab 与旧 prefab 都能获得相同的公共卡面版式。</summary>
         public void EnsureRefs()
         {
             if (rectTransform == null) rectTransform = transform as RectTransform;
@@ -70,40 +67,31 @@ namespace DeusEx.Rhythm
                 canvasGroup = GetComponent<CanvasGroup>();
                 if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
-
             if (iconImage == null) iconImage = GetComponent<Image>();
-            EnsureSharedVisualTemplate();
+            EnsureVisualTemplate();
         }
 
         public void Bind(CardInstance card)
         {
             Card = card;
             CardDefinition def = card != null ? card.definition : null;
-
-            if (nameText != null) nameText.text = def != null ? def.cardName : string.Empty;
-            if (descriptionText != null) descriptionText.text = def != null ? def.description : string.Empty;
             if (costText != null) costText.text = card != null ? card.Cost.ToString() : string.Empty;
-            // 旧 prefab 只有一张根 Image，它同时是插画容器；不能再把它染成底色，
-            // 否则会压暗玩家提供的卡图。自定义 prefab 若有独立 background 仍可使用颜色。
+
+            // 旧 prefab 的根 Image 就是插画，不能以卡色染色，否则会压暗原图。
             if (background != null && background != iconImage && tintBackgroundWithCardColor && def != null)
-            {
-                Color c = Color.Lerp(new Color(0.01f, 0.02f, 0.07f, 0.92f), def.color, 0.28f);
-                c.a = 0.92f;
-                background.color = c;
-            }
+                background.color = def.color;
 
             PrepareImage(def != null ? def.icon : null);
         }
 
-        /// <summary>由 CardWheelUI 调用。非当前卡不会开始图片加载。</summary>
+        /// <summary>只允许当前首张卡启动遮罩加载。</summary>
         public void SetCurrentCardLoading(bool isCurrent)
         {
             if (!isCurrent || _loadStarted || IsImageLoaded || iconImage == null || iconImage.sprite == null) return;
             _loadStarted = true;
-            _loadRoutine = StartCoroutine(LoadImage());
+            _loadRoutine = StartCoroutine(LoadMask());
         }
 
-        /// <summary>由 CardWheelUI 调用。高亮本身只在图片加载完成后显示。</summary>
         public void SetUsableHighlight(bool usable, Color color)
         {
             _highlightRequested = usable;
@@ -117,56 +105,52 @@ namespace DeusEx.Rhythm
             _loadStarted = false;
             IsImageLoaded = sprite == null;
 
-            if (iconImage == null) return;
-
-            iconImage.sprite = sprite;
-            iconImage.enabled = sprite != null;
-            iconImage.type = Image.Type.Filled;
-            iconImage.fillMethod = Image.FillMethod.Vertical;
-            iconImage.fillOrigin = (int)Image.OriginVertical.Bottom;
-            iconImage.fillAmount = sprite != null ? 0f : 1f;
+            if (iconImage != null)
+            {
+                iconImage.sprite = sprite;
+                iconImage.enabled = sprite != null;
+                iconImage.type = Image.Type.Simple;
+                iconImage.fillAmount = 1f;
+            }
+            if (loadingMask != null)
+            {
+                loadingMask.enabled = sprite != null;
+                loadingMask.type = Image.Type.Filled;
+                loadingMask.fillMethod = Image.FillMethod.Vertical;
+                loadingMask.fillOrigin = (int)Image.OriginVertical.Bottom;
+                loadingMask.fillAmount = sprite != null ? 1f : 0f;
+            }
         }
 
-        private IEnumerator LoadImage()
+        private IEnumerator LoadMask()
         {
             float elapsed = 0f;
             while (elapsed < imageLoadDuration)
             {
                 elapsed += Time.unscaledDeltaTime;
                 float t = Mathf.Clamp01(elapsed / imageLoadDuration);
-                iconImage.fillAmount = Mathf.SmoothStep(0f, 1f, t);
+                if (loadingMask != null) loadingMask.fillAmount = 1f - Mathf.SmoothStep(0f, 1f, t);
                 yield return null;
             }
-
-            iconImage.fillAmount = 1f;
+            if (loadingMask != null)
+            {
+                loadingMask.fillAmount = 0f;
+                loadingMask.enabled = false;
+            }
             IsImageLoaded = true;
             _loadRoutine = null;
             ImageLoadCompleted?.Invoke(this);
         }
 
-        private void EnsureSharedVisualTemplate()
+        private void EnsureVisualTemplate()
         {
             if (rectTransform == null) return;
-
-            // 旧 prefab 的根 Image 同时作为卡面背景与可填充的插画容器。
             if (background == null) background = iconImage;
 
-            Image titlePanel = FindOrCreateImage("TitlePanel");
-            SetRect(titlePanel.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
-                new Vector2(10f, -52f), new Vector2(-10f, -10f));
-            titlePanel.color = new Color(0.005f, 0.01f, 0.04f, 0.78f);
-
-            Image descriptionPanel = FindOrCreateImage("DescriptionPanel");
-            SetRect(descriptionPanel.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
-                new Vector2(10f, 10f), new Vector2(-10f, 48f));
-            descriptionPanel.color = new Color(0.005f, 0.01f, 0.04f, 0.78f);
-
-            if (nameText == null)
-                nameText = CreateText("CardName", titlePanel.rectTransform, 22f, FontStyles.Bold,
-                    TextAlignmentOptions.Left, new Vector2(10f, 3f), new Vector2(-10f, -3f));
-            if (descriptionText == null)
-                descriptionText = CreateText("CardDescription", descriptionPanel.rectTransform, 13f, FontStyles.Normal,
-                    TextAlignmentOptions.Center, new Vector2(8f, 2f), new Vector2(-8f, -2f));
+            loadingMask = loadingMask != null ? loadingMask : FindOrCreateImage("LoadingMask");
+            SetRect(loadingMask.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            loadingMask.color = new Color(0.35f, 0.35f, 0.38f, 0.68f);
+            loadingMask.raycastTarget = false;
 
             EnsureCostBadge();
             EnsureBorders();
@@ -174,20 +158,14 @@ namespace DeusEx.Rhythm
 
         private void EnsureCostBadge()
         {
+            if (costText == null) return;
             Image badge = FindOrCreateImage("CostBadge");
             SetRect(badge.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f),
                 new Vector2(-58f, -58f), new Vector2(-10f, -10f));
             badge.color = new Color(0.005f, 0.01f, 0.04f, 0.88f);
-
-            if (costText == null)
-                costText = CreateText("Cost", badge.rectTransform, 27f, FontStyles.Bold,
-                    TextAlignmentOptions.Center, Vector2.zero, Vector2.zero);
-            else
-            {
-                costText.rectTransform.SetParent(badge.rectTransform, false);
-                SetRect(costText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-                costText.alignment = TextAlignmentOptions.Center;
-            }
+            costText.rectTransform.SetParent(badge.rectTransform, false);
+            SetRect(costText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            costText.alignment = TextAlignmentOptions.Center;
         }
 
         private void EnsureBorders()
@@ -196,7 +174,6 @@ namespace DeusEx.Rhythm
             bottomBorder = bottomBorder != null ? bottomBorder : FindOrCreateImage("UsableBorderBottom");
             leftBorder = leftBorder != null ? leftBorder : FindOrCreateImage("UsableBorderLeft");
             rightBorder = rightBorder != null ? rightBorder : FindOrCreateImage("UsableBorderRight");
-
             SetRect(topBorder.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(4f, -8f), new Vector2(-4f, -3f));
             SetRect(bottomBorder.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(4f, 3f), new Vector2(-4f, 8f));
             SetRect(leftBorder.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(3f, 8f), new Vector2(8f, -8f));
@@ -208,29 +185,9 @@ namespace DeusEx.Rhythm
         {
             Transform child = transform.Find(childName);
             if (child != null && child.TryGetComponent(out Image existing)) return existing;
-
             var go = new GameObject(childName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             go.transform.SetParent(transform, false);
             return go.GetComponent<Image>();
-        }
-
-        private TMP_Text CreateText(string childName, RectTransform parent, float size, FontStyles style,
-            TextAlignmentOptions alignment, Vector2 offsetMin, Vector2 offsetMax)
-        {
-            var go = new GameObject(childName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            var rect = go.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            SetRect(rect, Vector2.zero, Vector2.one, offsetMin, offsetMax);
-
-            var text = go.GetComponent<TextMeshProUGUI>();
-            if (costText != null && costText.font != null) text.font = costText.font;
-            text.fontSize = size;
-            text.fontStyle = style;
-            text.alignment = alignment;
-            text.color = Color.white;
-            text.textWrappingMode = TextWrappingModes.Normal;
-            text.raycastTarget = false;
-            return text;
         }
 
         private void SetBorderColor(Color color)
