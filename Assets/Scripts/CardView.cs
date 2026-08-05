@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,41 +6,58 @@ using UnityEngine.UI;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// 挂在"卡牌 prefab"根节点上的展示组件：声明卡面各可视元素的引用，供 <see cref="CardWheelUI"/>
-    /// 在运行时填充内容（名字/描述/费用/底色/图标）并驱动淡入淡出与高亮。
-    ///
-    /// 做自己的卡牌 prefab 时：在根节点挂本组件，把子物体里的文本/图片拖到对应字段（都可留空，
-    /// 留空的项会被跳过）。根节点建议是带 RectTransform 的 UI 物体；CanvasGroup 若不填会自动补一个。
-    /// 若不指定 prefab，CardWheelUI 会程序化生成一张带本组件的默认卡面。
+    /// 卡牌的纯视觉视图。它不会修改牌库、费用或卡牌效果；只负责将 CardDefinition
+    /// 显示成统一的图像卡面，并在抽到新牌时播放图片加载与可用状态反馈。
     /// </summary>
     [DisallowMultipleComponent]
     public class CardView : MonoBehaviour
     {
-        [Tooltip("控制整张卡淡入淡出的 CanvasGroup。留空会自动在根节点上取/加。")]
+        [Header("基础引用")]
         public CanvasGroup canvasGroup;
-        [Tooltip("卡面根 RectTransform。留空自动取本物体的。")]
         public RectTransform rectTransform;
-        [Tooltip("卡面底色图（可选）。tintBackgroundWithCardColor 勾选时会被染成卡牌颜色。")]
         public Image background;
-        [Tooltip("高亮外框（可选，Image/其它 Graphic 均可）。轮到它是第一张时 CardWheelUI 会把它染成高亮色。")]
         public Graphic outline;
-        [Tooltip("名称文本（可选）。")]
         public TMP_Text nameText;
-        [Tooltip("描述文本（可选）。")]
         public TMP_Text descriptionText;
-        [Tooltip("费用文本（可选）。CardWheelUI 会按当前 combo 是否够费给它染色。")]
         public TMP_Text costText;
-        [Tooltip("图标（可选）。卡牌配了 icon 才显示。")]
+
+        [Header("卡面加载")]
+        [Tooltip("卡牌插画。新卡抽到时会以 Image Filled 模式由 0% 加载至 100%。")]
         public Image iconImage;
-        [Tooltip("是否用卡牌颜色给 background 底色染色。用美术卡面时可关掉，保留贴图本色。")]
+        [Min(0.05f)]
+        [Tooltip("插画加载动画时长（秒）。")]
+        public float imageLoadDuration = 0.65f;
+
+        [Header("可用高亮")]
+        [Tooltip("可用状态的四条边框；留空时会由本组件在运行时创建统一版式。")]
+        public Image topBorder;
+        public Image bottomBorder;
+        public Image leftBorder;
+        public Image rightBorder;
         public bool tintBackgroundWithCardColor = true;
 
-        /// <summary>当前绑定的卡牌实例。</summary>
         public CardInstance Card { get; private set; }
+        public bool IsImageLoaded { get; private set; }
+        public bool HasUsableBorders => topBorder != null && bottomBorder != null &&
+                                        leftBorder != null && rightBorder != null;
+
+        private bool _highlightRequested;
+        private Color _highlightColor = Color.white;
+        private Coroutine _loadRoutine;
 
         private void Awake() => EnsureRefs();
 
-        /// <summary>补齐必要引用（RectTransform / CanvasGroup），可安全重复调用。</summary>
+        private void Update()
+        {
+            if (!HasUsableBorders) return;
+
+            float alpha = _highlightRequested && IsImageLoaded
+                ? 0.72f + Mathf.Sin(Time.unscaledTime * 7f) * 0.22f
+                : 0f;
+            SetBorderColor(new Color(_highlightColor.r, _highlightColor.g, _highlightColor.b, alpha));
+        }
+
+        /// <summary>保证手工 prefab 与旧 prefab 都能获得相同的公共卡面版式。</summary>
         public void EnsureRefs()
         {
             if (rectTransform == null) rectTransform = transform as RectTransform;
@@ -48,23 +66,176 @@ namespace DeusEx.Rhythm
                 canvasGroup = GetComponent<CanvasGroup>();
                 if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
+
+            if (iconImage == null) iconImage = GetComponent<Image>();
+            EnsureSharedVisualTemplate();
         }
 
-        /// <summary>把一张牌的展示内容填充到卡面上。</summary>
         public void Bind(CardInstance card)
         {
             Card = card;
             CardDefinition def = card != null ? card.definition : null;
 
-            if (nameText != null) nameText.text = def != null ? def.cardName : "";
-            if (descriptionText != null) descriptionText.text = def != null ? def.description : "";
-            if (costText != null) costText.text = card != null ? card.Cost.ToString() : "";
-            if (background != null && tintBackgroundWithCardColor && def != null) background.color = def.color;
-            if (iconImage != null)
+            if (nameText != null) nameText.text = def != null ? def.cardName : string.Empty;
+            if (descriptionText != null) descriptionText.text = def != null ? def.description : string.Empty;
+            if (costText != null) costText.text = card != null ? card.Cost.ToString() : string.Empty;
+            // 旧 prefab 只有一张根 Image，它同时是插画容器；不能再把它染成底色，
+            // 否则会压暗玩家提供的卡图。自定义 prefab 若有独立 background 仍可使用颜色。
+            if (background != null && background != iconImage && tintBackgroundWithCardColor && def != null)
             {
-                iconImage.sprite = def != null ? def.icon : null;
-                iconImage.enabled = iconImage.sprite != null;
+                Color c = Color.Lerp(new Color(0.01f, 0.02f, 0.07f, 0.92f), def.color, 0.28f);
+                c.a = 0.92f;
+                background.color = c;
             }
+
+            StartImageLoad(def != null ? def.icon : null);
+        }
+
+        /// <summary>由 CardWheelUI 调用。只有当前卡、费用足够且加载完成时才真正发光。</summary>
+        public void SetUsableHighlight(bool usable, Color color)
+        {
+            _highlightRequested = usable;
+            _highlightColor = color;
+        }
+
+        private void StartImageLoad(Sprite sprite)
+        {
+            if (_loadRoutine != null) StopCoroutine(_loadRoutine);
+            IsImageLoaded = sprite == null;
+
+            if (iconImage == null) return;
+
+            iconImage.sprite = sprite;
+            iconImage.enabled = sprite != null;
+            iconImage.type = Image.Type.Filled;
+            iconImage.fillMethod = Image.FillMethod.Vertical;
+            iconImage.fillOrigin = (int)Image.OriginVertical.Bottom;
+            iconImage.fillAmount = sprite != null ? 0f : 1f;
+
+            if (sprite != null) _loadRoutine = StartCoroutine(LoadImage());
+        }
+
+        private IEnumerator LoadImage()
+        {
+            float elapsed = 0f;
+            while (elapsed < imageLoadDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / imageLoadDuration);
+                iconImage.fillAmount = Mathf.SmoothStep(0f, 1f, t);
+                yield return null;
+            }
+
+            iconImage.fillAmount = 1f;
+            IsImageLoaded = true;
+            _loadRoutine = null;
+        }
+
+        private void EnsureSharedVisualTemplate()
+        {
+            if (rectTransform == null) return;
+
+            // 旧 prefab 的根 Image 同时作为卡面背景与可填充的插画容器。
+            if (background == null) background = iconImage;
+
+            Image titlePanel = FindOrCreateImage("TitlePanel");
+            SetRect(titlePanel.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
+                new Vector2(10f, -52f), new Vector2(-10f, -10f));
+            titlePanel.color = new Color(0.005f, 0.01f, 0.04f, 0.78f);
+
+            Image descriptionPanel = FindOrCreateImage("DescriptionPanel");
+            SetRect(descriptionPanel.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
+                new Vector2(10f, 10f), new Vector2(-10f, 48f));
+            descriptionPanel.color = new Color(0.005f, 0.01f, 0.04f, 0.78f);
+
+            if (nameText == null)
+                nameText = CreateText("CardName", titlePanel.rectTransform, 22f, FontStyles.Bold,
+                    TextAlignmentOptions.Left, new Vector2(10f, 3f), new Vector2(-10f, -3f));
+            if (descriptionText == null)
+                descriptionText = CreateText("CardDescription", descriptionPanel.rectTransform, 13f, FontStyles.Normal,
+                    TextAlignmentOptions.Center, new Vector2(8f, 2f), new Vector2(-8f, -2f));
+
+            EnsureCostBadge();
+            EnsureBorders();
+        }
+
+        private void EnsureCostBadge()
+        {
+            Image badge = FindOrCreateImage("CostBadge");
+            SetRect(badge.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f),
+                new Vector2(-58f, -58f), new Vector2(-10f, -10f));
+            badge.color = new Color(0.005f, 0.01f, 0.04f, 0.88f);
+
+            if (costText == null)
+                costText = CreateText("Cost", badge.rectTransform, 27f, FontStyles.Bold,
+                    TextAlignmentOptions.Center, Vector2.zero, Vector2.zero);
+            else
+            {
+                costText.rectTransform.SetParent(badge.rectTransform, false);
+                SetRect(costText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+                costText.alignment = TextAlignmentOptions.Center;
+            }
+        }
+
+        private void EnsureBorders()
+        {
+            topBorder = topBorder != null ? topBorder : FindOrCreateImage("UsableBorderTop");
+            bottomBorder = bottomBorder != null ? bottomBorder : FindOrCreateImage("UsableBorderBottom");
+            leftBorder = leftBorder != null ? leftBorder : FindOrCreateImage("UsableBorderLeft");
+            rightBorder = rightBorder != null ? rightBorder : FindOrCreateImage("UsableBorderRight");
+
+            SetRect(topBorder.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(4f, -8f), new Vector2(-4f, -3f));
+            SetRect(bottomBorder.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(4f, 3f), new Vector2(-4f, 8f));
+            SetRect(leftBorder.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(3f, 8f), new Vector2(8f, -8f));
+            SetRect(rightBorder.rectTransform, new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-8f, 8f), new Vector2(-3f, -8f));
+            SetBorderColor(Color.clear);
+        }
+
+        private Image FindOrCreateImage(string childName)
+        {
+            Transform child = transform.Find(childName);
+            if (child != null && child.TryGetComponent(out Image existing)) return existing;
+
+            var go = new GameObject(childName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(transform, false);
+            return go.GetComponent<Image>();
+        }
+
+        private TMP_Text CreateText(string childName, RectTransform parent, float size, FontStyles style,
+            TextAlignmentOptions alignment, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            var go = new GameObject(childName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            SetRect(rect, Vector2.zero, Vector2.one, offsetMin, offsetMax);
+
+            var text = go.GetComponent<TextMeshProUGUI>();
+            if (costText != null && costText.font != null) text.font = costText.font;
+            text.fontSize = size;
+            text.fontStyle = style;
+            text.alignment = alignment;
+            text.color = Color.white;
+            text.textWrappingMode = TextWrappingModes.Normal;
+            text.raycastTarget = false;
+            return text;
+        }
+
+        private void SetBorderColor(Color color)
+        {
+            if (!HasUsableBorders) return;
+            topBorder.color = color;
+            bottomBorder.color = color;
+            leftBorder.color = color;
+            rightBorder.color = color;
+        }
+
+        private static void SetRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 offsetMin, Vector2 offsetMax)
+        {
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
         }
     }
 }

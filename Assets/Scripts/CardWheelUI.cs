@@ -274,11 +274,21 @@ namespace DeusEx.Rhythm
                 CanvasGroup group = s.view != null ? s.view.canvasGroup : null;
                 if (group != null) group.alpha = Mathf.Lerp(group.alpha, s.targetAlpha, t);
 
-                Graphic outline = s.view != null ? s.view.outline : null;
-                if (outline != null)
+                // 新版 CardView 使用四条独立边框，并且只会在“当前卡 + 费用足够 + 图片加载完成”时发光。
+                // 保留旧的单 Graphic 描边路径，以兼容仍在使用的旧/自定义卡牌 prefab。
+                if (s.view != null && s.view.HasUsableBorders)
                 {
-                    Color target = s.isActive ? activeOutlineColor : outlineColor;
-                    outline.color = Color.Lerp(outline.color, target, t);
+                    bool affordable = s.Card != null && manager != null && manager.Combo >= s.Card.Cost;
+                    s.view.SetUsableHighlight(!s.exiting && s.isActive && affordable, activeOutlineColor);
+                }
+                else
+                {
+                    Graphic outline = s.view != null ? s.view.outline : null;
+                    if (outline != null)
+                    {
+                        Color target = s.isActive ? activeOutlineColor : outlineColor;
+                        outline.color = Color.Lerp(outline.color, target, t);
+                    }
                 }
 
                 // 飞出且已基本透明 → 销毁回收
@@ -302,6 +312,12 @@ namespace DeusEx.Rhythm
                     cost.color = (s.Card != null && combo >= s.Card.Cost) ? affordColor : notAffordColor;
                 else
                     cost.color = affordColor;
+
+                if (s.view != null && s.view.HasUsableBorders)
+                {
+                    bool affordable = s.Card != null && combo >= s.Card.Cost;
+                    s.view.SetUsableHighlight(s.isActive && affordable, activeOutlineColor);
+                }
             }
         }
 
@@ -309,6 +325,14 @@ namespace DeusEx.Rhythm
         {
             foreach (var s in _slots)
             {
+                if (s.view != null && s.view.HasUsableBorders)
+                {
+                    int combo = manager != null ? manager.Combo : 0;
+                    bool affordable = s.Card != null && combo >= s.Card.Cost;
+                    s.view.SetUsableHighlight(!s.exiting && s.isActive && affordable, activeOutlineColor);
+                    continue;
+                }
+
                 Graphic outline = s.view != null ? s.view.outline : null;
                 if (outline != null && !s.exiting)
                     outline.color = s.isActive ? activeOutlineColor : outlineColor;
