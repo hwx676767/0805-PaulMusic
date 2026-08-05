@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeusEx.Rhythm.CardDefinition
   cardName: FAST
   description: 10秒内节奏速度 x1.2
-  cost: 8
+  cost: 5
   color: {r: 1, g: 0.68, b: 0.18, a: 1}
   icon: {fileID: 21300000, guid: 221b92480feb4bb4b93b36823a4698bd, type: 3}
   effects:
