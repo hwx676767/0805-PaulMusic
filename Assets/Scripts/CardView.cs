@@ -27,8 +27,9 @@ namespace DeusEx.Rhythm
         public Image iconImage;
         [Tooltip("盖在卡图上方的半透明灰色遮罩；只有此 Image 使用 Filled。")]
         public Image loadingMask;
+        [Tooltip("当前可打出的卡牌从翻到最前开始所需加载时间（秒）。建议 1.2～1.8 秒。")]
         [Min(0.05f)]
-        public float imageLoadDuration = 0.65f;
+        public float imageLoadDuration = 1.5f;
 
         [Header("可用高亮")]
         public Image topBorder;
