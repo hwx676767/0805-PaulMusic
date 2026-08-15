@@ -63,7 +63,6 @@ namespace DeusEx.Rhythm.EditorTools
                 importer.textureType = TextureImporterType.Sprite;
                 importer.spriteImportMode = SpriteImportMode.Single;
                 importer.spritePixelsPerUnit = PixelsPerUnit;
-                importer.spriteAlignment = (int)SpriteAlignment.Center;
                 importer.mipmapEnabled = false;
                 importer.alphaIsTransparency = true;
                 importer.maxTextureSize = MaxTextureSize;
