@@ -125,7 +125,7 @@ MonoBehaviour:
   goodPrefab: {fileID: 7360771147939266396, guid: 49680a43644b7aa49a3461a1449f977f, type: 3}
   missPrefab: {fileID: 3554582433188516045, guid: f65720ab5054bd346b274352c94a3008, type: 3}
   spawnParent: {fileID: 1538883647815000302}
-  spawnAtHitLane: 0
+  spawnAtHitLane: 1
   spawnOffset: {x: 0, y: 0.6, z: 0}
   fallbackLifetime: 1
 --- !u!1 &2460747187334646709

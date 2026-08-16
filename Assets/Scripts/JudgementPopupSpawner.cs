@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DeusEx.Rhythm
@@ -41,9 +43,24 @@ namespace DeusEx.Rhythm
         [Tooltip("当 prefab 上没有 JudgementPopup（自带销毁）时，过这么多秒后兜底销毁。设 0 表示不自动销毁、由你的 prefab 自理。")]
         public float fallbackLifetime = 1f;
 
+        [Header("判定序列帧特效")]
+        [Tooltip("命中后在对应轨道判定位置播放 Resources/effect 下的 PNG 序列帧。")]
+        public bool spawnFrameEffects = true;
+        [Tooltip("序列帧播放速度。30 FPS 时 Perfect 约 0.77 秒、Good 约 0.9 秒、Miss 约 1.5 秒。")]
+        [Min(1f)] public float effectFramesPerSecond = 30f;
+        [Tooltip("序列帧生成 Sprite 时使用的 Pixels Per Unit。素材为 1920×1080 透明画布，100 可让中心图案贴合判定点。")]
+        [Min(1f)] public float effectPixelsPerUnit = 100f;
+        [Tooltip("特效在结束前淡出的秒数。")]
+        [Min(0f)] public float effectFadeOutSeconds = 0.12f;
+        [Tooltip("特效的 SpriteRenderer 排序顺序，应高于音符（音符默认约为 20）。")]
+        public int effectSortingOrder = 40;
+        [Tooltip("Great 尚无独立序列帧时，复用 Good 特效。")]
+        public bool useGoodEffectForGreat = true;
+
         private Judgment _lastJudgment;
         private GameObject _current;
         private JudgementPopup _currentPopup;
+        private readonly Dictionary<string, Sprite[]> _effectFrames = new Dictionary<string, Sprite[]>();
 
         private void OnEnable()
         {
@@ -59,10 +76,12 @@ namespace DeusEx.Rhythm
         private void OnJudgedAt(JudgementInfo info)
         {
             GameObject prefab = PrefabFor(info.judgment);
-            if (prefab == null) return;
 
             // 判定线世界坐标（已包含 Playfield 旋转/位移）；不贴轨道则用本组件位置
             Vector3 worldPos = spawnAtHitLane ? info.worldPosition : transform.position;
+
+            if (spawnFrameEffects) SpawnFrameEffect(info.judgment, worldPos);
+            if (prefab == null) return;
 
             // 与上一个判定相同且上一个提示还在：复用并重播，不新建（_current 销毁后 != null 为 false，会自然新建）
             if (reuseWhenSameJudgment && _current != null && _currentPopup != null && info.judgment == _lastJudgment)
@@ -113,5 +132,121 @@ namespace DeusEx.Rhythm
             Judgment.Good => goodPrefab,
             _ => missPrefab,
         };
+
+        private void SpawnFrameEffect(Judgment judgment, Vector3 worldPos)
+        {
+            string path = EffectPathFor(judgment);
+            if (string.IsNullOrEmpty(path)) return;
+
+            Sprite[] frames = LoadEffectFrames(path);
+            if (frames.Length == 0)
+            {
+                Debug.LogWarning($"[Rhythm] 未找到判定特效序列帧：Resources/{path}");
+                return;
+            }
+
+            var effect = new GameObject($"JudgementEffect_{judgment}", typeof(SpriteRenderer), typeof(JudgementFrameEffect));
+            Quaternion rotation = manager != null && manager.playfield != null
+                ? manager.playfield.transform.rotation
+                : Quaternion.identity;
+            effect.transform.SetPositionAndRotation(worldPos + spawnOffset, rotation);
+
+            var renderer = effect.GetComponent<SpriteRenderer>();
+            renderer.sortingOrder = effectSortingOrder;
+            renderer.color = Color.white;
+
+            effect.GetComponent<JudgementFrameEffect>().Initialize(renderer, frames, effectFramesPerSecond, effectFadeOutSeconds);
+        }
+
+        private string EffectPathFor(Judgment judgment) => judgment switch
+        {
+            Judgment.Perfect => "effect/perfect",
+            Judgment.Good => "effect/good",
+            Judgment.Miss => "effect/missed",
+            Judgment.Great when useGoodEffectForGreat => "effect/good",
+            _ => null,
+        };
+
+        private Sprite[] LoadEffectFrames(string path)
+        {
+            if (_effectFrames.TryGetValue(path, out Sprite[] cached)) return cached;
+
+            Texture2D[] textures = Resources.LoadAll<Texture2D>(path);
+            Array.Sort(textures, (a, b) => string.CompareOrdinal(a.name, b.name));
+
+            var frames = new List<Sprite>(textures.Length);
+            foreach (Texture2D texture in textures)
+            {
+                if (texture == null) continue;
+                frames.Add(Sprite.Create(
+                    texture,
+                    new Rect(0f, 0f, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f),
+                    effectPixelsPerUnit,
+                    0,
+                    SpriteMeshType.FullRect));
+            }
+
+            cached = frames.ToArray();
+            _effectFrames[path] = cached;
+            return cached;
+        }
+    }
+
+    /// <summary>
+    /// Plays one transparent PNG frame sequence on a SpriteRenderer, then destroys itself.
+    /// Frames are supplied by <see cref="JudgementPopupSpawner"/> from Resources.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public sealed class JudgementFrameEffect : MonoBehaviour
+    {
+        private SpriteRenderer _renderer;
+        private Sprite[] _frames;
+        private float _framesPerSecond;
+        private float _fadeOutSeconds;
+        private float _elapsed;
+        private int _frameIndex = -1;
+
+        public void Initialize(SpriteRenderer renderer, Sprite[] frames, float framesPerSecond, float fadeOutSeconds)
+        {
+            _renderer = renderer;
+            _frames = frames;
+            _framesPerSecond = Mathf.Max(1f, framesPerSecond);
+            _fadeOutSeconds = Mathf.Max(0f, fadeOutSeconds);
+
+            if (_renderer == null || _frames == null || _frames.Length == 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            ShowFrame(0);
+        }
+
+        private void Update()
+        {
+            if (_renderer == null || _frames == null || _frames.Length == 0) return;
+
+            _elapsed += Time.unscaledDeltaTime;
+            float duration = _frames.Length / _framesPerSecond;
+            int nextFrame = Mathf.Min(Mathf.FloorToInt(_elapsed * _framesPerSecond), _frames.Length - 1);
+            ShowFrame(nextFrame);
+
+            if (_fadeOutSeconds > 0f && _elapsed > duration - _fadeOutSeconds)
+            {
+                var color = _renderer.color;
+                color.a = Mathf.Clamp01((duration - _elapsed) / _fadeOutSeconds);
+                _renderer.color = color;
+            }
+
+            if (_elapsed >= duration) Destroy(gameObject);
+        }
+
+        private void ShowFrame(int index)
+        {
+            if (index == _frameIndex) return;
+            _frameIndex = index;
+            _renderer.sprite = _frames[index];
+        }
     }
 }
