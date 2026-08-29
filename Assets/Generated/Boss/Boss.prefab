@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8506922974893610529}
   - component: {fileID: 9148389216764590247}
   - component: {fileID: 4576635932147480174}
+  - component: {fileID: 5829103748291037481}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -124,10 +125,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 8544666380365086592}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 018e1df18cf8f514880e0721b63654ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeusEx.Rhythm.BossAnimationDriver
   animator: {fileID: 9148389216764590247}
   combatSystem: {fileID: 0}
   playHitWhenEnemyDamaged: 1
   hitCooldown: 0.12
+--- !u!114 &5829103748291037481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8544666380365086592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de0e8b4ad96490b808d307d6d0f5d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeusEx.Rhythm.BossBehavior
+  combat: {fileID: 0}
+  animationDriver: {fileID: 4576635932147480174}
+  manager: {fileID: 0}
+  firstAttackDelay: 8
+  attackInterval: 10
+  telegraphDuration: 1.5
+  requireSongPlaying: 1
+  attackDamage: 18
+  telegraphTint: {r: 1, g: 0.45, b: 0.35, a: 1}
+  showTelegraphHud: 1

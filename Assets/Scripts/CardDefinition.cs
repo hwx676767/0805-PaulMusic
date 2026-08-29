@@ -15,6 +15,14 @@ namespace DeusEx.Rhythm
         SongSpeedMultiplier,
         /// <summary>立即洗匀抽牌堆（magnitude/duration 忽略）。</summary>
         ShuffleDrawPile,
+        /// <summary>立刻治疗玩家 magnitude 点生命（duration 忽略）。</summary>
+        HealPlayer,
+        /// <summary>立刻对敌人造成 magnitude 点伤害（duration 忽略）。</summary>
+        FlatDamage,
+        /// <summary>获得 magnitude 层护盾；每层抵消下一次受到的伤害（Miss / Boss 攻击）。duration&gt;0 时到期清零剩余层数。</summary>
+        ShieldCharges,
+        /// <summary>受到的伤害乘以 magnitude（0=免疫），持续 duration 秒。</summary>
+        DamageTakenMultiplier,
     }
 
     /// <summary>一条卡牌效果配置。多条组合即一张牌的完整效果。</summary>
@@ -23,9 +31,9 @@ namespace DeusEx.Rhythm
     {
         [Tooltip("效果类型。")]
         public CardEffectType type;
-        [Tooltip("倍率（DamageMultiplier/JudgementWindowScale/SongSpeedMultiplier 用；洗牌忽略）。")]
+        [Tooltip("数值含义随类型变化：倍率 / 治疗量 / 直伤 / 护盾层数等。")]
         public float magnitude;
-        [Tooltip("持续秒数；<=0 表示持续到本局结束。洗牌等瞬时效果忽略。")]
+        [Tooltip("持续秒数；<=0 对持续类效果表示到本局结束。瞬时效果（治疗/直伤/洗牌）忽略。")]
         public float duration;
     }
 
@@ -59,5 +67,58 @@ namespace DeusEx.Rhythm
 
         [Tooltip("打出该牌时依次施加的效果（可为空 = 无效果）。")]
         public List<CardEffectSpec> effects = new List<CardEffectSpec>();
+
+        /// <summary>优先用手写描述；为空时根据 effects 里的数值自动生成。</summary>
+        public string ResolveDescription()
+        {
+            if (!string.IsNullOrWhiteSpace(description)) return description.Trim();
+            return FormatEffectsSummary("；");
+        }
+
+        /// <summary>把 effects 里的数值格式化成可读文案（供 UI / 出牌提示调用）。</summary>
+        public string FormatEffectsSummary(string separator = "\n")
+        {
+            if (effects == null || effects.Count == 0) return "无效果";
+            var parts = new List<string>(effects.Count);
+            for (int i = 0; i < effects.Count; i++)
+            {
+                string line = FormatEffect(effects[i]);
+                if (!string.IsNullOrEmpty(line)) parts.Add(line);
+            }
+            return parts.Count > 0 ? string.Join(separator, parts) : "无效果";
+        }
+
+        public static string FormatEffect(CardEffectSpec spec)
+        {
+            switch (spec.type)
+            {
+                case CardEffectType.DamageMultiplier:
+                    return DurationSuffix($"攻击力 ×{spec.magnitude:0.##}", spec.duration);
+                case CardEffectType.JudgementWindowScale:
+                    return DurationSuffix($"判定窗口 ×{spec.magnitude:0.##}", spec.duration);
+                case CardEffectType.SongSpeedMultiplier:
+                    return DurationSuffix($"曲速 ×{spec.magnitude:0.##}", spec.duration);
+                case CardEffectType.ShuffleDrawPile:
+                    return "立即重排抽牌堆";
+                case CardEffectType.HealPlayer:
+                    return $"立刻回复 {Mathf.RoundToInt(spec.magnitude)} 点生命";
+                case CardEffectType.FlatDamage:
+                    return $"立刻对 Boss 造成 {Mathf.RoundToInt(spec.magnitude)} 点伤害";
+                case CardEffectType.ShieldCharges:
+                    return DurationSuffix(
+                        $"获得 {Mathf.Max(1, Mathf.RoundToInt(spec.magnitude))} 层护盾",
+                        spec.duration);
+                case CardEffectType.DamageTakenMultiplier:
+                    return DurationSuffix($"受到伤害 ×{spec.magnitude:0.##}", spec.duration);
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private static string DurationSuffix(string core, float duration)
+        {
+            if (duration <= 0f) return core;
+            return $"{core}（{duration:0.#} 秒）";
+        }
     }
 }

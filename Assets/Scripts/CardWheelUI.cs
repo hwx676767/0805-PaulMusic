@@ -37,8 +37,22 @@ namespace DeusEx.Rhythm
         [Tooltip("公共信息区的 TMP 文本。留空时按名称自动查找场景中的 DisplayText。")]
         public TMP_Text displayText;
         [TextArea]
-        [Tooltip("{0}=当前卡名，{1}=当前卡简介。")]
-        public string displayTextFormat = "<b>{0}</b>\n{1}";
+        [Tooltip("{0}=卡名，{1}=效果/描述（从卡牌数值生成），{2}=操作提示（能否打出）。")]
+        public string displayTextFormat = "<b>{0}</b>\n{1}\n{2}";
+
+        [Header("参与感反馈")]
+        [Tooltip("当前卡变为可打出时，首张卡短暂放大。")]
+        public bool punchWhenAffordable = true;
+        [Tooltip("可打出时的放大倍数。")]
+        public float affordablePunchScale = 1.18f;
+        [Tooltip("出牌成功时屏幕中央弹出效果文案。")]
+        public bool showPlayToast = true;
+        [Tooltip("出牌提示停留时间（秒）。")]
+        public float playToastDuration = 1.35f;
+        [Tooltip("可打出提示的颜色。")]
+        public Color canPlayHintColor = new Color(1f, 0.92f, 0.35f, 1f);
+        [Tooltip("不可打出提示的颜色。")]
+        public Color cannotPlayHintColor = new Color(1f, 0.55f, 0.55f, 1f);
 
         [Header("轮盘根节点（手动摆放，脚本只引用不实例化）")]
         [Tooltip("手动摆放在场景 Canvas 下的轮盘根节点：卡牌的父级，其本地原点即轮盘圆心（可在里面放背景美术）。\n" +
@@ -112,6 +126,13 @@ namespace DeusEx.Rhythm
         private readonly List<CardSlot> _slots = new List<CardSlot>();
         private int _pendingExitUid = -1;
         private bool _pendingExitWasPlay;
+        private bool _wasAffordable;
+        private float _activePunch;
+        private TMP_Text _toastText;
+        private CanvasGroup _toastGroup;
+        private float _toastTimeLeft;
+        private string _toastOverride;
+        private float _toastOverrideLeft;
 
         /// <summary>一张卡的可视对象（CardView 组件）与它当前的动画目标状态。</summary>
         private class CardSlot
@@ -171,16 +192,39 @@ namespace DeusEx.Rhythm
 
         // ---------------- 事件回调 ----------------
 
-        private void OnCardPlayed(CardInstance c) { _pendingExitUid = c != null ? c.uid : -1; _pendingExitWasPlay = true; }
-        private void OnCardDiscarded(CardInstance c) { _pendingExitUid = c != null ? c.uid : -1; _pendingExitWasPlay = false; }
+        private void OnCardPlayed(CardInstance c)
+        {
+            _pendingExitUid = c != null ? c.uid : -1;
+            _pendingExitWasPlay = true;
+            ShowPlayedFeedback(c);
+        }
+
+        private void OnCardDiscarded(CardInstance c)
+        {
+            _pendingExitUid = c != null ? c.uid : -1;
+            _pendingExitWasPlay = false;
+            if (c != null) FlashDisplayOverride($"已弃掉 <b>{c.DisplayName}</b>", 0.8f);
+        }
+
         private void OnHandChanged() { SyncToHand(); }
-        private void OnComboChanged(int combo) { UpdateAffordability(combo); }
+        private void OnComboChanged(int combo)
+        {
+            UpdateAffordability(combo);
+            UpdateDisplayText();
+        }
 
         private void OnCardPlayBlocked(CardInstance c)
         {
-            // 第一张卡抖动，提示费用不足
+            // 第一张卡抖动，提示费用不足 / 未加载完
             foreach (var s in _slots)
                 if (!s.exiting && s.isActive) s.shakeTimeLeft = shakeDuration;
+
+            if (c == null) return;
+            bool loading = cardSystem != null && !cardSystem.IsActiveCardReady;
+            string reason = loading
+                ? "卡面加载中…"
+                : $"Combo 不足（需要 {c.Cost}）";
+            FlashDisplayOverride($"<color=#ff8888>无法打出 {c.DisplayName}</color>\n{reason}", 1f);
         }
 
         // ---------------- 与手牌同步（核心：补位/旋转/进出场） ----------------
@@ -276,6 +320,8 @@ namespace DeusEx.Rhythm
                 rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, s.targetPos, t) + shake;
 
                 float sc = Mathf.Lerp(rect.localScale.x, s.targetScale, t);
+                if (s.isActive && !s.exiting && _activePunch > 0.01f)
+                    sc *= 1f + (_activePunch * (affordablePunchScale - 1f));
                 rect.localScale = new Vector3(sc, sc, 1f);
 
                 float z = Mathf.LerpAngle(rect.localEulerAngles.z, s.targetRot, t);
@@ -290,7 +336,10 @@ namespace DeusEx.Rhythm
                 {
                     bool affordable = s.Card != null && manager != null && manager.Combo >= s.Card.Cost;
                     bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
-                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
+                    bool canPlay = loadedCurrent && affordable &&
+                                   (cardSystem == null || cardSystem.IsActiveCardReady);
+                    // 可打出：金边脉冲；已加载但费用不足：青边提示“这是当前卡”
+                    s.view.SetUsableHighlight(loadedCurrent, canPlay ? activeOutlineColor : readyOutlineColor, canPlay);
                 }
                 else
                 {
@@ -310,12 +359,28 @@ namespace DeusEx.Rhythm
                     _slots.RemoveAt(i);
                 }
             }
+
+            if (_activePunch > 0f)
+                _activePunch = Mathf.MoveTowards(_activePunch, 0f, Time.deltaTime * 3.2f);
+
+            if (_toastOverrideLeft > 0f)
+            {
+                _toastOverrideLeft -= Time.deltaTime;
+                if (_toastOverrideLeft <= 0f)
+                {
+                    _toastOverride = null;
+                    UpdateDisplayText();
+                }
+            }
+
+            TickPlayToast();
         }
 
         // ---------------- 费用够不够的文本上色 ----------------
 
         private void UpdateAffordability(int combo)
         {
+            bool anyAffordableReady = false;
             foreach (var s in _slots)
             {
                 TMP_Text cost = s.view != null ? s.view.costText : null;
@@ -328,9 +393,16 @@ namespace DeusEx.Rhythm
                 {
                     bool affordable = s.Card != null && combo >= s.Card.Cost;
                     bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
-                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
+                    bool canPlay = loadedCurrent && affordable &&
+                                   (cardSystem == null || cardSystem.IsActiveCardReady);
+                    s.view.SetUsableHighlight(loadedCurrent, canPlay ? activeOutlineColor : readyOutlineColor, canPlay);
+                    if (canPlay) anyAffordableReady = true;
                 }
             }
+
+            if (punchWhenAffordable && anyAffordableReady && !_wasAffordable)
+                _activePunch = 1f;
+            _wasAffordable = anyAffordableReady;
         }
 
         private void RefreshOutlines()
@@ -342,7 +414,9 @@ namespace DeusEx.Rhythm
                     int combo = manager != null ? manager.Combo : 0;
                     bool affordable = s.Card != null && combo >= s.Card.Cost;
                     bool loadedCurrent = !s.exiting && s.isActive && s.view.IsImageLoaded;
-                    s.view.SetUsableHighlight(loadedCurrent, affordable ? activeOutlineColor : readyOutlineColor);
+                    bool canPlay = loadedCurrent && affordable &&
+                                   (cardSystem == null || cardSystem.IsActiveCardReady);
+                    s.view.SetUsableHighlight(loadedCurrent, canPlay ? activeOutlineColor : readyOutlineColor, canPlay);
                     continue;
                 }
 
@@ -471,6 +545,7 @@ namespace DeusEx.Rhythm
             if (view == null || view.Card == null || cardSystem == null) return;
             cardSystem.SetActiveCardReady(view.Card, true);
             UpdateAffordability(manager != null ? manager.Combo : 0);
+            UpdateDisplayText();
         }
 
         private void ResolveDisplayText()
@@ -489,11 +564,129 @@ namespace DeusEx.Rhythm
             ResolveDisplayText();
             if (displayText == null) return;
 
-            CardDefinition def = cardSystem != null && cardSystem.ActiveCard != null
-                ? cardSystem.ActiveCard.definition : null;
-            displayText.text = def == null
-                ? string.Empty
-                : string.Format(displayTextFormat, def.cardName, def.description);
+            if (!string.IsNullOrEmpty(_toastOverride) && _toastOverrideLeft > 0f)
+            {
+                displayText.text = _toastOverride;
+                return;
+            }
+
+            CardInstance active = cardSystem != null ? cardSystem.ActiveCard : null;
+            CardDefinition def = active != null ? active.definition : null;
+            if (def == null)
+            {
+                displayText.text = string.Empty;
+                return;
+            }
+
+            string effects = def.ResolveDescription();
+            string hint = BuildPlayHint(active);
+            displayText.text = string.Format(displayTextFormat, def.cardName, effects, hint);
+        }
+
+        private string BuildPlayHint(CardInstance active)
+        {
+            if (active == null || cardSystem == null) return string.Empty;
+
+            string playKey = KeyLabel(cardSystem.playKey);
+            string discardKey = KeyLabel(cardSystem.discardKey);
+            int combo = manager != null ? manager.Combo : 0;
+            bool ready = cardSystem.IsActiveCardReady;
+            bool afford = combo >= active.Cost;
+
+            if (!ready)
+                return Colored($"加载中… 完成后按 {playKey} 打出 / {discardKey} 弃牌", cannotPlayHintColor);
+            if (!afford)
+                return Colored($"Combo {combo}/{active.Cost} · 再连击即可按 {playKey} 打出 · {discardKey} 弃牌", cannotPlayHintColor);
+            return Colored($"▶ 可打出！按 {playKey} 使用（耗 {active.Cost} Combo）· {discardKey} 弃牌", canPlayHintColor);
+        }
+
+        private void ShowPlayedFeedback(CardInstance card)
+        {
+            if (card == null) return;
+            CardDefinition def = card.definition;
+            string name = def != null ? def.cardName : card.DisplayName;
+            string effects = def != null ? def.FormatEffectsSummary(" · ") : string.Empty;
+            string body = string.IsNullOrEmpty(effects)
+                ? $"已打出 <b>{name}</b>"
+                : $"已打出 <b>{name}</b>\n{effects}";
+
+            FlashDisplayOverride(Colored(body, canPlayHintColor), playToastDuration);
+            if (showPlayToast) ShowPlayToast(name, effects);
+        }
+
+        private void FlashDisplayOverride(string richText, float duration)
+        {
+            _toastOverride = richText;
+            _toastOverrideLeft = duration;
+            ResolveDisplayText();
+            if (displayText != null) displayText.text = richText;
+        }
+
+        private void EnsurePlayToast()
+        {
+            if (_toastText != null) return;
+            EnsureCanvasAndRoot();
+            Transform parent = canvas != null ? canvas.transform : (_wheelRoot != null ? _wheelRoot : transform);
+
+            var go = new GameObject("CardPlayToast", typeof(RectTransform), typeof(CanvasGroup));
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = new Vector2(0.5f, 0.55f);
+            rect.anchorMax = new Vector2(0.5f, 0.55f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(900f, 160f);
+            rect.anchoredPosition = Vector2.zero;
+            _toastGroup = go.GetComponent<CanvasGroup>();
+            _toastGroup.alpha = 0f;
+            _toastGroup.blocksRaycasts = false;
+
+            var tmpGo = new GameObject("Text", typeof(RectTransform));
+            var tmpRect = tmpGo.GetComponent<RectTransform>();
+            tmpRect.SetParent(rect, false);
+            tmpRect.anchorMin = Vector2.zero;
+            tmpRect.anchorMax = Vector2.one;
+            tmpRect.offsetMin = Vector2.zero;
+            tmpRect.offsetMax = Vector2.zero;
+            _toastText = tmpGo.AddComponent<TextMeshProUGUI>();
+            _toastText.alignment = TextAlignmentOptions.Center;
+            _toastText.fontSize = 42f;
+            _toastText.fontStyle = FontStyles.Bold;
+            _toastText.color = Color.white;
+            _toastText.raycastTarget = false;
+            _toastText.enableWordWrapping = true;
+        }
+
+        private void ShowPlayToast(string cardName, string effects)
+        {
+            EnsurePlayToast();
+            _toastText.text = string.IsNullOrEmpty(effects)
+                ? $"✦ {cardName}"
+                : $"✦ {cardName}\n<size=70%>{effects}</size>";
+            _toastGroup.alpha = 1f;
+            _toastTimeLeft = playToastDuration;
+            if (_toastText.transform.parent is RectTransform rt)
+                rt.localScale = Vector3.one * 1.12f;
+        }
+
+        private void TickPlayToast()
+        {
+            if (_toastGroup == null || _toastTimeLeft <= 0f) return;
+            _toastTimeLeft -= Time.deltaTime;
+            float t = Mathf.Clamp01(_toastTimeLeft / Mathf.Max(0.0001f, playToastDuration));
+            _toastGroup.alpha = t;
+            if (_toastText != null && _toastText.transform.parent is RectTransform rt)
+            {
+                float s = Mathf.Lerp(1f, 1.12f, t);
+                rt.localScale = new Vector3(s, s, 1f);
+            }
+        }
+
+        private static string KeyLabel(KeyCode key) => key.ToString().ToUpperInvariant();
+
+        private static string Colored(string text, Color color)
+        {
+            string hex = ColorUtility.ToHtmlStringRGBA(color);
+            return $"<color=#{hex}>{text}</color>";
         }
 
         // ---------------- 程序化默认卡面 ----------------

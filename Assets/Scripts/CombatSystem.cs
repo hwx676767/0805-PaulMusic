@@ -58,11 +58,22 @@ namespace DeusEx.Rhythm
         /// </summary>
         public float DamageDealtMultiplier { get; set; } = 1f;
 
+        /// <summary>
+        /// 玩家受到伤害的整体倍率（1=原始，0=免疫）。由 <see cref="CardEffectRunner"/> 设置。
+        /// 作用于 Miss 与 Boss 攻击；护盾会先于倍率结算。
+        /// </summary>
+        public float DamageTakenMultiplier { get; set; } = 1f;
+
+        /// <summary>当前护盾层数：每层抵消一次即将到来的玩家受伤。</summary>
+        public int ShieldCharges { get; private set; }
+
         // ---- 对外事件，供 UI（如 HealthBar）订阅，避免直接耦合 ----
         /// <summary>玩家血量变化时触发，参数为 (当前血量, 最大血量)，便于 UI 直接算填充比例。</summary>
         public event System.Action<float, float> PlayerHealthChanged;
         /// <summary>敌人血量变化时触发，参数为 (当前血量, 最大血量)。</summary>
         public event System.Action<float, float> EnemyHealthChanged;
+        /// <summary>护盾层数变化时触发。</summary>
+        public event System.Action<int> ShieldChargesChanged;
         /// <summary>玩家血量归零（战败）时触发一次。</summary>
         public event System.Action PlayerDied;
         /// <summary>敌人血量归零（战胜）时触发一次。</summary>
@@ -124,21 +135,48 @@ namespace DeusEx.Rhythm
             if (EnemyHealth <= 0f) EndGame(playerWon: true);
         }
 
-        /// <summary>对玩家造成伤害。</summary>
+        /// <summary>对玩家造成伤害（先消耗护盾，再乘以 <see cref="DamageTakenMultiplier"/>）。</summary>
         public void DamagePlayer(float amount)
         {
             if (IsOver || amount <= 0f) return;
+
+            if (ShieldCharges > 0)
+            {
+                ShieldCharges--;
+                ShieldChargesChanged?.Invoke(ShieldCharges);
+                return;
+            }
+
+            amount *= DamageTakenMultiplier;
+            if (amount <= 0f) return;
+
             PlayerHealth = Mathf.Max(0f, PlayerHealth - amount);
             PlayerHealthChanged?.Invoke(PlayerHealth, playerMaxHealth);
             if (PlayerHealth <= 0f) EndGame(playerWon: false);
         }
 
-        /// <summary>给玩家回血（上限为最大血量）。预留给后续 buff/道具机制。</summary>
+        /// <summary>给玩家回血（上限为最大血量）。</summary>
         public void HealPlayer(float amount)
         {
             if (IsOver || amount <= 0f) return;
             PlayerHealth = Mathf.Min(playerMaxHealth, PlayerHealth + amount);
             PlayerHealthChanged?.Invoke(PlayerHealth, playerMaxHealth);
+        }
+
+        /// <summary>增加护盾层数（每层抵消一次受伤）。</summary>
+        public void AddShieldCharges(int charges)
+        {
+            if (IsOver || charges <= 0) return;
+            ShieldCharges += charges;
+            ShieldChargesChanged?.Invoke(ShieldCharges);
+        }
+
+        /// <summary>清空护盾层数（卡牌减伤到期或强制驱散时用）。</summary>
+        public void ClearShieldCharges()
+        {
+            if (ShieldCharges == 0) return;
+            ShieldCharges = 0;
+            ShieldChargesChanged?.Invoke(ShieldCharges);
         }
 
         private void EndGame(bool playerWon)
@@ -173,7 +211,8 @@ namespace DeusEx.Rhythm
             float x = (Screen.width - w) * 0.5f;
 
             DrawBar(new Rect(x, 16f, w, h), "敌人", EnemyHealth, enemyMaxHealth, new Color(0.9f, 0.3f, 0.3f));
-            DrawBar(new Rect(x, Screen.height - 16f - h, w, h), "玩家", PlayerHealth, playerMaxHealth, new Color(0.3f, 0.85f, 0.45f));
+            string playerLabel = ShieldCharges > 0 ? $"玩家 盾x{ShieldCharges}" : "玩家";
+            DrawBar(new Rect(x, Screen.height - 16f - h, w, h), playerLabel, PlayerHealth, playerMaxHealth, new Color(0.3f, 0.85f, 0.45f));
 
             if (IsOver)
             {

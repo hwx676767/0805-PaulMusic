@@ -6,17 +6,15 @@ using UnityEditor;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// 程序化蓝色流动等离子背景。把这个组件加到一个空物体上即可：
-    /// 它会自动生成一块朝向相机、铺满整屏的四边形，并贴上 DeusEx/PlasmaBackground 材质，
-    /// 还会随相机的 FOV / 宽高比自动调整大小，保证任何分辨率下都铺满。
-    /// 无需视频文件、无水印、完美无缝循环。
+    /// 全屏程序化背景。把本组件加到空物体上即可：自动生成朝向相机的四边形并铺满屏幕。
+    /// 可拖入任意背景材质（如 <c>HalftoneAtmosphere</c> 半调云雾远山，或旧版 <c>PlasmaBackground</c>）。
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class PlasmaBackground : MonoBehaviour
     {
-        [Tooltip("等离子背景材质。留空时会自动用 DeusEx/PlasmaBackground 着色器即时创建。")]
+        [Tooltip("背景材质。推荐 HalftoneAtmosphere（半调云雾/远山）；留空则回退到 DeusEx/PlasmaBackground。")]
         public Material backgroundMaterial;
 
         [Tooltip("作为背景参照的相机。留空则用 Camera.main 或场景中第一个相机。")]
@@ -138,7 +136,9 @@ namespace DeusEx.Rhythm
             // 在编辑器里添加组件时，自动找到 PlasmaBackground.mat 并填入材质槽
             if (backgroundMaterial == null)
             {
-                string[] guids = AssetDatabase.FindAssets("PlasmaBackground t:Material");
+                string[] guids = AssetDatabase.FindAssets("HalftoneAtmosphere t:Material");
+                if (guids.Length == 0)
+                    guids = AssetDatabase.FindAssets("PlasmaBackground t:Material");
                 if (guids.Length > 0)
                 {
                     string path = AssetDatabase.GUIDToAssetPath(guids[0]);

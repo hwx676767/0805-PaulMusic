@@ -166,7 +166,7 @@ namespace DeusEx.Rhythm.EditorTools
         private static GameObject CreatePrefab(AnimatorController controller, AnimationClip idle)
         {
             string path = $"{OutputRoot}/Boss.prefab";
-            var root = new GameObject("Boss", typeof(SpriteRenderer), typeof(Animator), typeof(BossAnimationDriver));
+            var root = new GameObject("Boss", typeof(SpriteRenderer), typeof(Animator), typeof(BossAnimationDriver), typeof(BossBehavior));
             var spriteRenderer = root.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = LoadFrames("idle").FirstOrDefault();
             spriteRenderer.sortingOrder = 10;
@@ -177,6 +177,9 @@ namespace DeusEx.Rhythm.EditorTools
             driver.animator = animator;
             driver.playHitWhenEnemyDamaged = true;
             driver.hitCooldown = 0.12f;
+
+            var behavior = root.GetComponent<BossBehavior>();
+            behavior.animationDriver = driver;
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
             UnityEngine.Object.DestroyImmediate(root);

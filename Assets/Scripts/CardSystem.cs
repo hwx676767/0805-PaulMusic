@@ -31,7 +31,8 @@ namespace DeusEx.Rhythm
     ///   其余牌向前补位，并从抽牌堆抽一张作为新的最后一张。combo 不足则出牌失败（触发 <see cref="CardPlayBlocked"/>）。
     /// - 弃牌（<see cref="discardKey"/>）：弃掉手牌第一张（不消耗 combo），随后同样补位、抽新牌。
     ///
-    /// 抽牌堆抽空时（可选）自动把弃牌堆洗回抽牌堆。牌效目前不做，只走"离场→进弃牌堆"的流程。
+    /// 抽牌堆抽空时（可选）自动把弃牌堆洗回抽牌堆。牌效由场景中的 <see cref="CardEffectRunner"/> 订阅
+    /// <see cref="CardPlayed"/> 施加。
     ///
     /// 与音游核心解耦：通过 <see cref="RhythmGameManager.TrySpendCombo"/> 扣费，通过事件通知 UI
     /// （写法参考 <see cref="ComboDisplay"/> / <see cref="CombatSystem"/>）。挂上即用；
@@ -175,15 +176,21 @@ namespace DeusEx.Rhythm
             }
 
             Add("攻击 x1.5", 15, new Color(1f, 0.45f, 0.4f), "10 秒内攻击力 ×1.5",
-                new CardEffectSpec { type = CardEffectType.DamageMultiplier, magnitude = 1.5f, duration = 10f }, 3);
+                new CardEffectSpec { type = CardEffectType.DamageMultiplier, magnitude = 1.5f, duration = 10f }, 2);
             Add("判定 x1.5", 12, new Color(0.4f, 0.75f, 1f), "10 秒内判定窗口 ×1.5",
-                new CardEffectSpec { type = CardEffectType.JudgementWindowScale, magnitude = 1.5f, duration = 10f }, 3);
+                new CardEffectSpec { type = CardEffectType.JudgementWindowScale, magnitude = 1.5f, duration = 10f }, 2);
             Add("减速 20%", 8, new Color(0.5f, 0.95f, 0.6f), "10 秒内歌曲与节奏 ×0.8",
-                new CardEffectSpec { type = CardEffectType.SongSpeedMultiplier, magnitude = 0.8f, duration = 10f }, 3);
+                new CardEffectSpec { type = CardEffectType.SongSpeedMultiplier, magnitude = 0.8f, duration = 10f }, 2);
             Add("加速 20%", 8, new Color(1f, 0.7f, 0.25f), "10 秒内歌曲与节奏 ×1.2",
-                new CardEffectSpec { type = CardEffectType.SongSpeedMultiplier, magnitude = 1.2f, duration = 10f }, 3);
+                new CardEffectSpec { type = CardEffectType.SongSpeedMultiplier, magnitude = 1.2f, duration = 10f }, 2);
             Add("洗牌", 3, new Color(0.75f, 0.5f, 1f), "立即洗匀抽牌堆",
-                new CardEffectSpec { type = CardEffectType.ShuffleDrawPile }, 3);
+                new CardEffectSpec { type = CardEffectType.ShuffleDrawPile }, 2);
+            Add("治疗", 8, new Color(0.35f, 0.9f, 0.55f), "立刻回复 25 点生命",
+                new CardEffectSpec { type = CardEffectType.HealPlayer, magnitude = 25f }, 2);
+            Add("直击", 12, new Color(1f, 0.25f, 0.2f), "立刻对 Boss 造成 80 点伤害",
+                new CardEffectSpec { type = CardEffectType.FlatDamage, magnitude = 80f }, 2);
+            Add("护盾", 6, new Color(0.55f, 0.8f, 1f), "获得 1 层护盾（抵消下一次受伤），最多保留 12 秒",
+                new CardEffectSpec { type = CardEffectType.ShieldCharges, magnitude = 1f, duration = 12f }, 2);
 
             return list;
         }

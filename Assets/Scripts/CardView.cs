@@ -45,6 +45,7 @@ namespace DeusEx.Rhythm
         public event System.Action<CardView> ImageLoadCompleted;
 
         private bool _highlightRequested;
+        private bool _highlightCanPlay;
         private Color _highlightColor = Color.white;
         private Coroutine _loadRoutine;
         private bool _loadStarted;
@@ -56,7 +57,9 @@ namespace DeusEx.Rhythm
         {
             if (!HasUsableBorders) return;
             float alpha = _highlightRequested && IsImageLoaded
-                ? 0.72f + Mathf.Sin(Time.unscaledTime * 7f) * 0.22f
+                ? (_highlightCanPlay
+                    ? 0.78f + Mathf.Sin(Time.unscaledTime * 9f) * 0.22f
+                    : 0.55f + Mathf.Sin(Time.unscaledTime * 6f) * 0.15f)
                 : 0f;
             SetBorderColor(new Color(_highlightColor.r, _highlightColor.g, _highlightColor.b, alpha));
         }
@@ -94,9 +97,10 @@ namespace DeusEx.Rhythm
             _loadRoutine = StartCoroutine(LoadMask());
         }
 
-        public void SetUsableHighlight(bool usable, Color color)
+        public void SetUsableHighlight(bool usable, Color color, bool canPlay = false)
         {
             _highlightRequested = usable;
+            _highlightCanPlay = canPlay;
             _highlightColor = color;
         }
 
