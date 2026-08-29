@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DeusEx.Rhythm
 {
@@ -31,6 +32,8 @@ namespace DeusEx.Rhythm
         [Header("判定区")]
         [Tooltip("场景里的 Playfield（含轨道与判定线）。留空则自动在场景中查找；都没有则程序化兜底。")]
         public Playfield playfield;
+        [Tooltip("可选：UI 轨道布局（对齐 tracks.png）。指定后音符沿 HUD 上的 spawn→hit 路径下落，不再跟世界 Playfield 平面。")]
+        public UiNoteTrackLayout uiTrack;
 
         [Header("资源（可留空：留空则生成节拍器 Demo 谱面）")]
         [Tooltip("歌曲音频。留空将自动生成一段节拍器点击音轨用于测试。")]
@@ -39,13 +42,13 @@ namespace DeusEx.Rhythm
         public TextAsset chartJson;
 
         [Header("音符预制体（可留空，留空则用程序化精灵）")]
-        [Tooltip("单点音符预制体，根节点需有 SpriteRenderer。")]
+        [Tooltip("单点音符预制体，根节点需有 SpriteRenderer。UI 轨道模式下忽略，改用圆形 Image。")]
         public SpriteRenderer notePrefab;
         [Tooltip("长按条预制体，根节点需有 SpriteRenderer。")]
         public SpriteRenderer holdBodyPrefab;
 
         [Header("下落")]
-        [Tooltip("下落速度（世界单位/秒），越大音符越快。")]
+        [Tooltip("下落速度（世界单位/秒），越大音符越快。仅世界 Playfield 模式使用。")]
         public float scrollSpeed = 9f;
 
         [Header("判定窗口（毫秒，单侧）")]
@@ -57,9 +60,12 @@ namespace DeusEx.Rhythm
         [Tooltip("勾选后，长按头部命中后还需要持键至尾部：提前松开算 Miss，尾部会按时机额外结算一次判定。关闭时只判定头部，长条在尾端自动消失。")]
         public bool judgeHoldTail = false;
 
-        [Header("音符颜色（仅在未指定音符预制体时使用）")]
-        public Color noteColor = new Color(0.2f, 0.8f, 1f);
-        public Color holdColor = new Color(1f, 0.7f, 0.25f);
+        [Header("音符外观（未指定 prefab 时）")]
+        [Tooltip("程序化音符颜色。默认黑色圆形以贴近当前美术。有正式 note 图后拖到 notePrefab 即可替换。")]
+        public Color noteColor = Color.black;
+        public Color holdColor = new Color(0.15f, 0.15f, 0.15f, 0.7f);
+        [Tooltip("未指定 prefab 时生成黑色圆形，而不是菱形色块。")]
+        public bool proceduralCircleNote = true;
 
         [Header("可选（默认不改动相机、不画任何 UI）")]
         [Tooltip("勾选后开始时把现有正交相机对准判定区（不改背景色、不新建相机）。默认关闭，相机由你自己摆。")]
@@ -73,7 +79,9 @@ namespace DeusEx.Rhythm
         private int _laneCount;
         private bool _ready;
         private Sprite _whiteSprite;
+        private Sprite _circleSprite;
         private readonly List<ActiveNote> _notes = new List<ActiveNote>();
+        private bool _useUiTrack;
 
         // 在 Playfield 局部坐标系里缓存的几何（让音符贴合带旋转/位移的 Playfield）
         private Transform _pfTransform;
@@ -154,8 +162,10 @@ namespace DeusEx.Rhythm
         {
             public NoteData data;
             public SpriteRenderer head;
-            public SpriteRenderer body; // 仅长按有
-            public Vector3 bodyBaseScale; // 长按条 prefab 原始缩放（宽度沿用它，只有长度动态变化）
+            public SpriteRenderer body; // 仅长按有（世界模式）
+            public RectTransform headUi; // UI 轨道模式
+            public Image headImage;
+            public Vector3 bodyBaseScale;
             public bool headJudged;
             public bool holding;
             public bool finished;
@@ -170,6 +180,7 @@ namespace DeusEx.Rhythm
             if (!_ready) return; // 没有可用的 Playfield 就直接停下，不生成任何东西
 
             _whiteSprite = BuildWhiteSprite();
+            if (proceduralCircleNote) _circleSprite = BuildCircleSprite(64);
             SetupCamera();
             LoadChart();
             BuildNotes();
@@ -209,6 +220,15 @@ namespace DeusEx.Rhythm
             Debug.Log($"[Rhythm] 使用场景中的 Playfield「{playfield.name}」，共 {playfield.LaneCount} 轨。");
             _laneCount = playfield.LaneCount;
             CachePlayfieldGeometry();
+
+            if (uiTrack == null) uiTrack = FindObjectOfType<UiNoteTrackLayout>();
+            _useUiTrack = uiTrack != null && uiTrack.LaneCount > 0;
+            if (_useUiTrack)
+            {
+                _laneCount = Mathf.Min(_laneCount, uiTrack.LaneCount);
+                Debug.Log($"[Rhythm] 启用 UI 轨道布局「{uiTrack.name}」，音符将沿 HUD 路径下落（{_laneCount} 轨）。");
+            }
+
             _ready = true;
         }
 
@@ -247,6 +267,24 @@ namespace DeusEx.Rhythm
             tex.Apply();
             // pixelsPerUnit = 1 → transform.localScale 即等于世界单位尺寸
             return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+        }
+
+        private static Sprite BuildCircleSprite(int size)
+        {
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            float cx = (size - 1) * 0.5f;
+            float r = size * 0.5f - 1.5f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), new Vector2(cx, cx));
+                    float a = Mathf.Clamp01(r - d + 1f);
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+                }
+            }
+            tex.Apply(false, true);
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
         }
 
         private void SetupCamera()
@@ -315,21 +353,56 @@ namespace DeusEx.Rhythm
                 if (playfield.GetLane(n.lane) == null) continue;
 
                 var an = new ActiveNote { data = n };
-                an.head = CreateSprite(notePrefab, "Note", n.IsHold ? holdColor : noteColor, 20);
-                an.head.transform.rotation = _pfRotation; // 仅对齐 Playfield 朝向，尺寸用 prefab 自带的
 
-                if (n.IsHold)
+                if (_useUiTrack)
                 {
-                    // 注意：长条不作为 head 的子物体，否则会被 head 的非等比缩放扭曲
-                    an.body = CreateSprite(holdBodyPrefab, "HoldBody", new Color(holdColor.r, holdColor.g, holdColor.b, 0.55f), 18);
-                    an.body.transform.rotation = _pfRotation;
-                    an.bodyBaseScale = an.body.transform.localScale; // 记下 prefab 的宽度，长度才动态变
+                    CreateUiNote(an, n);
+                }
+                else
+                {
+                    an.head = CreateSprite(notePrefab, "Note", n.IsHold ? holdColor : noteColor, 20);
+                    if (proceduralCircleNote && notePrefab == null && _circleSprite != null)
+                    {
+                        an.head.sprite = _circleSprite;
+                        an.head.transform.localScale = Vector3.one * 0.55f;
+                    }
+                    an.head.transform.rotation = _pfRotation;
+
+                    if (n.IsHold)
+                    {
+                        an.body = CreateSprite(holdBodyPrefab, "HoldBody", new Color(holdColor.r, holdColor.g, holdColor.b, 0.55f), 18);
+                        an.body.transform.rotation = _pfRotation;
+                        an.bodyBaseScale = an.body.transform.localScale;
+                    }
+
+                    an.head.enabled = false;
+                    if (an.body != null) an.body.enabled = false;
                 }
 
-                an.head.enabled = false;
-                if (an.body != null) an.body.enabled = false;
                 _notes.Add(an);
             }
+        }
+
+        private void CreateUiNote(ActiveNote an, NoteData n)
+        {
+            RectTransform root = uiTrack.NoteRoot;
+            var go = new GameObject($"NoteUI_{n.lane}_{n.time:0.00}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetParent(root, false);
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            float size = uiTrack.noteSize;
+            rect.sizeDelta = new Vector2(size, size);
+
+            var image = go.GetComponent<Image>();
+            image.sprite = _circleSprite != null ? _circleSprite : _whiteSprite;
+            image.color = n.IsHold ? holdColor : (uiTrack != null ? uiTrack.noteColor : noteColor);
+            image.raycastTarget = false;
+            image.enabled = false;
+            image.preserveAspect = true;
+
+            an.headUi = rect;
+            an.headImage = image;
         }
 
         private void StartConductor()
@@ -360,8 +433,9 @@ namespace DeusEx.Rhythm
 
         private void UpdateNotePositions(double songPos)
         {
-            float leadDist = (_spawnLocalY - _judgeLocalY) + 2f;
-            double leadTime = leadDist / scrollSpeed;
+            double leadTime = _useUiTrack
+                ? uiTrack.approachSeconds
+                : ((_spawnLocalY - _judgeLocalY) + 2f) / scrollSpeed;
 
             foreach (var an in _notes)
             {
@@ -392,27 +466,39 @@ namespace DeusEx.Rhythm
 
                 // 可见性：在窗口内才显示
                 bool visible = dt < leadTime && an.data.EndTime - songPos > -GoodW * 2;
-                an.head.enabled = visible && !an.headJudged;
-                if (an.body != null) an.body.enabled = visible;
+                SetNoteVisible(an, visible && !an.headJudged, visible);
                 if (!visible) continue;
 
-                // 在 Playfield 局部空间里算位置，再变换回世界 → 自动贴合旋转/位移
-                float laneX = _laneLocalX[an.data.lane];
-                float headLocalY = _judgeLocalY + (float)dt * scrollSpeed;
-                an.head.transform.position = _pfTransform.TransformPoint(new Vector3(laneX, headLocalY, 0f));
-
-                if (an.body != null)
+                if (_useUiTrack)
                 {
-                    float tailLocalY = _judgeLocalY + (float)(an.data.EndTime - songPos) * scrollSpeed;
-                    // 已击头的长按：身体底端钉在判定线，营造"正在被消耗"的感觉
-                    float bottomLocalY = an.headJudged ? _judgeLocalY : headLocalY;
-                    float h = Mathf.Max(0.01f, tailLocalY - bottomLocalY);
-                    float centerLocalY = (bottomLocalY + tailLocalY) * 0.5f;
-                    an.body.transform.position = _pfTransform.TransformPoint(new Vector3(laneX, centerLocalY, 0f));
-                    // 宽度沿用 prefab，只有长度（Y）随剩余时长动态变化
-                    an.body.transform.localScale = new Vector3(an.bodyBaseScale.x, h, an.bodyBaseScale.z);
+                    float progress = leadTime > 1e-5 ? Mathf.Clamp01((float)(dt / leadTime)) : 0f;
+                    if (uiTrack.TrySample(an.data.lane, progress, out Vector2 anchored) && an.headUi != null)
+                        an.headUi.anchoredPosition = anchored;
+                }
+                else
+                {
+                    float laneX = _laneLocalX[an.data.lane];
+                    float headLocalY = _judgeLocalY + (float)dt * scrollSpeed;
+                    an.head.transform.position = _pfTransform.TransformPoint(new Vector3(laneX, headLocalY, 0f));
+
+                    if (an.body != null)
+                    {
+                        float tailLocalY = _judgeLocalY + (float)(an.data.EndTime - songPos) * scrollSpeed;
+                        float bottomLocalY = an.headJudged ? _judgeLocalY : headLocalY;
+                        float h = Mathf.Max(0.01f, tailLocalY - bottomLocalY);
+                        float centerLocalY = (bottomLocalY + tailLocalY) * 0.5f;
+                        an.body.transform.position = _pfTransform.TransformPoint(new Vector3(laneX, centerLocalY, 0f));
+                        an.body.transform.localScale = new Vector3(an.bodyBaseScale.x, h, an.bodyBaseScale.z);
+                    }
                 }
             }
+        }
+
+        private static void SetNoteVisible(ActiveNote an, bool headVisible, bool bodyVisible)
+        {
+            if (an.headImage != null) an.headImage.enabled = headVisible;
+            if (an.head != null) an.head.enabled = headVisible;
+            if (an.body != null) an.body.enabled = bodyVisible && an.body != null;
         }
 
         private void HandleInput(double songPos)
@@ -444,7 +530,7 @@ namespace DeusEx.Rhythm
                         if (best.data.IsHold)
                         {
                             best.holding = true;
-                            best.head.enabled = false; // 头消失，保留长条
+                            SetNoteVisible(best, false, true);
                         }
                         else
                         {
@@ -497,8 +583,7 @@ namespace DeusEx.Rhythm
 
         private void HideNote(ActiveNote an)
         {
-            if (an.head != null) an.head.enabled = false;
-            if (an.body != null) an.body.enabled = false;
+            SetNoteVisible(an, false, false);
         }
 
         // ---------------- 计分 ----------------
@@ -533,6 +618,9 @@ namespace DeusEx.Rhythm
         /// <summary>取某条轨道判定线处的世界坐标（已跟随 Playfield 的旋转/位移）。lane 越界时回退到 Playfield 原点。</summary>
         public Vector3 JudgeWorldPosition(int lane)
         {
+            if (_useUiTrack && uiTrack != null)
+                return uiTrack.HitWorldPosition(lane);
+
             if (_pfTransform == null || _laneLocalX == null || lane < 0 || lane >= _laneLocalX.Length)
                 return _pfTransform != null ? _pfTransform.position : Vector3.zero;
             return _pfTransform.TransformPoint(new Vector3(_laneLocalX[lane], _judgeLocalY, 0f));
