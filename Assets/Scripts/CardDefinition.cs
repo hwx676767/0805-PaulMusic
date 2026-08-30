@@ -62,11 +62,61 @@ namespace DeusEx.Rhythm
         [Tooltip("卡面主色（用于程序化卡面 CardWheelUI 的底色）。")]
         public Color color = new Color(0.20f, 0.55f, 1f);
 
-        [Tooltip("可选卡面图标（留空则纯色卡面）。")]
+        [Tooltip("可选卡面图标（留空则用卡色底 + 卡名占位，不再显示空框）。")]
         public Sprite icon;
+
+        [Tooltip("卡面加载秒数。<=0 时按费用与效果强度自动估算（越强越久）。")]
+        [Min(0f)]
+        public float imageLoadDuration;
 
         [Tooltip("打出该牌时依次施加的效果（可为空 = 无效果）。")]
         public List<CardEffectSpec> effects = new List<CardEffectSpec>();
+
+        /// <summary>
+        /// 实际用于卡面加载动画的秒数：手动配置优先，否则按「费用 + 效果强度」估算。
+        /// 弱牌约 2.2～3.0s，强牌约 4.5～6.0s。
+        /// </summary>
+        public float ResolveImageLoadDuration()
+        {
+            if (imageLoadDuration > 0.01f) return imageLoadDuration;
+            float score = EstimatePowerScore();
+            return Mathf.Clamp(2.0f + score * 0.85f, 2.2f, 6.0f);
+        }
+
+        /// <summary>综合费用与效果，得到相对“强度分”（仅用于加载时长等表现）。</summary>
+        public float EstimatePowerScore()
+        {
+            float score = Mathf.Max(0, cost) * 0.12f;
+            if (effects == null) return score;
+            for (int i = 0; i < effects.Count; i++)
+                score += EffectPowerScore(effects[i]);
+            return score;
+        }
+
+        public static float EffectPowerScore(CardEffectSpec spec)
+        {
+            switch (spec.type)
+            {
+                case CardEffectType.FlatDamage:
+                    return Mathf.Max(0f, spec.magnitude) / 35f;
+                case CardEffectType.HealPlayer:
+                    return Mathf.Max(0f, spec.magnitude) / 40f;
+                case CardEffectType.DamageMultiplier:
+                    return Mathf.Max(0f, spec.magnitude - 1f) * 2.2f + Mathf.Max(0f, spec.duration) * 0.04f;
+                case CardEffectType.JudgementWindowScale:
+                    return Mathf.Max(0f, spec.magnitude - 1f) * 2.0f + Mathf.Max(0f, spec.duration) * 0.04f;
+                case CardEffectType.SongSpeedMultiplier:
+                    return Mathf.Abs(spec.magnitude - 1f) * 2.5f + Mathf.Max(0f, spec.duration) * 0.035f;
+                case CardEffectType.ShieldCharges:
+                    return Mathf.Max(1f, spec.magnitude) * 0.55f + Mathf.Max(0f, spec.duration) * 0.03f;
+                case CardEffectType.DamageTakenMultiplier:
+                    return Mathf.Max(0f, 1f - spec.magnitude) * 2.5f + Mathf.Max(0f, spec.duration) * 0.04f;
+                case CardEffectType.ShuffleDrawPile:
+                    return 0.15f;
+                default:
+                    return 0.2f;
+            }
+        }
 
         /// <summary>优先用手写描述；为空时根据 effects 里的数值自动生成。</summary>
         public string ResolveDescription()
@@ -78,14 +128,14 @@ namespace DeusEx.Rhythm
         /// <summary>把 effects 里的数值格式化成可读文案（供 UI / 出牌提示调用）。</summary>
         public string FormatEffectsSummary(string separator = "\n")
         {
-            if (effects == null || effects.Count == 0) return "无效果";
+            if (effects == null || effects.Count == 0) return "No effect";
             var parts = new List<string>(effects.Count);
             for (int i = 0; i < effects.Count; i++)
             {
                 string line = FormatEffect(effects[i]);
                 if (!string.IsNullOrEmpty(line)) parts.Add(line);
             }
-            return parts.Count > 0 ? string.Join(separator, parts) : "无效果";
+            return parts.Count > 0 ? string.Join(separator, parts) : "No effect";
         }
 
         public static string FormatEffect(CardEffectSpec spec)
@@ -93,23 +143,23 @@ namespace DeusEx.Rhythm
             switch (spec.type)
             {
                 case CardEffectType.DamageMultiplier:
-                    return DurationSuffix($"攻击力 ×{spec.magnitude:0.##}", spec.duration);
+                    return DurationSuffix($"ATK x{spec.magnitude:0.##}", spec.duration);
                 case CardEffectType.JudgementWindowScale:
-                    return DurationSuffix($"判定窗口 ×{spec.magnitude:0.##}", spec.duration);
+                    return DurationSuffix($"Judgement window x{spec.magnitude:0.##}", spec.duration);
                 case CardEffectType.SongSpeedMultiplier:
-                    return DurationSuffix($"曲速 ×{spec.magnitude:0.##}", spec.duration);
+                    return DurationSuffix($"Song speed x{spec.magnitude:0.##}", spec.duration);
                 case CardEffectType.ShuffleDrawPile:
-                    return "立即重排抽牌堆";
+                    return "Shuffle draw pile";
                 case CardEffectType.HealPlayer:
-                    return $"立刻回复 {Mathf.RoundToInt(spec.magnitude)} 点生命";
+                    return $"Heal {Mathf.RoundToInt(spec.magnitude)} HP";
                 case CardEffectType.FlatDamage:
-                    return $"立刻对 Boss 造成 {Mathf.RoundToInt(spec.magnitude)} 点伤害";
+                    return $"Deal {Mathf.RoundToInt(spec.magnitude)} damage to Boss";
                 case CardEffectType.ShieldCharges:
                     return DurationSuffix(
-                        $"获得 {Mathf.Max(1, Mathf.RoundToInt(spec.magnitude))} 层护盾",
+                        $"Gain {Mathf.Max(1, Mathf.RoundToInt(spec.magnitude))} shield",
                         spec.duration);
                 case CardEffectType.DamageTakenMultiplier:
-                    return DurationSuffix($"受到伤害 ×{spec.magnitude:0.##}", spec.duration);
+                    return DurationSuffix($"Damage taken x{spec.magnitude:0.##}", spec.duration);
                 default:
                     return string.Empty;
             }
@@ -118,7 +168,7 @@ namespace DeusEx.Rhythm
         private static string DurationSuffix(string core, float duration)
         {
             if (duration <= 0f) return core;
-            return $"{core}（{duration:0.#} 秒）";
+            return $"{core} ({duration:0.#}s)";
         }
     }
 }

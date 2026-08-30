@@ -203,7 +203,7 @@ namespace DeusEx.Rhythm
         {
             _pendingExitUid = c != null ? c.uid : -1;
             _pendingExitWasPlay = false;
-            if (c != null) FlashDisplayOverride($"已弃掉 <b>{c.DisplayName}</b>", 0.8f);
+            if (c != null) FlashDisplayOverride($"Discarded <b>{c.DisplayName}</b>", 0.8f);
         }
 
         private void OnHandChanged() { SyncToHand(); }
@@ -221,10 +221,11 @@ namespace DeusEx.Rhythm
 
             if (c == null) return;
             bool loading = cardSystem != null && !cardSystem.IsActiveCardReady;
+            string playKey = KeyLabel(cardSystem.playKey);
             string reason = loading
-                ? "卡面加载中…"
-                : $"Combo 不足（需要 {c.Cost}）";
-            FlashDisplayOverride($"<color=#ff8888>无法打出 {c.DisplayName}</color>\n{reason}", 1f);
+                ? $"Still loading… wait, then press <b>{playKey}</b>"
+                : $"Need {c.Cost} Combo (have {(manager != null ? manager.Combo : 0)})";
+            FlashDisplayOverride($"<color=#ff8888>Cannot play {c.DisplayName}</color>\n{reason}", 1.1f);
         }
 
         // ---------------- 与手牌同步（核心：补位/旋转/进出场） ----------------
@@ -267,10 +268,33 @@ namespace DeusEx.Rhythm
                 ApplySlot(s, i);
             }
 
+            ReorderCardDepth();
             UpdateActiveCardLoading();
             RefreshOutlines();
             UpdateAffordability(manager != null ? manager.Combo : 0);
             UpdateDisplayText();
+        }
+
+        /// <summary>
+        /// UI 后画的 sibling 在上层：从后往前把手牌 SetAsLastSibling，保证第一张（可操作）盖在其余牌之上。
+        /// 飞出中的牌再抬到最顶，避免被补位新牌挡住。
+        /// </summary>
+        private void ReorderCardDepth()
+        {
+            if (_wheelRoot == null || cardSystem == null) return;
+
+            IReadOnlyList<CardInstance> hand = cardSystem.Hand;
+            for (int i = hand.Count - 1; i >= 0; i--)
+            {
+                CardSlot s = FindSlot(hand[i].uid);
+                if (s?.Rect != null) s.Rect.SetAsLastSibling();
+            }
+
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                CardSlot s = _slots[i];
+                if (s.exiting && s.Rect != null) s.Rect.SetAsLastSibling();
+            }
         }
 
         private void ApplySlot(CardSlot s, int index)
@@ -545,7 +569,30 @@ namespace DeusEx.Rhythm
             if (view == null || view.Card == null || cardSystem == null) return;
             cardSystem.SetActiveCardReady(view.Card, true);
             UpdateAffordability(manager != null ? manager.Combo : 0);
+
+            // 加载完成：明显提示按键（仅当前首张）
+            if (cardSystem.ActiveCard != null && view.Card.uid == cardSystem.ActiveCard.uid)
+                FlashReadyPrompt(view.Card);
+
             UpdateDisplayText();
+        }
+
+        private void FlashReadyPrompt(CardInstance card)
+        {
+            if (card == null || cardSystem == null) return;
+
+            string playKey = KeyLabel(cardSystem.playKey);
+            string discardKey = KeyLabel(cardSystem.discardKey);
+            int combo = manager != null ? manager.Combo : 0;
+            bool afford = combo >= card.Cost;
+
+            string line = afford
+                ? $"<size=120%><b>READY!</b></size>\nPress <b>{playKey}</b> to PLAY  ·  <b>{discardKey}</b> to Discard"
+                : $"<size=110%><b>LOADED</b></size>\nNeed <b>{card.Cost}</b> Combo (now {combo}) · then press <b>{playKey}</b>\n<b>{discardKey}</b> = Discard";
+
+            FlashDisplayOverride(Colored(line, afford ? canPlayHintColor : readyOutlineColor), 1.6f);
+            if (punchWhenAffordable && afford)
+                _activePunch = 1f;
         }
 
         private void ResolveDisplayText()
@@ -578,7 +625,8 @@ namespace DeusEx.Rhythm
                 return;
             }
 
-            string effects = def.ResolveDescription();
+            // DisplayText 统一用英文效果摘要（避免资源里中文 description 混入）
+            string effects = def.FormatEffectsSummary(" · ");
             string hint = BuildPlayHint(active);
             displayText.text = string.Format(displayTextFormat, def.cardName, effects, hint);
         }
@@ -594,10 +642,20 @@ namespace DeusEx.Rhythm
             bool afford = combo >= active.Cost;
 
             if (!ready)
-                return Colored($"加载中… 完成后按 {playKey} 打出 / {discardKey} 弃牌", cannotPlayHintColor);
+            {
+                return Colored(
+                    $"<b>LOADING…</b>  then press <size=115%><b>[{playKey}]</b></size> to PLAY  /  <b>[{discardKey}]</b> Discard",
+                    cannotPlayHintColor);
+            }
             if (!afford)
-                return Colored($"Combo {combo}/{active.Cost} · 再连击即可按 {playKey} 打出 · {discardKey} 弃牌", cannotPlayHintColor);
-            return Colored($"▶ 可打出！按 {playKey} 使用（耗 {active.Cost} Combo）· {discardKey} 弃牌", canPlayHintColor);
+            {
+                return Colored(
+                    $"Combo <b>{combo}/{active.Cost}</b>  ·  keep hitting notes, then <size=115%><b>[{playKey}]</b></size>  ·  <b>[{discardKey}]</b> Discard",
+                    cannotPlayHintColor);
+            }
+            return Colored(
+                $"<size=120%><b>READY — press [{playKey}] to PLAY</b></size>  (cost {active.Cost} Combo)  ·  <b>[{discardKey}]</b> Discard",
+                canPlayHintColor);
         }
 
         private void ShowPlayedFeedback(CardInstance card)
@@ -607,8 +665,8 @@ namespace DeusEx.Rhythm
             string name = def != null ? def.cardName : card.DisplayName;
             string effects = def != null ? def.FormatEffectsSummary(" · ") : string.Empty;
             string body = string.IsNullOrEmpty(effects)
-                ? $"已打出 <b>{name}</b>"
-                : $"已打出 <b>{name}</b>\n{effects}";
+                ? $"Played <b>{name}</b>"
+                : $"Played <b>{name}</b>\n{effects}";
 
             FlashDisplayOverride(Colored(body, canPlayHintColor), playToastDuration);
             if (showPlayToast) ShowPlayToast(name, effects);
@@ -681,7 +739,21 @@ namespace DeusEx.Rhythm
             }
         }
 
-        private static string KeyLabel(KeyCode key) => key.ToString().ToUpperInvariant();
+        private static string KeyLabel(KeyCode key)
+        {
+            // 常见键显示成短标签，提示更醒目
+            switch (key)
+            {
+                case KeyCode.Space: return "SPACE";
+                case KeyCode.LeftShift: return "L-SHIFT";
+                case KeyCode.RightShift: return "R-SHIFT";
+                case KeyCode.LeftControl: return "L-CTRL";
+                case KeyCode.RightControl: return "R-CTRL";
+                case KeyCode.Return:
+                case KeyCode.KeypadEnter: return "ENTER";
+                default: return key.ToString().ToUpperInvariant();
+            }
+        }
 
         private static string Colored(string text, Color color)
         {

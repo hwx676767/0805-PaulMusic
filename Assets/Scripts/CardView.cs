@@ -7,7 +7,7 @@ namespace DeusEx.Rhythm
 {
     /// <summary>
     /// 单张卡的视觉视图：插画始终完整显示；仅灰色遮罩使用 Filled 表现加载。
-    /// 卡名与说明由 CardWheelUI 输出到场景中的公共 DisplayText，不显示在卡面上。
+    /// 卡名与说明由 CardWheelUI 输出到场景中的公共 DisplayText；无插画时卡面上显示占位色与卡名。
     /// </summary>
     [DisallowMultipleComponent]
     public class CardView : MonoBehaviour
@@ -17,7 +17,7 @@ namespace DeusEx.Rhythm
         public RectTransform rectTransform;
         public Image background;
         public Graphic outline;
-        // 保留这两个字段以兼容旧的自定义 prefab；本项目的公共信息不再写入卡面。
+        // 保留这两个字段以兼容旧的自定义 prefab；公共信息默认写到 DisplayText。
         public TMP_Text nameText;
         public TMP_Text descriptionText;
         public TMP_Text costText;
@@ -27,7 +27,7 @@ namespace DeusEx.Rhythm
         public Image iconImage;
         [Tooltip("盖在卡图上方的半透明灰色遮罩；只有此 Image 使用 Filled。")]
         public Image loadingMask;
-        [Tooltip("当前可打出的卡牌从翻到最前开始所需加载时间（秒）。建议 1.2～1.8 秒。")]
+        [Tooltip("无卡定义时的默认加载时间（秒）。有卡定义时改用 CardDefinition.ResolveImageLoadDuration。")]
         [Min(0.05f)]
         public float imageLoadDuration = 1.5f;
 
@@ -49,6 +49,7 @@ namespace DeusEx.Rhythm
         private Color _highlightColor = Color.white;
         private Coroutine _loadRoutine;
         private bool _loadStarted;
+        private TMP_Text _faceTitle;
         private static Sprite _oneUnitMaskSprite;
 
         private void Awake() => EnsureRefs();
@@ -82,17 +83,21 @@ namespace DeusEx.Rhythm
             CardDefinition def = card != null ? card.definition : null;
             if (costText != null) costText.text = card != null ? card.Cost.ToString() : string.Empty;
 
+            imageLoadDuration = def != null
+                ? def.ResolveImageLoadDuration()
+                : Mathf.Max(0.05f, imageLoadDuration);
+
             // 旧 prefab 的根 Image 就是插画，不能以卡色染色，否则会压暗原图。
             if (background != null && background != iconImage && tintBackgroundWithCardColor && def != null)
                 background.color = def.color;
 
-            PrepareImage(def != null ? def.icon : null);
+            PrepareImage(def);
         }
 
         /// <summary>只允许当前首张卡启动遮罩加载。</summary>
         public void SetCurrentCardLoading(bool isCurrent)
         {
-            if (!isCurrent || _loadStarted || IsImageLoaded || iconImage == null || iconImage.sprite == null) return;
+            if (!isCurrent || _loadStarted || IsImageLoaded || iconImage == null || !iconImage.enabled) return;
             _loadStarted = true;
             _loadRoutine = StartCoroutine(LoadMask());
         }
@@ -104,37 +109,78 @@ namespace DeusEx.Rhythm
             _highlightColor = color;
         }
 
-        private void PrepareImage(Sprite sprite)
+        private void PrepareImage(CardDefinition def)
         {
             if (_loadRoutine != null) StopCoroutine(_loadRoutine);
             _loadRoutine = null;
             _loadStarted = false;
-            IsImageLoaded = sprite == null;
+            IsImageLoaded = false;
+
+            Sprite art = def != null ? def.icon : null;
+            bool hasArt = art != null;
+            Color faceColor = def != null ? def.color : new Color(0.22f, 0.45f, 0.85f, 1f);
 
             if (iconImage != null)
             {
-                iconImage.sprite = sprite;
-                iconImage.enabled = sprite != null;
+                if (hasArt)
+                {
+                    iconImage.sprite = art;
+                    iconImage.color = Color.white;
+                }
+                else
+                {
+                    // 无插画：用纯色占位，避免“空框”
+                    iconImage.sprite = OneUnitMaskSprite;
+                    iconImage.color = faceColor;
+                }
+                iconImage.enabled = true;
                 iconImage.type = Image.Type.Simple;
                 iconImage.fillAmount = 1f;
+                iconImage.preserveAspect = hasArt;
             }
+
             if (loadingMask != null)
             {
-                loadingMask.enabled = sprite != null;
+                loadingMask.enabled = true;
                 loadingMask.type = Image.Type.Filled;
                 loadingMask.fillMethod = Image.FillMethod.Vertical;
                 loadingMask.fillOrigin = (int)Image.OriginVertical.Bottom;
-                loadingMask.fillAmount = sprite != null ? 1f : 0f;
+                loadingMask.fillAmount = 1f;
             }
+
+            UpdateFaceTitle(hasArt ? null : def);
+            RestackFaceLayers();
+        }
+
+        private void RestackFaceLayers()
+        {
+            // 自下而上：插画 → 卡名占位 → 加载遮罩 → 费用 → 边框
+            if (iconImage != null) iconImage.transform.SetAsFirstSibling();
+            if (_faceTitle != null) _faceTitle.transform.SetSiblingIndex(iconImage != null ? 1 : 0);
+            if (loadingMask != null)
+            {
+                int maskIndex = 0;
+                if (iconImage != null) maskIndex++;
+                if (_faceTitle != null && _faceTitle.gameObject.activeSelf) maskIndex++;
+                loadingMask.transform.SetSiblingIndex(maskIndex);
+            }
+            Transform costBadge = transform.Find("CostBadge");
+            if (costBadge != null) costBadge.SetAsLastSibling();
+            if (costText != null && costBadge == null) costText.transform.SetAsLastSibling();
+            if (topBorder != null) topBorder.transform.SetAsLastSibling();
+            if (bottomBorder != null) bottomBorder.transform.SetAsLastSibling();
+            if (leftBorder != null) leftBorder.transform.SetAsLastSibling();
+            if (rightBorder != null) rightBorder.transform.SetAsLastSibling();
         }
 
         private IEnumerator LoadMask()
         {
+            float duration = Mathf.Max(0.05f, imageLoadDuration);
             float elapsed = 0f;
-            while (elapsed < imageLoadDuration)
+            while (elapsed < duration)
             {
                 elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / imageLoadDuration);
+                float t = Mathf.Clamp01(elapsed / duration);
                 if (loadingMask != null) loadingMask.fillAmount = 1f - Mathf.SmoothStep(0f, 1f, t);
                 yield return null;
             }
@@ -159,8 +205,50 @@ namespace DeusEx.Rhythm
             loadingMask.color = new Color(0.35f, 0.35f, 0.38f, 0.68f);
             loadingMask.raycastTarget = false;
 
+            EnsureFaceTitle();
             EnsureCostBadge();
             EnsureBorders();
+        }
+
+        private void EnsureFaceTitle()
+        {
+            if (_faceTitle != null) return;
+            Transform existing = transform.Find("FaceTitle");
+            if (existing != null)
+            {
+                _faceTitle = existing.GetComponent<TMP_Text>();
+                if (_faceTitle != null) return;
+            }
+
+            var go = new GameObject("FaceTitle", typeof(RectTransform));
+            go.transform.SetParent(transform, false);
+            var rect = go.GetComponent<RectTransform>();
+            SetRect(rect, new Vector2(0.08f, 0.35f), new Vector2(0.92f, 0.72f), Vector2.zero, Vector2.zero);
+            _faceTitle = go.AddComponent<TextMeshProUGUI>();
+            _faceTitle.alignment = TextAlignmentOptions.Center;
+            _faceTitle.fontSize = 28f;
+            _faceTitle.fontStyle = FontStyles.Bold;
+            _faceTitle.color = Color.white;
+            _faceTitle.enableWordWrapping = true;
+            _faceTitle.raycastTarget = false;
+            _faceTitle.gameObject.SetActive(false);
+        }
+
+        private void UpdateFaceTitle(CardDefinition def)
+        {
+            EnsureFaceTitle();
+            if (_faceTitle == null) return;
+
+            bool show = def != null && def.icon == null;
+            _faceTitle.gameObject.SetActive(show);
+            if (!show) return;
+
+            _faceTitle.text = string.IsNullOrWhiteSpace(def.cardName) ? "CARD" : def.cardName;
+            // 深色底用浅字，浅色底用深字
+            float lum = def.color.r * 0.299f + def.color.g * 0.587f + def.color.b * 0.114f;
+            _faceTitle.color = lum > 0.55f
+                ? new Color(0.08f, 0.08f, 0.1f, 0.95f)
+                : new Color(1f, 1f, 1f, 0.95f);
         }
 
         private void EnsureCostBadge()

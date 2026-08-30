@@ -64,6 +64,23 @@ namespace DeusEx.Rhythm
             return lanes[lane].hit.position;
         }
 
+        public RectTransform GetHit(int lane)
+        {
+            if (lanes == null || lane < 0 || lane >= lanes.Count) return null;
+            return lanes[lane]?.hit;
+        }
+
+        /// <summary>
+        /// Overlay 轨道路径的 hit.position 是屏幕像素坐标；把它投到主相机前的深度，
+        /// 供世界空间 TMP / SpriteRenderer 判定特效使用。
+        /// </summary>
+        public Vector3 HitScreenToWorld(int lane, Camera cam, float depthWorldZ)
+        {
+            Vector3 screen = HitWorldPosition(lane);
+            if (cam == null) return screen;
+            return cam.ScreenToWorldPoint(new Vector3(screen.x, screen.y, depthWorldZ));
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

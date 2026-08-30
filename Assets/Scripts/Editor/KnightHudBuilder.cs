@@ -112,7 +112,9 @@ namespace DeusEx.Rhythm.EditorTools
             BuildComboBlock(hudRect, comboBg);
 
             CreateLayer(hudRect, "Layer_CostOutside", "cost outside.png", 6);
-            CreateLayer(hudRect, "Layer_CostInside", "cost inside.png", 7);
+            Image costInside = CreateLayer(hudRect, "Layer_CostInside", "cost inside.png", 7);
+            if (costInside != null && costInside.GetComponent<UiIdleMotion>() == null)
+                costInside.gameObject.AddComponent<UiIdleMotion>();
             CreateLayer(hudRect, "Layer_Drive", "drive.png", 8);
 
             BuildInfoPanel(hudRect);

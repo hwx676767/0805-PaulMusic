@@ -619,12 +619,25 @@ namespace DeusEx.Rhythm
         public Vector3 JudgeWorldPosition(int lane)
         {
             if (_useUiTrack && uiTrack != null)
+            {
+                Camera cam = Camera.main;
+                if (cam != null)
+                {
+                    float depth = _pfTransform != null
+                        ? cam.WorldToScreenPoint(_pfTransform.position).z
+                        : Mathf.Max(1f, Mathf.Abs(cam.transform.position.z));
+                    return uiTrack.HitScreenToWorld(lane, cam, depth);
+                }
                 return uiTrack.HitWorldPosition(lane);
+            }
 
             if (_pfTransform == null || _laneLocalX == null || lane < 0 || lane >= _laneLocalX.Length)
                 return _pfTransform != null ? _pfTransform.position : Vector3.zero;
             return _pfTransform.TransformPoint(new Vector3(_laneLocalX[lane], _judgeLocalY, 0f));
         }
+
+        /// <summary>是否正在用 HUD 上的 UI 轨道下落音符（判定特效也应挂到同一 Canvas）。</summary>
+        public bool UsesUiTrack => _useUiTrack && uiTrack != null;
 
         private void FlashJudgment(Judgment j)
         {
