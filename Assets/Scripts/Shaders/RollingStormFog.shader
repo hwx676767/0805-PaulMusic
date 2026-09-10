@@ -1,26 +1,35 @@
-// 乌云翻滚雾气：多层域扭曲噪声，适合大面积缓慢涌动的暗云/雾墙。
-// 比粒子更适合“云层翻涌”；粒子可另加作边缘碎雾点缀。
+// 厚重灰云雾：从点 / 线源向外涌散，云团翻滚（非薄烟飘在纯色底上）。
 Shader "DeusEx/RollingStormFog"
 {
     Properties
     {
-        _FogColorDeep ("Deep Cloud Color", Color) = (0.05, 0.06, 0.09, 0.85)
-        _FogColorMid ("Mid Cloud Color", Color) = (0.14, 0.16, 0.22, 0.55)
-        _FogColorEdge ("Edge Mist Color", Color) = (0.35, 0.38, 0.45, 0.22)
+        _FogColorDeep ("Cloud Core (厚重核心)", Color) = (0.22, 0.23, 0.25, 1.0)
+        _FogColorMid ("Cloud Body", Color) = (0.38, 0.39, 0.42, 0.92)
+        _FogColorEdge ("Cloud Soft Edge", Color) = (0.52, 0.53, 0.56, 0.55)
 
-        _Coverage ("Coverage", Range(0, 1.5)) = 0.72
-        _Density ("Density Softness", Range(0.2, 4)) = 1.35
-        _Contrast ("Contrast", Range(0.5, 3)) = 1.45
-        _Opacity ("Overall Opacity", Range(0, 1.5)) = 1.0
+        _Coverage ("Cloud Fill", Range(0.1, 1.4)) = 0.92
+        _Density ("Edge Softness Inv", Range(0.5, 8)) = 2.4
+        _Contrast ("Contrast", Range(0.3, 2.5)) = 0.85
+        _Opacity ("Overall Opacity", Range(0, 2.5)) = 1.85
+        _Haze ("Base Haze (底层厚雾)", Range(0, 1)) = 0.55
 
-        _NoiseScale ("Noise Scale", Float) = 1.65
-        _WarpStrength ("Domain Warp", Range(0, 1.5)) = 0.55
-        _Scroll ("Scroll Speed XY", Vector) = (0.035, 0.012, 0, 0)
-        _Billow ("Billow Speed", Float) = 0.18
-        _LayerOffset ("Layer UV Offset", Float) = 0
+        _NoiseScale ("Cloud Scale", Float) = 1.55
+        _WarpStrength ("Billow Warp", Range(0, 1.5)) = 0.85
+        _ExpandSpeed ("Outward Surge Speed", Float) = 0.18
+        _Billow ("Internal Billow", Float) = 0.32
+        _LayerOffset ("Layer Offset", Float) = 0
+        _AngularTwist ("Swirl", Range(0, 2)) = 0.45
 
-        _VerticalBias ("Bottom Heavy", Range(-1, 1)) = 0.25
-        _EdgeFade ("Screen Edge Fade", Range(0, 0.45)) = 0.08
+        [Header(Source)]
+        _EmitMode ("Emit Mode (0=Point 1=HLine 2=VLine)", Float) = 0
+        _EmitOrigin ("Emit Origin UV", Vector) = (0.5, 0.15, 0, 0)
+        _EmitRadius ("Source Core Radius", Range(0.01, 0.4)) = 0.08
+        _EmitReach ("Max Reach (涌散距离)", Range(0.15, 1.5)) = 0.85
+        _EmitStrength ("Source Strength", Range(0, 2.5)) = 1.45
+        _EmitFalloff ("Distance Falloff", Range(0.3, 4)) = 1.1
+
+        _BoundsSoftness ("Volume Edge Softness", Range(0.02, 0.45)) = 0.14
+        _BoundsInset ("Volume Inset", Range(0, 0.35)) = 0.02
     }
 
     SubShader
@@ -66,13 +75,21 @@ Shader "DeusEx/RollingStormFog"
                 float _Density;
                 float _Contrast;
                 float _Opacity;
+                float _Haze;
                 float _NoiseScale;
                 float _WarpStrength;
-                float4 _Scroll;
+                float _ExpandSpeed;
                 float _Billow;
                 float _LayerOffset;
-                float _VerticalBias;
-                float _EdgeFade;
+                float _AngularTwist;
+                float _EmitMode;
+                float4 _EmitOrigin;
+                float _EmitRadius;
+                float _EmitReach;
+                float _EmitStrength;
+                float _EmitFalloff;
+                float _BoundsSoftness;
+                float _BoundsInset;
             CBUFFER_END
 
             float hash21(float2 p)
@@ -108,6 +125,66 @@ Shader "DeusEx/RollingStormFog"
                 return v;
             }
 
+            // 软云雾：大团绵密，不像细烟丝
+            float cloudNoise(float2 p)
+            {
+                float n = fbm(p);
+                float n2 = fbm(p * 1.7 + 3.1);
+                float soft = n * 0.65 + n2 * 0.35;
+                // 轻微 ridged 增加翻涌褶皱，仍保持云感
+                float ridge = 1.0 - abs(fbm(p * 0.9 + 8.2) * 2.0 - 1.0);
+                return saturate(soft * 0.78 + ridge * 0.35);
+            }
+
+            float volumeMask(float2 uv)
+            {
+                float2 inset = float2(_BoundsInset, _BoundsInset);
+                float2 soft = float2(_BoundsSoftness, _BoundsSoftness);
+                float2 a = smoothstep(inset, inset + soft, uv);
+                float2 b = smoothstep(inset, inset + soft, 1.0 - uv);
+                return a.x * a.y * b.x * b.y;
+            }
+
+            // 返回：到源的距离(已归一)、向外单位方向、沿源的切向坐标
+            void SourceSpace(float2 uv, out float dist, out float2 outward, out float along)
+            {
+                float2 o = _EmitOrigin.xy;
+                int mode = (int)round(_EmitMode);
+
+                if (mode == 1)
+                {
+                    // 水平线：沿 X 延展，向上/下涌出
+                    along = uv.x;
+                    float dy = uv.y - o.y;
+                    dist = abs(dy);
+                    outward = float2(0.0, dy >= 0.0 ? 1.0 : -1.0);
+                }
+                else if (mode == 2)
+                {
+                    // 垂直线：沿 Y 延展，向左/右涌出
+                    along = uv.y;
+                    float dx = uv.x - o.x;
+                    dist = abs(dx);
+                    outward = float2(dx >= 0.0 ? 1.0 : -1.0, 0.0);
+                }
+                else
+                {
+                    // 点源：径向向外
+                    float2 d = uv - o;
+                    dist = length(d);
+                    outward = dist > 1e-4 ? d / dist : float2(0.0, 1.0);
+                    along = atan2(d.y, d.x);
+                }
+            }
+
+            float sourceEnvelope(float dist)
+            {
+                float core = 1.0 - smoothstep(0.0, _EmitRadius, dist);
+                float body = 1.0 - smoothstep(_EmitRadius, _EmitReach, dist);
+                body = pow(saturate(body), _EmitFalloff);
+                return saturate(core * 0.85 + body) * _EmitStrength;
+            }
+
             Varyings vert(Attributes v)
             {
                 Varyings o;
@@ -121,43 +198,61 @@ Shader "DeusEx/RollingStormFog"
                 float t = _Time.y;
                 float2 uv = i.uv;
 
-                // 垂直加权：偏底部更浓（乌云压境感）
-                float yBias = saturate(1.0 - uv.y + _VerticalBias * 0.35);
+                float vol = volumeMask(uv);
+                if (vol <= 0.001) return half4(0, 0, 0, 0);
 
-                float2 scroll = _Scroll.xy * t + float2(_LayerOffset * 1.7, _LayerOffset * 0.9);
-                float2 p = (uv + scroll) * _NoiseScale;
+                float dist;
+                float2 outward;
+                float along;
+                SourceSpace(uv, dist, outward, along);
 
-                // 域扭曲：云团内部翻涌
-                float2 warp = float2(
-                    fbm(p + float2(0.0, t * _Billow * 0.35)),
-                    fbm(p + float2(5.2, -t * _Billow * 0.28)));
-                p += (warp - 0.5) * _WarpStrength * 2.0;
+                float env = sourceEnvelope(dist);
+                if (env <= 0.001) return half4(0, 0, 0, 0);
 
-                float n1 = fbm(p);
-                float n2 = fbm(p * 1.7 + float2(t * _Billow * 0.15, 3.1));
-                float n3 = fbm(p * 0.55 - float2(t * 0.02, t * 0.01));
+                // 向外涌动：采样坐标沿径向回退，看起来烟团从源冲出
+                float surge = dist - t * _ExpandSpeed;
+                float swirl = along * _AngularTwist + t * _Billow * 0.15;
+                float2 polar = float2(along * 0.55 + swirl * 0.25, surge);
+                float2 p = (polar + float2(_LayerOffset * 0.9, _LayerOffset * 1.3)) * _NoiseScale;
 
-                float cloud = n1 * 0.55 + n2 * 0.28 + n3 * 0.17;
-                cloud = pow(saturate(cloud), _Contrast);
-                cloud *= lerp(0.75, 1.15, yBias);
+                // 域扭曲 → 云雾翻涌
+                float2 w1 = float2(
+                    cloudNoise(p + float2(0.0, t * _Billow * 0.4)),
+                    cloudNoise(p + float2(5.2, -t * _Billow * 0.33)));
+                p += (w1 - 0.5) * _WarpStrength * 2.2;
 
-                float mask = saturate((cloud - (1.0 - _Coverage)) * _Density);
-                mask = smoothstep(0.0, 1.0, mask);
+                float2 w2 = float2(
+                    fbm(p * 1.25 + t * _Billow * 0.18),
+                    fbm(p * 1.25 - t * _Billow * 0.14));
+                p += (w2 - 0.5) * _WarpStrength * 0.9;
 
-                // 边缘更淡的雾丝
-                float edge = saturate((cloud - 0.25) * 1.8);
-                float3 col = lerp(_FogColorEdge.rgb, _FogColorMid.rgb, saturate(mask * 1.2));
-                col = lerp(col, _FogColorDeep.rgb, saturate(mask * mask * 1.4));
+                float c1 = cloudNoise(p);
+                float c2 = cloudNoise(p * 1.55 + 11.0);
+                float cloud = saturate(c1 * 0.7 + c2 * 0.4);
+                cloud = pow(cloud, _Contrast);
+
+                // 厚重填充：coverage 高时接近成片云雾，仍保留翻涌结构
+                float threshold = 1.0 - saturate(_Coverage);
+                float detail = saturate((cloud - threshold) * _Density);
+                detail = smoothstep(0.0, 1.0, detail);
+
+                // 底层霾：靠近源头的厚雾基底，避免“白烟丝飘在底上”
+                float haze = _Haze * env * (0.55 + 0.45 * cloud);
+                float mask = saturate(max(detail * env, haze));
+                mask *= vol;
+
+                // 源心更实
+                float coreBoost = 1.0 - smoothstep(0.0, _EmitRadius * 2.2, dist);
+                mask = saturate(mask + coreBoost * 0.25 * env);
+
+                float3 col = lerp(_FogColorEdge.rgb, _FogColorMid.rgb, saturate(mask * 1.1));
+                col = lerp(col, _FogColorDeep.rgb, saturate(mask * mask * 1.25 + coreBoost * 0.35));
 
                 float alpha = mask * _Opacity;
-                alpha = max(alpha, edge * _FogColorEdge.a * _Opacity * 0.45);
-                alpha *= lerp(_FogColorEdge.a, _FogColorDeep.a, mask);
+                alpha *= lerp(_FogColorEdge.a, _FogColorDeep.a, saturate(mask));
+                alpha = saturate(alpha);
 
-                // 屏幕四周轻微淡出，避免硬边
-                float2 e = smoothstep(0.0, _EdgeFade, uv) * smoothstep(0.0, _EdgeFade, 1.0 - uv);
-                alpha *= e.x * e.y;
-
-                return half4(col, saturate(alpha));
+                return half4(col, alpha);
             }
             ENDHLSL
         }

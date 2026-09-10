@@ -6,42 +6,60 @@ using UnityEditor;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// 乌云翻滚雾气：用多层透明平面 + <c>DeusEx/RollingStormFog</c> 噪声着色器。
-    /// 适合大范围云墙涌动；比纯粒子更稳、更好调。粒子可另挂作碎雾点缀。
+    /// 厚重灰云雾：从点 / 线源向外涌散，在固定体积内翻滚。
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public sealed class RollingStormFog : MonoBehaviour
     {
+        public enum EmitMode
+        {
+            Point = 0,
+            HorizontalLine = 1,
+            VerticalLine = 2,
+        }
+
         [Header("引用")]
-        [Tooltip("雾气材质（Shader = DeusEx/RollingStormFog）。留空则运行时自动创建。")]
         public Material fogMaterial;
-        [Tooltip("参照相机。留空用 Main Camera。")]
         public Camera targetCamera;
 
-        [Header("布局")]
-        [Tooltip("雾层数量（建议 2～4）。")]
+        [Header("体积范围")]
+        [Tooltip("开启后用固定宽高体积（推荐）。")]
+        public bool useFixedVolume = true;
+        public Vector3 volumeOffset = new Vector3(0f, 0.15f, 7f);
+        public Vector2 volumeSize = new Vector2(11f, 7.5f);
         [Range(1, 5)] public int layerCount = 3;
-        [Tooltip("第一层相对相机的距离。")]
-        public float nearDistance = 8f;
-        [Tooltip("每层再往远处推多少。")]
-        public float layerSpacing = 2.2f;
-        [Tooltip("铺满屏幕的额外余量。")]
-        public float padding = 1.25f;
-        [Tooltip("每帧跟随相机自适应尺寸。")]
+        public float nearDistance = 6f;
+        public float layerSpacing = 0.45f;
+        public float padding = 1.15f;
         public bool fitEveryFrame = true;
 
-        [Header("观感覆盖（写入材质实例，不改共享资源）")]
-        [Range(0f, 1.5f)] public float opacity = 1f;
-        [Range(0f, 1.5f)] public float coverage = 0.72f;
-        public Vector2 scrollSpeed = new Vector2(0.035f, 0.012f);
-        [Range(0f, 1f)] public float billow = 0.18f;
+        [Header("发射源（点 / 线 → 向外涌）")]
+        public EmitMode emitMode = EmitMode.Point;
+        [Tooltip("源在体积 UV 上的位置（0~1）。点源默认靠下中；水平线用 Y；垂直线用 X。")]
+        public Vector2 emitOriginUV = new Vector2(0.5f, 0.12f);
+        [Range(0.01f, 0.4f)] public float sourceRadius = 0.1f;
+        [Range(0.15f, 1.5f)] public float emitReach = 0.92f;
+        [Range(0f, 2.5f)] public float emitStrength = 1.5f;
+        [Range(0.3f, 4f)] public float emitFalloff = 1.05f;
+        [Tooltip("向外涌散速度。")]
+        public float expandSpeed = 0.2f;
+        [Range(0f, 1.5f)] public float billow = 0.35f;
+        [Range(0f, 2f)] public float swirl = 0.5f;
+
+        [Header("观感（厚重云雾）")]
+        [Range(0f, 2.5f)] public float opacity = 1.9f;
+        [Range(0.1f, 1.4f)] public float coverage = 0.95f;
+        [Range(0.5f, 8f)] public float density = 2.35f;
+        [Range(0f, 1f)] public float haze = 0.6f;
+        public Color denseGray = new Color(0.22f, 0.23f, 0.25f, 1f);
+        public Color midGray = new Color(0.38f, 0.39f, 0.42f, 0.92f);
+        public Color edgeGray = new Color(0.52f, 0.53f, 0.56f, 0.55f);
 
         private Transform _layersRoot;
         private Mesh _quadMesh;
         private Material _sharedRuntime;
         private readonly Material[] _layerMats = new Material[5];
-        private readonly MeshRenderer[] _renderers = new MeshRenderer[5];
 
         private void OnEnable()
         {
@@ -50,18 +68,7 @@ namespace DeusEx.Rhythm
             Fit();
         }
 
-        private void OnDisable()
-        {
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                CleanupEditorTemps();
-#endif
-        }
-
-        private void OnDestroy()
-        {
-            CleanupRuntime();
-        }
+        private void OnDestroy() => CleanupRuntime();
 
         private void LateUpdate()
         {
@@ -106,27 +113,23 @@ namespace DeusEx.Rhythm
                 }
 
                 child.gameObject.SetActive(true);
-                var mf = child.GetComponent<MeshFilter>();
+                child.GetComponent<MeshFilter>().sharedMesh = _quadMesh;
                 var mr = child.GetComponent<MeshRenderer>();
-                mf.sharedMesh = _quadMesh;
 
                 if (_layerMats[i] == null)
                 {
-                    _layerMats[i] = new Material(_sharedRuntime != null ? _sharedRuntime : fogMaterial)
-                    {
-                        name = $"RollingStormFog Layer {i} (Instance)"
-                    };
+                    Material src = _sharedRuntime != null ? _sharedRuntime : fogMaterial;
+                    if (src == null) continue;
+                    _layerMats[i] = new Material(src) { name = $"HeavyCloud Layer {i}" };
                 }
 
-                // 每层略不同：速度、覆盖、偏移，形成前后翻涌差
-                float k = i / (float)Mathf.Max(1, wanted - 1);
-                _layerMats[i].SetFloat("_LayerOffset", i * 1.37f);
-                _layerMats[i].SetFloat("_NoiseScale", 1.35f + k * 0.9f);
-                _layerMats[i].SetFloat("_WarpStrength", 0.4f + k * 0.35f);
+                float k = wanted <= 1 ? 0f : i / (float)(wanted - 1);
+                _layerMats[i].SetFloat("_LayerOffset", i * 1.73f);
+                _layerMats[i].SetFloat("_NoiseScale", 1.35f + k * 0.85f);
+                _layerMats[i].SetFloat("_WarpStrength", 0.7f + k * 0.3f);
                 mr.sharedMaterial = _layerMats[i];
                 mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 mr.receiveShadows = false;
-                _renderers[i] = mr;
             }
         }
 
@@ -137,7 +140,6 @@ namespace DeusEx.Rhythm
                 _sharedRuntime = fogMaterial;
                 return;
             }
-
             if (_sharedRuntime != null) return;
 
             Shader shader = Shader.Find("DeusEx/RollingStormFog");
@@ -146,16 +148,15 @@ namespace DeusEx.Rhythm
                 Debug.LogError("[RollingStormFog] 找不到 Shader DeusEx/RollingStormFog。");
                 return;
             }
-
             _sharedRuntime = new Material(shader) { name = "RollingStormFog (Runtime)" };
+
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
                 string[] guids = AssetDatabase.FindAssets("RollingStormFog t:Material");
                 if (guids != null && guids.Length > 0)
                 {
-                    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                    var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+                    var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guids[0]));
                     if (mat != null)
                     {
                         fogMaterial = mat;
@@ -173,14 +174,26 @@ namespace DeusEx.Rhythm
             {
                 Material m = _layerMats[i];
                 if (m == null) continue;
-                float k = i / (float)Mathf.Max(1, wanted - 1);
-                m.SetFloat("_Opacity", opacity * Mathf.Lerp(0.85f, 1.1f, k));
-                m.SetFloat("_Coverage", coverage * Mathf.Lerp(1.05f, 0.9f, k));
+                float k = wanted <= 1 ? 0f : i / (float)(wanted - 1);
+
+                m.SetColor("_FogColorDeep", denseGray);
+                m.SetColor("_FogColorMid", midGray);
+                m.SetColor("_FogColorEdge", edgeGray);
+                m.SetFloat("_Opacity", opacity * Mathf.Lerp(1.05f, 0.88f, k));
+                m.SetFloat("_Coverage", coverage);
+                m.SetFloat("_Density", density);
+                m.SetFloat("_Haze", haze * Mathf.Lerp(1.05f, 0.85f, k));
                 m.SetFloat("_Billow", billow);
-                m.SetVector("_Scroll", new Vector4(
-                    scrollSpeed.x * Mathf.Lerp(1.15f, 0.65f, k),
-                    scrollSpeed.y * Mathf.Lerp(1.0f, 0.7f, k),
-                    0f, 0f));
+                m.SetFloat("_ExpandSpeed", expandSpeed * Mathf.Lerp(1.1f, 0.75f, k));
+                m.SetFloat("_AngularTwist", swirl);
+                m.SetFloat("_EmitMode", (float)emitMode);
+                m.SetVector("_EmitOrigin", new Vector4(emitOriginUV.x, emitOriginUV.y, 0f, 0f));
+                m.SetFloat("_EmitRadius", sourceRadius);
+                m.SetFloat("_EmitReach", emitReach);
+                m.SetFloat("_EmitStrength", emitStrength);
+                m.SetFloat("_EmitFalloff", emitFalloff);
+                m.SetFloat("_BoundsSoftness", 0.14f);
+                m.SetFloat("_BoundsInset", 0.02f);
             }
         }
 
@@ -195,25 +208,23 @@ namespace DeusEx.Rhythm
                 Transform child = _layersRoot.Find($"FogLayer_{i}");
                 if (child == null) continue;
 
-                float dist = nearDistance + i * layerSpacing;
-                Vector3 pos = cam.transform.position + cam.transform.forward * dist;
-                child.position = pos;
-                child.rotation = Quaternion.LookRotation(cam.transform.forward, cam.transform.up);
-
-                float height;
-                float width;
-                if (cam.orthographic)
+                if (useFixedVolume)
                 {
-                    height = cam.orthographicSize * 2f * padding;
-                    width = height * cam.aspect;
+                    Vector3 center = cam.transform.TransformPoint(volumeOffset + Vector3.forward * (i * layerSpacing));
+                    child.position = center;
+                    child.rotation = Quaternion.LookRotation(cam.transform.forward, cam.transform.up);
+                    child.localScale = new Vector3(volumeSize.x, volumeSize.y, 1f);
                 }
                 else
                 {
-                    height = 2f * dist * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad) * padding;
-                    width = height * cam.aspect;
+                    float dist = nearDistance + i * layerSpacing;
+                    child.position = cam.transform.position + cam.transform.forward * dist;
+                    child.rotation = Quaternion.LookRotation(cam.transform.forward, cam.transform.up);
+                    float height = cam.orthographic
+                        ? cam.orthographicSize * 2f * padding
+                        : 2f * dist * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad) * padding;
+                    child.localScale = new Vector3(height * cam.aspect, height, 1f);
                 }
-
-                child.localScale = new Vector3(width, height, 1f);
             }
         }
 
@@ -272,7 +283,51 @@ namespace DeusEx.Rhythm
         }
 
 #if UNITY_EDITOR
-        private void CleanupEditorTemps() { }
+        private void OnDrawGizmosSelected()
+        {
+            if (!useFixedVolume) return;
+            Camera cam = ResolveCamera();
+            if (cam == null) return;
+
+            Vector3 center = cam.transform.TransformPoint(volumeOffset);
+            Vector3 right = cam.transform.right * volumeSize.x * 0.5f;
+            Vector3 up = cam.transform.up * volumeSize.y * 0.5f;
+            Gizmos.color = new Color(0.65f, 0.65f, 0.7f, 0.9f);
+            Vector3 a = center - right - up;
+            Vector3 b = center + right - up;
+            Vector3 c = center + right + up;
+            Vector3 d = center - right + up;
+            Gizmos.DrawLine(a, b); Gizmos.DrawLine(b, c); Gizmos.DrawLine(c, d); Gizmos.DrawLine(d, a);
+
+            // 源：点 / 线
+            Vector3 origin = center
+                + cam.transform.right * ((emitOriginUV.x - 0.5f) * volumeSize.x)
+                + cam.transform.up * ((emitOriginUV.y - 0.5f) * volumeSize.y);
+            Gizmos.color = Color.yellow;
+            if (emitMode == EmitMode.Point)
+            {
+                Gizmos.DrawWireSphere(origin, Mathf.Max(0.15f, sourceRadius * volumeSize.y));
+                Gizmos.DrawRay(origin, cam.transform.up * volumeSize.y * 0.35f);
+                Gizmos.DrawRay(origin, cam.transform.right * volumeSize.x * 0.2f);
+                Gizmos.DrawRay(origin, -cam.transform.right * volumeSize.x * 0.2f);
+            }
+            else if (emitMode == EmitMode.HorizontalLine)
+            {
+                Vector3 l = origin - right;
+                Vector3 r = origin + right;
+                Gizmos.DrawLine(l, r);
+                Gizmos.DrawRay(origin, cam.transform.up * volumeSize.y * 0.4f);
+                Gizmos.DrawRay(origin, -cam.transform.up * volumeSize.y * 0.15f);
+            }
+            else
+            {
+                Vector3 bot = origin - up;
+                Vector3 top = origin + up;
+                Gizmos.DrawLine(bot, top);
+                Gizmos.DrawRay(origin, cam.transform.right * volumeSize.x * 0.35f);
+                Gizmos.DrawRay(origin, -cam.transform.right * volumeSize.x * 0.35f);
+            }
+        }
 #endif
     }
 }

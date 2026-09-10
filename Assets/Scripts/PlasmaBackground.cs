@@ -26,8 +26,17 @@ namespace DeusEx.Rhythm
         [Tooltip("额外放大余量，>1 用来保证完全铺满边缘。")]
         public float padding = 1.1f;
 
-        [Tooltip("每帧跟随相机自适应（相机会移动/改 FOV 时建议开启）。")]
+        [Tooltip("每帧自动贴合相机（会覆盖你手动拖的位置）。需要手调位置时请关掉。")]
         public bool fitEveryFrame = true;
+
+        [Tooltip("开启后：自动 Fit 只改朝向与尺寸，位置 = 相机前方 distance + 下方 manualOffset。")]
+        public bool useManualOffset = true;
+
+        [Tooltip("相对相机铺满位置的额外偏移（世界空间）。可在 Scene 里拖物体，运行时也会保留相对偏移。")]
+        public Vector3 manualOffset = Vector3.zero;
+
+        [Tooltip("勾选后不再强制对齐相机朝向，完全使用物体自己的旋转。")]
+        public bool keepManualRotation = false;
 
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
@@ -43,6 +52,14 @@ namespace DeusEx.Rhythm
         {
             if (fitEveryFrame) Fit();
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // Inspector 改 offset 时立刻预览
+            if (!Application.isPlaying && fitEveryFrame) Fit();
+        }
+#endif
 
         private void EnsureSetup()
         {
@@ -86,7 +103,8 @@ namespace DeusEx.Rhythm
 #endif
         }
 
-        private void Fit()
+        /// <summary>按相机重算铺满尺寸；位置受 manualOffset / fitEveryFrame 控制。</summary>
+        public void Fit()
         {
             Camera cam = ResolveCamera();
             if (cam == null) return;
@@ -105,9 +123,32 @@ namespace DeusEx.Rhythm
                 width = height * cam.aspect;
             }
 
-            transform.position = cam.transform.position + cam.transform.forward * d;
-            transform.rotation = cam.transform.rotation;
+            Vector3 fittedPos = cam.transform.position + cam.transform.forward * d;
+            if (useManualOffset) fittedPos += manualOffset;
+
+            if (fitEveryFrame || !Application.isPlaying)
+                transform.position = fittedPos;
+            // fitEveryFrame 关闭时：完全保留你手动拖好的 Transform.position
+
+            if (!keepManualRotation)
+                transform.rotation = cam.transform.rotation;
+
             transform.localScale = new Vector3(width * padding, height * padding, 1f);
+        }
+
+        /// <summary>
+        /// 在 Scene 视图拖动物体后调用：把当前位置记成相对相机铺满点的 manualOffset，
+        /// 这样开启 fitEveryFrame 时也不会跳回原处。
+        /// </summary>
+        [ContextMenu("Capture Offset From Current Position")]
+        public void CaptureOffsetFromCurrentTransform()
+        {
+            Camera cam = ResolveCamera();
+            if (cam == null) return;
+            float d = Mathf.Clamp(distance, cam.nearClipPlane + 0.05f, cam.farClipPlane - 0.05f);
+            Vector3 fittedPos = cam.transform.position + cam.transform.forward * d;
+            manualOffset = transform.position - fittedPos;
+            useManualOffset = true;
         }
 
         private static Mesh BuildQuad()

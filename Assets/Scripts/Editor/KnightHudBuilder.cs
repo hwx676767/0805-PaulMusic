@@ -91,7 +91,9 @@ namespace DeusEx.Rhythm.EditorTools
 
             // 图层自下而上（与参考截图叠层一致）
             CreateLayer(hudRect, "Layer_Background", "background.png", 0);
-            CreateLayer(hudRect, "Layer_Tracks", "tracks.png", 1);
+            Image tracks = CreateLayer(hudRect, "Layer_Tracks", "tracks.png", 1);
+            if (tracks != null && tracks.GetComponent<UiSoftEmission>() == null)
+                tracks.gameObject.AddComponent<UiSoftEmission>();
             CreateLayer(hudRect, "Layer_Lines", "lines.png", 2);
 
             Image hpFill = CreateLayer(hudRect, "BossHpFill", "hp bar.png", 3);

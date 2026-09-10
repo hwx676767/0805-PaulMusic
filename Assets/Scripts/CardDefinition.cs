@@ -65,7 +65,11 @@ namespace DeusEx.Rhythm
         [Tooltip("可选卡面图标（留空则用卡色底 + 卡名占位，不再显示空框）。")]
         public Sprite icon;
 
-        [Tooltip("卡面加载秒数。<=0 时按费用与效果强度自动估算（越强越久）。")]
+        [Tooltip("卡面加载所需有效击打数。<=0 时按费用与效果强度自动估算（越强需要越多击打）。")]
+        [Min(0)]
+        public int loadComboHits;
+
+        [Tooltip("（旧）秒数加载已弃用；保留字段以免丢序列化数据。请用 loadComboHits。")]
         [Min(0f)]
         public float imageLoadDuration;
 
@@ -73,14 +77,21 @@ namespace DeusEx.Rhythm
         public List<CardEffectSpec> effects = new List<CardEffectSpec>();
 
         /// <summary>
-        /// 实际用于卡面加载动画的秒数：手动配置优先，否则按「费用 + 效果强度」估算。
-        /// 弱牌约 2.2～3.0s，强牌约 4.5～6.0s。
+        /// 卡面加载需要的有效击打量：Perfect/Great=1，Good=0.75。
+        /// 弱牌约 4～6，强牌约 10～16。
         /// </summary>
+        public float ResolveLoadComboHits()
+        {
+            if (loadComboHits > 0) return loadComboHits;
+            float score = EstimatePowerScore();
+            return Mathf.Clamp(Mathf.Round(4f + score * 2.8f), 4f, 16f);
+        }
+
+        /// <summary>旧接口：换算成大约秒数仅供参考显示；实际加载已改为击打驱动。</summary>
         public float ResolveImageLoadDuration()
         {
             if (imageLoadDuration > 0.01f) return imageLoadDuration;
-            float score = EstimatePowerScore();
-            return Mathf.Clamp(2.0f + score * 0.85f, 2.2f, 6.0f);
+            return ResolveLoadComboHits() * 0.45f;
         }
 
         /// <summary>综合费用与效果，得到相对“强度分”（仅用于加载时长等表现）。</summary>

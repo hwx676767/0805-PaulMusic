@@ -73,6 +73,10 @@ namespace DeusEx.Rhythm
         [Tooltip("勾选后用 IMGUI 画一个调试 HUD（分数/连击/校准等）。默认关闭，正式界面建议自己用 UGUI/UI Toolkit 做。")]
         public bool showDebugOverlay = false;
 
+        [Header("暂停")]
+        [Tooltip("切换暂停的按键。")]
+        public KeyCode pauseKey = KeyCode.P;
+
         // ---- 运行时状态 ----
         private Conductor _conductor;
         private ChartData _chart;
@@ -119,8 +123,30 @@ namespace DeusEx.Rhythm
         };
         /// <summary>歌曲是否正在播放。供战斗系统等外部逻辑判断游戏是否进行中。</summary>
         public bool IsPlaying => _conductor != null && _conductor.IsPlaying;
+        /// <summary>歌曲是否暂停中。</summary>
+        public bool IsPaused => _conductor != null && _conductor.IsPaused;
         /// <summary>停止歌曲（例如战斗中任一方血量归零、游戏结束时调用）。停止后音符不再下落与判定。</summary>
         public void StopSong() { if (_conductor != null) _conductor.Stop(); }
+
+        /// <summary>暂停/继续切换。暂停时冻结音频与判定；返回是否处于暂停。</summary>
+        public bool TogglePause()
+        {
+            if (_conductor == null || !_conductor.IsPlaying) return false;
+            if (_conductor.IsPaused) _conductor.Resume();
+            else _conductor.Pause();
+            PauseChanged?.Invoke(_conductor.IsPaused);
+            return _conductor.IsPaused;
+        }
+
+        public void SetPaused(bool paused)
+        {
+            if (_conductor == null || !_conductor.IsPlaying) return;
+            if (paused && !_conductor.IsPaused) { _conductor.Pause(); PauseChanged?.Invoke(true); }
+            else if (!paused && _conductor.IsPaused) { _conductor.Resume(); PauseChanged?.Invoke(false); }
+        }
+
+        /// <summary>暂停状态变化时触发。</summary>
+        public event System.Action<bool> PauseChanged;
 
         /// <summary>当前歌曲/节奏播放速度倍率（1=原速）。歌曲未开始时回退为 1。</summary>
         public double PlaybackSpeed => _conductor != null ? _conductor.PlaybackSpeed : 1.0;
@@ -175,6 +201,11 @@ namespace DeusEx.Rhythm
         {
             _audioOffset = PlayerPrefs.GetFloat("rg_audioOffset", 0f);
             _inputOffset = PlayerPrefs.GetFloat("rg_inputOffset", 0f);
+
+            if (FindObjectOfType<PauseMenuUI>() == null)
+                gameObject.AddComponent<PauseMenuUI>();
+            if (FindObjectOfType<CardGameplayFx>() == null)
+                gameObject.AddComponent<CardGameplayFx>();
 
             AcquirePlayfield();
             if (!_ready) return; // 没有可用的 Playfield 就直接停下，不生成任何东西
@@ -423,7 +454,8 @@ namespace DeusEx.Rhythm
         private void Update()
         {
             HandleCalibration();
-            if (_conductor == null || !_conductor.IsPlaying) return;
+            if (Input.GetKeyDown(pauseKey)) TogglePause();
+            if (_conductor == null || !_conductor.IsPlaying || _conductor.IsPaused) return;
 
             double songPos = _conductor.SongPosition;
             UpdateNotePositions(songPos);

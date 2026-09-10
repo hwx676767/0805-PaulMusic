@@ -1,4 +1,3 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,8 +5,7 @@ using UnityEngine.UI;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// 单张卡的视觉视图：插画始终完整显示；仅灰色遮罩使用 Filled 表现加载。
-    /// 卡名与说明由 CardWheelUI 输出到场景中的公共 DisplayText；无插画时卡面上显示占位色与卡名。
+    /// 单张卡视觉：插画完整显示；灰色遮罩按 <see cref="CardInstance.LoadProgress01"/> 填充（击打驱动，可断点续载）。
     /// </summary>
     [DisallowMultipleComponent]
     public class CardView : MonoBehaviour
@@ -17,19 +15,13 @@ namespace DeusEx.Rhythm
         public RectTransform rectTransform;
         public Image background;
         public Graphic outline;
-        // 保留这两个字段以兼容旧的自定义 prefab；公共信息默认写到 DisplayText。
         public TMP_Text nameText;
         public TMP_Text descriptionText;
         public TMP_Text costText;
 
         [Header("卡面加载")]
-        [Tooltip("完整显示的卡图，不使用 Filled。")]
         public Image iconImage;
-        [Tooltip("盖在卡图上方的半透明灰色遮罩；只有此 Image 使用 Filled。")]
         public Image loadingMask;
-        [Tooltip("无卡定义时的默认加载时间（秒）。有卡定义时改用 CardDefinition.ResolveImageLoadDuration。")]
-        [Min(0.05f)]
-        public float imageLoadDuration = 1.5f;
 
         [Header("可用高亮")]
         public Image topBorder;
@@ -39,7 +31,7 @@ namespace DeusEx.Rhythm
         public bool tintBackgroundWithCardColor = true;
 
         public CardInstance Card { get; private set; }
-        public bool IsImageLoaded { get; private set; }
+        public bool IsImageLoaded => Card != null && Card.IsFullyLoaded;
         public bool HasUsableBorders => topBorder != null && bottomBorder != null &&
                                         leftBorder != null && rightBorder != null;
         public event System.Action<CardView> ImageLoadCompleted;
@@ -47,8 +39,7 @@ namespace DeusEx.Rhythm
         private bool _highlightRequested;
         private bool _highlightCanPlay;
         private Color _highlightColor = Color.white;
-        private Coroutine _loadRoutine;
-        private bool _loadStarted;
+        private bool _wasFullyLoaded;
         private TMP_Text _faceTitle;
         private static Sprite _oneUnitMaskSprite;
 
@@ -83,23 +74,25 @@ namespace DeusEx.Rhythm
             CardDefinition def = card != null ? card.definition : null;
             if (costText != null) costText.text = card != null ? card.Cost.ToString() : string.Empty;
 
-            imageLoadDuration = def != null
-                ? def.ResolveImageLoadDuration()
-                : Mathf.Max(0.05f, imageLoadDuration);
-
-            // 旧 prefab 的根 Image 就是插画，不能以卡色染色，否则会压暗原图。
             if (background != null && background != iconImage && tintBackgroundWithCardColor && def != null)
                 background.color = def.color;
 
             PrepareImage(def);
+            ApplyLoadProgress(card != null ? card.LoadProgress01 : 0f, invokeCompleteEvent: false);
         }
 
-        /// <summary>只允许当前首张卡启动遮罩加载。</summary>
+        /// <summary>从 CardInstance 刷新遮罩（击打推进 / 切回续载时调用）。</summary>
+        public void RefreshLoadFromCard()
+        {
+            if (Card == null) return;
+            ApplyLoadProgress(Card.LoadProgress01, invokeCompleteEvent: true);
+        }
+
+        /// <summary>兼容旧调用：仅刷新当前进度，不再启动计时协程。</summary>
         public void SetCurrentCardLoading(bool isCurrent)
         {
-            if (!isCurrent || _loadStarted || IsImageLoaded || iconImage == null || !iconImage.enabled) return;
-            _loadStarted = true;
-            _loadRoutine = StartCoroutine(LoadMask());
+            if (!isCurrent) return;
+            RefreshLoadFromCard();
         }
 
         public void SetUsableHighlight(bool usable, Color color, bool canPlay = false)
@@ -111,10 +104,7 @@ namespace DeusEx.Rhythm
 
         private void PrepareImage(CardDefinition def)
         {
-            if (_loadRoutine != null) StopCoroutine(_loadRoutine);
-            _loadRoutine = null;
-            _loadStarted = false;
-            IsImageLoaded = false;
+            _wasFullyLoaded = false;
 
             Sprite art = def != null ? def.icon : null;
             bool hasArt = art != null;
@@ -129,7 +119,6 @@ namespace DeusEx.Rhythm
                 }
                 else
                 {
-                    // 无插画：用纯色占位，避免“空框”
                     iconImage.sprite = OneUnitMaskSprite;
                     iconImage.color = faceColor;
                 }
@@ -152,9 +141,24 @@ namespace DeusEx.Rhythm
             RestackFaceLayers();
         }
 
+        private void ApplyLoadProgress(float progress01, bool invokeCompleteEvent)
+        {
+            progress01 = Mathf.Clamp01(progress01);
+            bool full = progress01 >= 0.999f;
+
+            if (loadingMask != null)
+            {
+                loadingMask.fillAmount = 1f - progress01;
+                loadingMask.enabled = !full;
+            }
+
+            if (full && !_wasFullyLoaded && invokeCompleteEvent)
+                ImageLoadCompleted?.Invoke(this);
+            _wasFullyLoaded = full;
+        }
+
         private void RestackFaceLayers()
         {
-            // 自下而上：插画 → 卡名占位 → 加载遮罩 → 费用 → 边框
             if (iconImage != null) iconImage.transform.SetAsFirstSibling();
             if (_faceTitle != null) _faceTitle.transform.SetSiblingIndex(iconImage != null ? 1 : 0);
             if (loadingMask != null)
@@ -171,27 +175,6 @@ namespace DeusEx.Rhythm
             if (bottomBorder != null) bottomBorder.transform.SetAsLastSibling();
             if (leftBorder != null) leftBorder.transform.SetAsLastSibling();
             if (rightBorder != null) rightBorder.transform.SetAsLastSibling();
-        }
-
-        private IEnumerator LoadMask()
-        {
-            float duration = Mathf.Max(0.05f, imageLoadDuration);
-            float elapsed = 0f;
-            while (elapsed < duration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / duration);
-                if (loadingMask != null) loadingMask.fillAmount = 1f - Mathf.SmoothStep(0f, 1f, t);
-                yield return null;
-            }
-            if (loadingMask != null)
-            {
-                loadingMask.fillAmount = 0f;
-                loadingMask.enabled = false;
-            }
-            IsImageLoaded = true;
-            _loadRoutine = null;
-            ImageLoadCompleted?.Invoke(this);
         }
 
         private void EnsureVisualTemplate()
@@ -244,7 +227,6 @@ namespace DeusEx.Rhythm
             if (!show) return;
 
             _faceTitle.text = string.IsNullOrWhiteSpace(def.cardName) ? "CARD" : def.cardName;
-            // 深色底用浅字，浅色底用深字
             float lum = def.color.r * 0.299f + def.color.g * 0.587f + def.color.b * 0.114f;
             _faceTitle.color = lum > 0.55f
                 ? new Color(0.08f, 0.08f, 0.1f, 0.95f)
@@ -285,22 +267,16 @@ namespace DeusEx.Rhythm
             return go.GetComponent<Image>();
         }
 
-        /// <summary>显式创建 1×1、PPU=1 的白色 Sprite，供 UI Image 的 Filled 模式可靠裁切。</summary>
         private static Sprite OneUnitMaskSprite
         {
             get
             {
                 if (_oneUnitMaskSprite != null) return _oneUnitMaskSprite;
-
-                var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false)
-                {
-                    name = "CardLoadingMask_1Unit"
-                };
+                var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false) { name = "CardLoadingMask_1Unit" };
                 texture.SetPixel(0, 0, Color.white);
                 texture.filterMode = FilterMode.Point;
                 texture.Apply(false, true);
-                _oneUnitMaskSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f),
-                    new Vector2(0.5f, 0.5f), 1f);
+                _oneUnitMaskSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
                 _oneUnitMaskSprite.name = "CardLoadingMask_1Unit";
                 return _oneUnitMaskSprite;
             }

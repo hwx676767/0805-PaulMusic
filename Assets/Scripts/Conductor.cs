@@ -74,11 +74,32 @@ namespace DeusEx.Rhythm
         {
             if (_source != null) _source.Stop();
             IsPlaying = false;
+            IsPaused = false;
         }
+
+        /// <summary>暂停音频与歌曲时间推进（谱面判定一并冻结）。</summary>
+        public void Pause()
+        {
+            if (!IsPlaying || IsPaused) return;
+            if (_source != null && _source.isPlaying) _source.Pause();
+            IsPaused = true;
+        }
+
+        /// <summary>从暂停点继续。</summary>
+        public void Resume()
+        {
+            if (!IsPlaying || !IsPaused) return;
+            if (_source != null) _source.UnPause();
+            _lastDsp = AudioSettings.dspTime;
+            IsPaused = false;
+        }
+
+        /// <summary>当前是否处于暂停（仍算“在局中”，只是时间冻结）。</summary>
+        public bool IsPaused { get; private set; }
 
         private void Update()
         {
-            if (!IsPlaying) return;
+            if (!IsPlaying || IsPaused) return;
 
             double dsp = AudioSettings.dspTime;
 

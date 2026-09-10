@@ -40,7 +40,7 @@ namespace DeusEx.Rhythm
         [Tooltip("UI 轨道模式下序列帧特效的额外像素偏移（局部，相对 Hit 点）。")]
         public Vector2 uiEffectOffset = new Vector2(0f, 40f);
         [Tooltip("UI 轨道模式下序列帧显示尺寸（像素）。素材为 1920×1080 透明画布，取较小边长即可盖住判定点附近。")]
-        [Min(32f)] public float uiEffectSize = 220f;
+        [Min(32f)] public float uiEffectSize = 280f;
 
         [Header("同一时刻只保留一个提示")]
         [Tooltip("当本次判定与上一个相同、且上一个提示还在时，复用它并重播动画，而不是新建一个（避免相同判定在同一处越堆越多）。需要 prefab 上有 JudgementPopup 才能重播。")]
@@ -55,16 +55,28 @@ namespace DeusEx.Rhythm
         [Header("判定序列帧特效")]
         [Tooltip("命中后在对应轨道判定位置播放 Resources/effect 下的 PNG 序列帧。")]
         public bool spawnFrameEffects = true;
-        [Tooltip("序列帧播放速度。30 FPS 时 Perfect 约 0.77 秒、Good 约 0.9 秒、Miss 约 1.5 秒。")]
-        [Min(1f)] public float effectFramesPerSecond = 30f;
+        [Tooltip("Perfect/Good 等默认序列帧播放速度。")]
+        [Min(1f)] public float effectFramesPerSecond = 36f;
         [Tooltip("序列帧生成 Sprite 时使用的 Pixels Per Unit。素材为 1920×1080 透明画布，100 可让中心图案贴合判定点。")]
         [Min(1f)] public float effectPixelsPerUnit = 100f;
         [Tooltip("特效在结束前淡出的秒数。")]
-        [Min(0f)] public float effectFadeOutSeconds = 0.12f;
+        [Min(0f)] public float effectFadeOutSeconds = 0.08f;
         [Tooltip("特效的 SpriteRenderer 排序顺序，应高于音符（音符默认约为 20）。")]
         public int effectSortingOrder = 40;
         [Tooltip("Great 尚无独立序列帧时，复用 Good 特效。")]
         public bool useGoodEffectForGreat = true;
+
+        [Header("Miss 特效（素材前段多为空帧，需单独加速/放大）")]
+        [Tooltip("Miss 序列播放速度。素材约 45 帧，前段空，提速后体感更跟手。")]
+        [Min(1f)] public float missEffectFramesPerSecond = 56f;
+        [Tooltip("Miss 在 UI 轨道上的显示尺寸。图案只占 1920 画布中心一小块，需要明显放大。")]
+        [Min(32f)] public float missUiEffectSize = 560f;
+        [Tooltip("跳过 Miss 序列开头空帧数（约 0~20 几乎看不见内容）。")]
+        [Min(0)] public int missSkipLeadingFrames = 20;
+        [Tooltip("Miss 文字提示字号。")]
+        [Min(12f)] public float missLabelFontSize = 58f;
+        [Tooltip("Miss 文字提示入场放大。")]
+        [Min(1f)] public float missLabelPopScale = 1.55f;
 
         private Judgment _lastJudgment;
         private GameObject _current;
@@ -117,6 +129,7 @@ namespace DeusEx.Rhythm
 
             _current = inst;
             _currentPopup = inst.GetComponentInChildren<JudgementPopup>(true);
+            if (_currentPopup != null) _currentPopup.Begin();
             _lastJudgment = info.judgment;
 
             // prefab 自带 JudgementPopup 时由它自行销毁；否则按 fallbackLifetime 兜底，避免越积越多
@@ -156,16 +169,19 @@ namespace DeusEx.Rhythm
             string path = EffectPathFor(judgment);
             if (string.IsNullOrEmpty(path)) return;
 
-            Sprite[] frames = LoadEffectFrames(path);
+            Sprite[] frames = LoadEffectFrames(path, judgment);
             if (frames.Length == 0)
             {
                 Debug.LogWarning($"[Rhythm] 未找到判定特效序列帧：Resources/{path}");
                 return;
             }
 
+            float fps = FramesPerSecondFor(judgment);
+            float size = UiEffectSizeFor(judgment);
+
             if (manager != null && manager.UsesUiTrack && manager.uiTrack != null)
             {
-                SpawnUiFrameEffect(judgment, lane, frames);
+                SpawnUiFrameEffect(judgment, lane, frames, fps, size);
                 return;
             }
 
@@ -178,11 +194,14 @@ namespace DeusEx.Rhythm
             var renderer = effect.GetComponent<SpriteRenderer>();
             renderer.sortingOrder = effectSortingOrder;
             renderer.color = Color.white;
+            // 世界空间：Miss 图案偏小，额外放大 Sprite 本身
+            float worldScale = judgment == Judgment.Miss ? 1.65f : 1.15f;
+            effect.transform.localScale = Vector3.one * worldScale;
 
-            effect.GetComponent<JudgementFrameEffect>().Initialize(renderer, frames, effectFramesPerSecond, effectFadeOutSeconds);
+            effect.GetComponent<JudgementFrameEffect>().Initialize(renderer, frames, fps, effectFadeOutSeconds);
         }
 
-        private void SpawnUiFrameEffect(Judgment judgment, int lane, Sprite[] frames)
+        private void SpawnUiFrameEffect(Judgment judgment, int lane, Sprite[] frames, float fps, float size)
         {
             RectTransform root = EnsureUiEffectRoot();
             if (root == null) return;
@@ -194,7 +213,7 @@ namespace DeusEx.Rhythm
             rect.SetParent(root, false);
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(uiEffectSize, uiEffectSize);
+            rect.sizeDelta = new Vector2(size, size);
             rect.anchoredPosition = anchored;
             rect.SetAsLastSibling();
 
@@ -203,7 +222,7 @@ namespace DeusEx.Rhythm
             image.preserveAspect = true;
             image.color = Color.white;
 
-            go.GetComponent<JudgementUiFrameEffect>().Initialize(image, frames, effectFramesPerSecond, effectFadeOutSeconds);
+            go.GetComponent<JudgementUiFrameEffect>().Initialize(image, frames, fps, effectFadeOutSeconds);
         }
 
         private void SpawnUiJudgementLabel(Judgment judgment, int lane)
@@ -213,6 +232,7 @@ namespace DeusEx.Rhythm
 
             if (clearPreviousOnNew && _current != null) Destroy(_current);
 
+            bool isMiss = judgment == Judgment.Miss;
             string text = judgment switch
             {
                 Judgment.Perfect => "PERFECT",
@@ -225,35 +245,56 @@ namespace DeusEx.Rhythm
                 Judgment.Perfect => new Color(1f, 0.92f, 0.35f, 1f),
                 Judgment.Great => new Color(0.45f, 1f, 0.55f, 1f),
                 Judgment.Good => new Color(0.45f, 0.85f, 1f, 1f),
-                _ => new Color(1f, 0.45f, 0.45f, 1f),
+                _ => new Color(1f, 0.38f, 0.38f, 1f),
             };
+
+            float fontSize = isMiss ? missLabelFontSize : 42f;
+            float pop = isMiss ? missLabelPopScale : 1.25f;
+            float life = isMiss ? 0.55f : 0.7f;
+            float rise = isMiss ? 56f : 48f;
+            Vector2 size = isMiss ? new Vector2(420f, 80f) : new Vector2(360f, 64f);
+            Vector2 labelOffset = isMiss ? new Vector2(0f, 52f) : new Vector2(0f, 36f);
 
             var go = new GameObject($"JudgementLabelUi_{judgment}", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI), typeof(JudgementPopup));
             var rect = go.GetComponent<RectTransform>();
             rect.SetParent(root, false);
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(360f, 64f);
-            rect.anchoredPosition = ResolveUiAnchored(root, lane) + uiEffectOffset + new Vector2(0f, 36f);
+            rect.sizeDelta = size;
+            rect.anchoredPosition = ResolveUiAnchored(root, lane) + uiEffectOffset + labelOffset;
             rect.SetAsLastSibling();
 
             var tmp = go.GetComponent<TextMeshProUGUI>();
             tmp.text = text;
             tmp.color = color;
-            tmp.fontSize = 42f;
+            tmp.fontSize = fontSize;
             tmp.fontStyle = FontStyles.Bold;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.raycastTarget = false;
+            if (isMiss)
+            {
+                tmp.outlineWidth = 0.22f;
+                tmp.outlineColor = new Color(0.15f, 0f, 0f, 0.9f);
+            }
 
             var popup = go.GetComponent<JudgementPopup>();
-            popup.lifetime = 0.7f;
-            popup.riseDistance = 48f;
-            popup.popScale = 1.25f;
+            popup.lifetime = life;
+            popup.riseDistance = rise;
+            popup.popScale = pop;
+            popup.popFraction = isMiss ? 0.18f : 0.25f;
+            popup.fadeStart = isMiss ? 0.45f : 0.55f;
+            popup.Begin();
 
             _current = go;
             _currentPopup = popup;
             _lastJudgment = judgment;
         }
+
+        private float FramesPerSecondFor(Judgment judgment) =>
+            judgment == Judgment.Miss ? missEffectFramesPerSecond : effectFramesPerSecond;
+
+        private float UiEffectSizeFor(Judgment judgment) =>
+            judgment == Judgment.Miss ? missUiEffectSize : uiEffectSize;
 
         private Vector2 ResolveUiAnchored(RectTransform root, int lane)
         {
@@ -300,16 +341,24 @@ namespace DeusEx.Rhythm
             _ => null,
         };
 
-        private Sprite[] LoadEffectFrames(string path)
+        private Sprite[] LoadEffectFrames(string path, Judgment judgment)
         {
-            if (_effectFrames.TryGetValue(path, out Sprite[] cached)) return cached;
+            string cacheKey = judgment == Judgment.Miss
+                ? $"{path}#skip{missSkipLeadingFrames}"
+                : path;
+            if (_effectFrames.TryGetValue(cacheKey, out Sprite[] cached)) return cached;
 
             Texture2D[] textures = Resources.LoadAll<Texture2D>(path);
             Array.Sort(textures, (a, b) => string.CompareOrdinal(a.name, b.name));
 
-            var frames = new List<Sprite>(textures.Length);
-            foreach (Texture2D texture in textures)
+            int start = 0;
+            if (judgment == Judgment.Miss)
+                start = Mathf.Clamp(missSkipLeadingFrames, 0, Mathf.Max(0, textures.Length - 1));
+
+            var frames = new List<Sprite>(Mathf.Max(0, textures.Length - start));
+            for (int i = start; i < textures.Length; i++)
             {
+                Texture2D texture = textures[i];
                 if (texture == null) continue;
                 frames.Add(Sprite.Create(
                     texture,
@@ -321,7 +370,7 @@ namespace DeusEx.Rhythm
             }
 
             cached = frames.ToArray();
-            _effectFrames[path] = cached;
+            _effectFrames[cacheKey] = cached;
             return cached;
         }
     }

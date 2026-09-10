@@ -41,14 +41,16 @@ namespace DeusEx.Rhythm
         public string displayTextFormat = "<b>{0}</b>\n{1}\n{2}";
 
         [Header("参与感反馈")]
-        [Tooltip("当前卡变为可打出时，首张卡短暂放大。")]
+        [Tooltip("当前卡变为可打出时，首张卡短暂轻微放大（勿过大，以免挡音游区）。")]
         public bool punchWhenAffordable = true;
-        [Tooltip("可打出时的放大倍数。")]
-        public float affordablePunchScale = 1.18f;
-        [Tooltip("出牌成功时屏幕中央弹出效果文案。")]
+        [Tooltip("可打出时的放大倍数（建议 ≤1.08）。")]
+        public float affordablePunchScale = 1.06f;
+        [Tooltip("出牌成功时在卡牌侧弹出效果文案（不挡判定区）。")]
         public bool showPlayToast = true;
         [Tooltip("出牌提示停留时间（秒）。")]
-        public float playToastDuration = 1.35f;
+        public float playToastDuration = 1.2f;
+        [Tooltip("出牌时唱片旋转闪光（挂在卡牌轮盘旁）。")]
+        public bool showVinylBurst = true;
         [Tooltip("可打出提示的颜色。")]
         public Color canPlayHintColor = new Color(1f, 0.92f, 0.35f, 1f);
         [Tooltip("不可打出提示的颜色。")]
@@ -89,10 +91,10 @@ namespace DeusEx.Rhythm
         [Header("动画")]
         [Tooltip("卡牌移动/缩放/旋转向目标插值的速度（越大越快）。")]
         public float lerpSpeed = 11f;
-        [Tooltip("被打出的牌飞出方向与距离（相对第一张位置）。")]
-        public Vector2 playExitOffset = new Vector2(0f, 260f);
+        [Tooltip("被打出的牌飞出方向与距离（相对第一张；保持在右侧卡牌区，勿飞向音游中央）。")]
+        public Vector2 playExitOffset = new Vector2(120f, 80f);
         [Tooltip("被弃掉的牌飞出方向与距离（相对第一张位置）。")]
-        public Vector2 discardExitOffset = new Vector2(-220f, -180f);
+        public Vector2 discardExitOffset = new Vector2(40f, -140f);
         [Tooltip("费用不足被拦截时，第一张卡的抖动幅度（像素）。")]
         public float shakeAmplitude = 16f;
         [Tooltip("抖动持续时间（秒）。")]
@@ -133,6 +135,11 @@ namespace DeusEx.Rhythm
         private float _toastTimeLeft;
         private string _toastOverride;
         private float _toastOverrideLeft;
+        private RectTransform _vinylBurst;
+        private Image _vinylRing;
+        private TMP_Text _vinylLabel;
+        private float _vinylTimeLeft;
+        private const float VinylBurstDuration = 0.7f;
 
         /// <summary>一张卡的可视对象（CardView 组件）与它当前的动画目标状态。</summary>
         private class CardSlot
@@ -172,6 +179,7 @@ namespace DeusEx.Rhythm
                 cardSystem.CardPlayed += OnCardPlayed;
                 cardSystem.CardDiscarded += OnCardDiscarded;
                 cardSystem.CardPlayBlocked += OnCardPlayBlocked;
+                cardSystem.ActiveCardLoadChanged += OnActiveCardLoadChanged;
             }
             if (manager != null) manager.ComboChanged += OnComboChanged;
 
@@ -186,6 +194,7 @@ namespace DeusEx.Rhythm
                 cardSystem.CardPlayed -= OnCardPlayed;
                 cardSystem.CardDiscarded -= OnCardDiscarded;
                 cardSystem.CardPlayBlocked -= OnCardPlayBlocked;
+                cardSystem.ActiveCardLoadChanged -= OnActiveCardLoadChanged;
             }
             if (manager != null) manager.ComboChanged -= OnComboChanged;
         }
@@ -197,6 +206,7 @@ namespace DeusEx.Rhythm
             _pendingExitUid = c != null ? c.uid : -1;
             _pendingExitWasPlay = true;
             ShowPlayedFeedback(c);
+            if (showVinylBurst) PlayVinylBurst();
         }
 
         private void OnCardDiscarded(CardInstance c)
@@ -223,9 +233,25 @@ namespace DeusEx.Rhythm
             bool loading = cardSystem != null && !cardSystem.IsActiveCardReady;
             string playKey = KeyLabel(cardSystem.playKey);
             string reason = loading
-                ? $"Still loading… wait, then press <b>{playKey}</b>"
+                ? FormatLoadHint(cardSystem.ActiveCard) + $"\nKeep hitting notes, then press <b>{playKey}</b>"
                 : $"Need {c.Cost} Combo (have {(manager != null ? manager.Combo : 0)})";
             FlashDisplayOverride($"<color=#ff8888>Cannot play {c.DisplayName}</color>\n{reason}", 1.1f);
+        }
+
+        private void OnActiveCardLoadChanged(CardInstance card)
+        {
+            if (card == null) return;
+            foreach (var s in _slots)
+            {
+                if (s.exiting || s.Card == null || s.Card.uid != card.uid || s.view == null) continue;
+                bool wasReady = s.view.IsImageLoaded;
+                s.view.RefreshLoadFromCard();
+                if (!wasReady && card.IsFullyLoaded)
+                    FlashReadyPrompt(card);
+                break;
+            }
+            UpdateAffordability(manager != null ? manager.Combo : 0);
+            UpdateDisplayText();
         }
 
         // ---------------- 与手牌同步（核心：补位/旋转/进出场） ----------------
@@ -247,8 +273,8 @@ namespace DeusEx.Rhythm
                     bool wasPlayed = s.Card != null && s.Card.uid == _pendingExitUid && _pendingExitWasPlay;
                     Vector2 baseSlot = SlotPos(0);
                     s.targetPos = baseSlot + (wasPlayed ? playExitOffset : discardExitOffset);
-                    s.targetScale = wasPlayed ? 1.15f : 0.7f;
-                    s.targetRot = 0f;
+                    s.targetScale = wasPlayed ? 1.08f : 0.7f;
+                    s.targetRot = wasPlayed ? -55f : 12f;
                     s.targetAlpha = 0f;
                 }
             }
@@ -270,6 +296,7 @@ namespace DeusEx.Rhythm
 
             ReorderCardDepth();
             UpdateActiveCardLoading();
+            RefreshAllLoadVisuals();
             RefreshOutlines();
             UpdateAffordability(manager != null ? manager.Combo : 0);
             UpdateDisplayText();
@@ -398,6 +425,7 @@ namespace DeusEx.Rhythm
             }
 
             TickPlayToast();
+            TickVinylBurst();
         }
 
         // ---------------- 费用够不够的文本上色 ----------------
@@ -559,8 +587,17 @@ namespace DeusEx.Rhythm
             {
                 if (s.exiting || s.view == null || s.Card == null || !s.isActive) continue;
                 s.view.SetCurrentCardLoading(true);
-                if (cardSystem != null) cardSystem.SetActiveCardReady(s.Card, s.view.IsImageLoaded);
+                if (cardSystem != null) cardSystem.SetActiveCardReady(s.Card, s.Card.IsFullyLoaded);
                 return;
+            }
+        }
+
+        private void RefreshAllLoadVisuals()
+        {
+            foreach (var s in _slots)
+            {
+                if (s.exiting || s.view == null || s.Card == null) continue;
+                s.view.RefreshLoadFromCard();
             }
         }
 
@@ -569,11 +606,6 @@ namespace DeusEx.Rhythm
             if (view == null || view.Card == null || cardSystem == null) return;
             cardSystem.SetActiveCardReady(view.Card, true);
             UpdateAffordability(manager != null ? manager.Combo : 0);
-
-            // 加载完成：明显提示按键（仅当前首张）
-            if (cardSystem.ActiveCard != null && view.Card.uid == cardSystem.ActiveCard.uid)
-                FlashReadyPrompt(view.Card);
-
             UpdateDisplayText();
         }
 
@@ -587,10 +619,10 @@ namespace DeusEx.Rhythm
             bool afford = combo >= card.Cost;
 
             string line = afford
-                ? $"<size=120%><b>READY!</b></size>\nPress <b>{playKey}</b> to PLAY  ·  <b>{discardKey}</b> to Discard"
-                : $"<size=110%><b>LOADED</b></size>\nNeed <b>{card.Cost}</b> Combo (now {combo}) · then press <b>{playKey}</b>\n<b>{discardKey}</b> = Discard";
+                ? $"<size=115%><b>RECORD READY!</b></size>\nPress <b>{playKey}</b> to PLAY  ·  <b>{discardKey}</b> Discard"
+                : $"<size=110%><b>LOADED</b></size>\nNeed <b>{card.Cost}</b> Combo (now {combo}) · then <b>{playKey}</b>\n<b>{discardKey}</b> = Discard";
 
-            FlashDisplayOverride(Colored(line, afford ? canPlayHintColor : readyOutlineColor), 1.6f);
+            FlashDisplayOverride(Colored(line, afford ? canPlayHintColor : readyOutlineColor), 1.4f);
             if (punchWhenAffordable && afford)
                 _activePunch = 1f;
         }
@@ -644,18 +676,27 @@ namespace DeusEx.Rhythm
             if (!ready)
             {
                 return Colored(
-                    $"<b>LOADING…</b>  then press <size=115%><b>[{playKey}]</b></size> to PLAY  /  <b>[{discardKey}]</b> Discard",
+                    $"<b>{FormatLoadHint(active)}</b>\nHit notes to spin this record  ·  <b>[{discardKey}]</b> switch",
                     cannotPlayHintColor);
             }
             if (!afford)
             {
                 return Colored(
-                    $"Combo <b>{combo}/{active.Cost}</b>  ·  keep hitting notes, then <size=115%><b>[{playKey}]</b></size>  ·  <b>[{discardKey}]</b> Discard",
+                    $"Combo <b>{combo}/{active.Cost}</b>  ·  keep hitting, then <size=115%><b>[{playKey}]</b></size>  ·  <b>[{discardKey}]</b>",
                     cannotPlayHintColor);
             }
             return Colored(
-                $"<size=120%><b>READY — press [{playKey}] to PLAY</b></size>  (cost {active.Cost} Combo)  ·  <b>[{discardKey}]</b> Discard",
+                $"<size=115%><b>READY — [{playKey}] PLAY</b></size>  (cost {active.Cost})  ·  <b>[{discardKey}]</b> Discard",
                 canPlayHintColor);
+        }
+
+        private static string FormatLoadHint(CardInstance card)
+        {
+            if (card == null) return "LOADING…";
+            float need = Mathf.Max(0.01f, card.loadRequired);
+            float done = Mathf.Min(need, card.LoadHitsDone);
+            int pct = Mathf.RoundToInt(card.LoadProgress01 * 100f);
+            return $"LOAD {done:0.#}/{need:0.#} hits ({pct}%)";
         }
 
         private void ShowPlayedFeedback(CardInstance card)
@@ -689,11 +730,12 @@ namespace DeusEx.Rhythm
             var go = new GameObject("CardPlayToast", typeof(RectTransform), typeof(CanvasGroup));
             var rect = go.GetComponent<RectTransform>();
             rect.SetParent(parent, false);
-            rect.anchorMin = new Vector2(0.5f, 0.55f);
-            rect.anchorMax = new Vector2(0.5f, 0.55f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(900f, 160f);
-            rect.anchoredPosition = Vector2.zero;
+            // 锚在右侧卡牌区，避免挡住中央/底部判定轨
+            rect.anchorMin = new Vector2(1f, 0.28f);
+            rect.anchorMax = new Vector2(1f, 0.28f);
+            rect.pivot = new Vector2(1f, 0.5f);
+            rect.sizeDelta = new Vector2(420f, 120f);
+            rect.anchoredPosition = new Vector2(-36f, 0f);
             _toastGroup = go.GetComponent<CanvasGroup>();
             _toastGroup.alpha = 0f;
             _toastGroup.blocksRaycasts = false;
@@ -706,8 +748,8 @@ namespace DeusEx.Rhythm
             tmpRect.offsetMin = Vector2.zero;
             tmpRect.offsetMax = Vector2.zero;
             _toastText = tmpGo.AddComponent<TextMeshProUGUI>();
-            _toastText.alignment = TextAlignmentOptions.Center;
-            _toastText.fontSize = 42f;
+            _toastText.alignment = TextAlignmentOptions.Right;
+            _toastText.fontSize = 28f;
             _toastText.fontStyle = FontStyles.Bold;
             _toastText.color = Color.white;
             _toastText.raycastTarget = false;
@@ -723,7 +765,7 @@ namespace DeusEx.Rhythm
             _toastGroup.alpha = 1f;
             _toastTimeLeft = playToastDuration;
             if (_toastText.transform.parent is RectTransform rt)
-                rt.localScale = Vector3.one * 1.12f;
+                rt.localScale = Vector3.one * 1.04f;
         }
 
         private void TickPlayToast()
@@ -734,9 +776,111 @@ namespace DeusEx.Rhythm
             _toastGroup.alpha = t;
             if (_toastText != null && _toastText.transform.parent is RectTransform rt)
             {
-                float s = Mathf.Lerp(1f, 1.12f, t);
+                float s = Mathf.Lerp(1f, 1.04f, t);
                 rt.localScale = new Vector3(s, s, 1f);
             }
+        }
+
+        private void PlayVinylBurst()
+        {
+            EnsureVinylBurst();
+            if (_vinylBurst == null) return;
+            // 始终贴在当前首张卡旁（右侧），不飞向屏幕中央判定区
+            _vinylBurst.anchoredPosition = SlotPos(0) + new Vector2(90f, 20f);
+            _vinylBurst.gameObject.SetActive(true);
+            _vinylBurst.localRotation = Quaternion.identity;
+            _vinylBurst.localScale = Vector3.one * 0.9f;
+            if (_vinylRing != null)
+            {
+                var c = _vinylRing.color;
+                c.a = 1f;
+                _vinylRing.color = c;
+            }
+            if (_vinylLabel != null)
+            {
+                _vinylLabel.color = new Color(1f, 0.95f, 0.55f, 1f);
+                _vinylLabel.rectTransform.localScale = Vector3.one;
+            }
+            _vinylTimeLeft = VinylBurstDuration;
+        }
+
+        private void EnsureVinylBurst()
+        {
+            if (_vinylBurst != null) return;
+            EnsureCanvasAndRoot();
+            Transform parent = _wheelRoot != null ? _wheelRoot : transform;
+
+            var go = new GameObject("VinylBurst", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            _vinylBurst = go.GetComponent<RectTransform>();
+            _vinylBurst.SetParent(parent, false);
+            _vinylBurst.anchorMin = _vinylBurst.anchorMax = new Vector2(0.5f, 0.5f);
+            _vinylBurst.pivot = new Vector2(0.5f, 0.5f);
+            _vinylBurst.sizeDelta = new Vector2(150f, 150f);
+            _vinylBurst.anchoredPosition = SlotPos(0) + new Vector2(90f, 20f);
+            _vinylRing = go.GetComponent<Image>();
+            _vinylRing.sprite = BuildRingSprite();
+            _vinylRing.color = new Color(1f, 0.88f, 0.35f, 1f);
+            _vinylRing.raycastTarget = false;
+
+            var labelGo = new GameObject("VinylLabel", typeof(RectTransform));
+            var labelRect = labelGo.GetComponent<RectTransform>();
+            labelRect.SetParent(_vinylBurst, false);
+            labelRect.anchorMin = labelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            labelRect.pivot = new Vector2(0.5f, 0.5f);
+            labelRect.sizeDelta = new Vector2(140f, 40f);
+            labelRect.anchoredPosition = Vector2.zero;
+            _vinylLabel = labelGo.AddComponent<TextMeshProUGUI>();
+            _vinylLabel.alignment = TextAlignmentOptions.Center;
+            _vinylLabel.fontSize = 26f;
+            _vinylLabel.fontStyle = FontStyles.Bold;
+            _vinylLabel.text = "PLAY!";
+            _vinylLabel.color = new Color(1f, 0.95f, 0.55f, 1f);
+            _vinylLabel.raycastTarget = false;
+
+            go.SetActive(false);
+        }
+
+        private void TickVinylBurst()
+        {
+            if (_vinylBurst == null || _vinylTimeLeft <= 0f) return;
+            _vinylTimeLeft -= Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(_vinylTimeLeft / VinylBurstDuration);
+            _vinylBurst.Rotate(0f, 0f, 520f * Time.unscaledDeltaTime);
+            // 先略放大再收回，幅度控制在卡牌区附近
+            float s = Mathf.Lerp(1.35f, 0.85f, 1f - t);
+            _vinylBurst.localScale = new Vector3(s, s, 1f);
+            if (_vinylRing != null)
+            {
+                var c = _vinylRing.color;
+                c.a = Mathf.Clamp01(1.1f * t);
+                _vinylRing.color = c;
+            }
+            if (_vinylLabel != null)
+            {
+                var lc = _vinylLabel.color;
+                lc.a = Mathf.Clamp01(t * 1.2f);
+                _vinylLabel.color = lc;
+                // 文字反向转，保持大致可读
+                _vinylLabel.rectTransform.localRotation = Quaternion.Inverse(_vinylBurst.localRotation);
+            }
+            if (_vinylTimeLeft <= 0f) _vinylBurst.gameObject.SetActive(false);
+        }
+
+        private static Sprite BuildRingSprite()
+        {
+            const int size = 64;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            float cx = (size - 1) * 0.5f;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float d = Vector2.Distance(new Vector2(x, y), new Vector2(cx, cx));
+                float a = (d > 18f && d < 28f) ? 1f : 0f;
+                if (d > 10f && d < 14f) a = Mathf.Max(a, 0.55f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, true);
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 64f);
         }
 
         private static string KeyLabel(KeyCode key)

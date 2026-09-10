@@ -88,6 +88,8 @@ namespace DeusEx.Rhythm
 
             if (requireSongPlaying && (manager == null || !manager.IsPlaying))
                 return;
+            if (manager != null && manager.IsPaused)
+                return;
 
             float dt = Time.deltaTime;
             switch (Phase)

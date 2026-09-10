@@ -6,20 +6,51 @@ namespace DeusEx.Rhythm
     /// <summary>
     /// 一张牌在运行时的实例。用唯一 id 标识（即使同一张 <see cref="CardDefinition"/> 被复制多份，
     /// 各实例也能区分开），方便 UI 跨"补位/洗牌"稳定地追踪同一张牌，也为后续给单张牌加临时状态预留。
+    /// 卡面加载进度存在实例上：弃牌再抽回时从断点续载。
     /// </summary>
     public class CardInstance
     {
         public readonly int uid;
         public readonly CardDefinition definition;
+        /// <summary>加载满这张牌需要的有效击打量（由卡强度决定）。</summary>
+        public readonly float loadRequired;
+
+        /// <summary>0~1，靠命中音符累积；切牌/弃牌再回来会保留。</summary>
+        public float LoadProgress01 { get; private set; }
 
         public CardInstance(int uid, CardDefinition definition)
         {
             this.uid = uid;
             this.definition = definition;
+            loadRequired = definition != null ? definition.ResolveLoadComboHits() : 6f;
+            LoadProgress01 = 0f;
         }
 
         public string DisplayName => definition != null ? definition.cardName : "(空)";
         public int Cost => definition != null ? Mathf.Max(0, definition.cost) : 0;
+        public bool IsFullyLoaded => LoadProgress01 >= 0.999f;
+        public float LoadHitsDone => LoadProgress01 * loadRequired;
+
+        /// <summary>命中音符时推进加载。返回是否刚从「未满」变为「满」。</summary>
+        public bool AddLoadFromJudgment(Judgment judgment)
+        {
+            if (IsFullyLoaded || judgment == Judgment.Miss) return false;
+            float before = LoadProgress01;
+            float gain = judgment switch
+            {
+                Judgment.Perfect => 1f,
+                Judgment.Great => 1f,
+                Judgment.Good => 0.75f,
+                _ => 0f,
+            };
+            if (gain <= 0f || loadRequired <= 0.01f)
+            {
+                LoadProgress01 = 1f;
+                return before < 0.999f;
+            }
+            LoadProgress01 = Mathf.Clamp01(LoadProgress01 + gain / loadRequired);
+            return before < 0.999f && IsFullyLoaded;
+        }
     }
 
     /// <summary>
@@ -58,7 +89,7 @@ namespace DeusEx.Rhythm
         public bool reshuffleDiscardWhenEmpty = true;
         [Tooltip("仅在歌曲进行中才允许出牌/弃牌（留空 manager 或未开始时可自行放开）。")]
         public bool requireSongPlaying = false;
-        [Tooltip("当前首张卡需要完成卡面加载后才能打出。由 CardWheelUI 报告加载状态。")]
+        [Tooltip("当前首张卡需要完成「击打加载」后才能打出。加载进度存在 CardInstance 上，切牌可续载。")]
         public bool requireActiveCardVisualLoad = true;
 
         [Header("按键")]
@@ -77,7 +108,7 @@ namespace DeusEx.Rhythm
         private readonly List<CardInstance> _discardPile = new List<CardInstance>();
         private int _nextUid;
         private bool _built;
-        // 有 CardWheelUI 时由 UI 在当前卡的图片加载期间设为 false；无 UI 时保持 true，兼容原有逻辑。
+        // 有 UI 时仍可用 SetActiveCardReady 同步；主判定以 ActiveCard.IsFullyLoaded 为准。
         private int _activeReadyUid = -1;
         private bool _activeCardReady = true;
 
@@ -90,9 +121,15 @@ namespace DeusEx.Rhythm
         public int DiscardPileCount => _discardPile.Count;
         public int HandCount => _hand.Count;
 
-        /// <summary>当前可出牌卡是否完成了它的视觉加载。</summary>
-        public bool IsActiveCardReady => !requireActiveCardVisualLoad || ActiveCard == null ||
-            (_activeReadyUid == ActiveCard.uid && _activeCardReady);
+        /// <summary>当前可出牌卡是否完成了击打加载。</summary>
+        public bool IsActiveCardReady
+        {
+            get
+            {
+                if (!requireActiveCardVisualLoad || ActiveCard == null) return true;
+                return ActiveCard.IsFullyLoaded;
+            }
+        }
 
         // ---- 对外事件（供 UI 订阅，避免直接耦合） ----
         /// <summary>手牌内容发生变化（出牌/弃牌补位、开局发牌）后触发，供 UI 重建/刷新轮盘。</summary>
@@ -101,10 +138,12 @@ namespace DeusEx.Rhythm
         public event System.Action<CardInstance> CardPlayed;
         /// <summary>弃掉一张牌时触发，参数为被弃掉的牌。</summary>
         public event System.Action<CardInstance> CardDiscarded;
-        /// <summary>出牌被拦截（combo 不足）时触发，参数为想打出的牌。供 UI 做"费用不足"反馈。</summary>
+        /// <summary>出牌被拦截（combo 不足 / 未加载完）时触发。</summary>
         public event System.Action<CardInstance> CardPlayBlocked;
         /// <summary>牌堆数量（抽牌堆/弃牌堆）变化时触发，供 UI 刷新计数。</summary>
         public event System.Action PilesChanged;
+        /// <summary>当前首张卡的加载进度变化（命中推进或切牌刷新），参数为该卡实例。</summary>
+        public event System.Action<CardInstance> ActiveCardLoadChanged;
 
         private void Awake()
         {
@@ -112,16 +151,50 @@ namespace DeusEx.Rhythm
             BuildAndDeal();
         }
 
+        private void OnEnable()
+        {
+            if (manager == null) manager = FindObjectOfType<RhythmGameManager>();
+            if (manager != null) manager.Judged += OnNoteJudged;
+        }
+
+        private void OnDisable()
+        {
+            if (manager != null) manager.Judged -= OnNoteJudged;
+        }
+
         private void Start()
         {
             // 开局补一次通知：此时所有 UI 的 OnEnable 都已订阅，能收到初始手牌与牌堆数量。
             HandChanged?.Invoke();
             PilesChanged?.Invoke();
+            NotifyActiveLoad();
+        }
+
+        /// <summary>只有当前首张卡会吃到命中进度；Miss 不加载。进度写在 CardInstance 上可跨切牌保留。</summary>
+        private void OnNoteJudged(Judgment judgment)
+        {
+            CardInstance active = ActiveCard;
+            if (active == null) return;
+            bool becameReady = active.AddLoadFromJudgment(judgment);
+            _activeReadyUid = active.uid;
+            _activeCardReady = active.IsFullyLoaded;
+            ActiveCardLoadChanged?.Invoke(active);
+            if (becameReady) NotifyActiveLoad();
+        }
+
+        private void NotifyActiveLoad()
+        {
+            CardInstance active = ActiveCard;
+            if (active == null) return;
+            _activeReadyUid = active.uid;
+            _activeCardReady = active.IsFullyLoaded;
+            ActiveCardLoadChanged?.Invoke(active);
         }
 
         private void Update()
         {
             if (requireSongPlaying && (manager == null || !manager.IsPlaying)) return;
+            if (manager != null && manager.IsPaused) return;
 
             if (Input.GetKeyDown(playKey)) TryPlayActiveCard();
             else if (Input.GetKeyDown(discardKey)) DiscardActiveCard();
@@ -228,15 +301,16 @@ namespace DeusEx.Rhythm
             CardPlayed?.Invoke(active);
             HandChanged?.Invoke();
             PilesChanged?.Invoke();
+            NotifyActiveLoad();
             return true;
         }
 
-        /// <summary>仅供卡牌 UI 报告当前首张卡的图片加载状态，不改变任何牌库或效果规则。</summary>
+        /// <summary>兼容旧 UI：仍可调用，但就绪状态以 <see cref="CardInstance.IsFullyLoaded"/> 为准。</summary>
         public void SetActiveCardReady(CardInstance card, bool ready)
         {
             if (card == null || ActiveCard == null || card.uid != ActiveCard.uid) return;
             _activeReadyUid = card.uid;
-            _activeCardReady = ready;
+            _activeCardReady = ready || card.IsFullyLoaded;
         }
 
         /// <summary>
@@ -255,6 +329,7 @@ namespace DeusEx.Rhythm
             CardDiscarded?.Invoke(active);
             HandChanged?.Invoke();
             PilesChanged?.Invoke();
+            NotifyActiveLoad();
             return true;
         }
 

@@ -40,11 +40,20 @@ namespace DeusEx.Rhythm
         private SpriteRenderer[] _sprites;
         private float[] _spriteAlpha;
         private bool _ready;
+        private bool _begun;
 
-        // 用 Start：此时 Spawner 已经把本物体重新设父并摆好了局部位置/缩放，
-        // 而 Instantiate 触发的 Awake/OnEnable 早于 Spawner 的摆放，不能在那里采样基准。
         private void Start()
         {
+            // Spawner 会在摆好位置后立刻 Begin()；若未调用则兜底启动，避免旧 prefab 卡住。
+            if (!_begun) Begin();
+        }
+
+        /// <summary>
+        /// 在摆好父级/位置后立即开播（不等下一帧 Start），消除一帧延迟。
+        /// </summary>
+        public void Begin()
+        {
+            _begun = true;
             _elapsed = 0f;
             _baseScale = transform.localScale;
             _startLocalPos = transform.localPosition;
@@ -64,7 +73,7 @@ namespace DeusEx.Rhythm
         private void Update()
         {
             if (!_ready) return;
-            _elapsed += Time.deltaTime;
+            _elapsed += Time.unscaledDeltaTime;
             float t = lifetime > 0f ? Mathf.Clamp01(_elapsed / lifetime) : 1f;
             Apply(t);
             if (_elapsed >= lifetime) Destroy(gameObject);
@@ -73,7 +82,11 @@ namespace DeusEx.Rhythm
         /// <summary>从头重播一次弹出动画（用于“判定与上一个相同则复用而非新建”）。以当前 localPosition 作为新起点，避免连续重播时位置漂移。</summary>
         public void Replay()
         {
-            if (!_ready) return; // 还没 Start 过就别动，Start 会自己播一次
+            if (!_ready)
+            {
+                Begin();
+                return;
+            }
             _elapsed = 0f;
             _startLocalPos = transform.localPosition;
             Apply(0f);

@@ -35,8 +35,10 @@ namespace DeusEx.Rhythm
         public float missDamage = 6f;
 
         [Header("行为")]
-        [Tooltip("任一方血量归零时停止歌曲（游戏结束）。")]
+        [Tooltip("任一方血量归零时停止歌曲（游戏结束）。Demo 录屏可关掉。")]
         public bool stopSongOnDefeat = true;
+        [Tooltip("任一方血量归零时是否正式结束对局（锁伤害、触发胜负事件）。Demo 阶段可关掉以便一直打、一直记数据。")]
+        public bool endRunOnDefeat = true;
 
         [Header("调试显示（默认关闭，正式 UI 请改用 HealthBar 组件订阅事件）")]
         [Tooltip("勾选后用 IMGUI 在屏幕顶/底画出敌人/玩家血条与胜负提示，方便零布置直接测试。")]
@@ -132,7 +134,7 @@ namespace DeusEx.Rhythm
             if (IsOver || amount <= 0f) return;
             EnemyHealth = Mathf.Max(0f, EnemyHealth - amount);
             EnemyHealthChanged?.Invoke(EnemyHealth, enemyMaxHealth);
-            if (EnemyHealth <= 0f) EndGame(playerWon: true);
+            if (EnemyHealth <= 0f && endRunOnDefeat) EndGame(playerWon: true);
         }
 
         /// <summary>对玩家造成伤害（先消耗护盾，再乘以 <see cref="DamageTakenMultiplier"/>）。</summary>
@@ -152,7 +154,7 @@ namespace DeusEx.Rhythm
 
             PlayerHealth = Mathf.Max(0f, PlayerHealth - amount);
             PlayerHealthChanged?.Invoke(PlayerHealth, playerMaxHealth);
-            if (PlayerHealth <= 0f) EndGame(playerWon: false);
+            if (PlayerHealth <= 0f && endRunOnDefeat) EndGame(playerWon: false);
         }
 
         /// <summary>给玩家回血（上限为最大血量）。</summary>
