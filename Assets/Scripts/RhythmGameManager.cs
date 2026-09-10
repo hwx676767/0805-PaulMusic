@@ -503,9 +503,15 @@ namespace DeusEx.Rhythm
 
                 if (_useUiTrack)
                 {
-                    float progress = leadTime > 1e-5 ? Mathf.Clamp01((float)(dt / leadTime)) : 0f;
+                    // linear: 0 刚出生(远) → 1 到判定(近)；ease>1 时远处慢、近处快
+                    float linear = leadTime > 1e-5 ? 1f - Mathf.Clamp01((float)(dt / leadTime)) : 1f;
+                    float progress = uiTrack.TimeToSampleProgress(linear);
                     if (uiTrack.TrySample(an.data.lane, progress, out Vector2 anchored) && an.headUi != null)
+                    {
                         an.headUi.anchoredPosition = anchored;
+                        float s = uiTrack.ScaleForSampleProgress(progress);
+                        an.headUi.localScale = new Vector3(s, s, 1f);
+                    }
                 }
                 else
                 {

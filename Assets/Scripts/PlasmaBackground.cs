@@ -26,16 +26,19 @@ namespace DeusEx.Rhythm
         [Tooltip("额外放大余量，>1 用来保证完全铺满边缘。")]
         public float padding = 1.1f;
 
-        [Tooltip("每帧自动贴合相机（会覆盖你手动拖的位置）。需要手调位置时请关掉。")]
-        public bool fitEveryFrame = true;
+        [Tooltip("运行时每帧自动贴合相机（会覆盖手动拖的位置）。手调位置时请关掉，或只改 Manual Offset。")]
+        public bool fitEveryFrame = false;
 
-        [Tooltip("开启后：自动 Fit 只改朝向与尺寸，位置 = 相机前方 distance + 下方 manualOffset。")]
+        [Tooltip("编辑模式下是否也自动贴合。默认关闭，否则 Scene 里一拖就被拉回去。")]
+        public bool autoFitInEditMode = false;
+
+        [Tooltip("开启后：位置 = 相机前方 distance + Manual Offset。")]
         public bool useManualOffset = true;
 
-        [Tooltip("相对相机铺满位置的额外偏移（世界空间）。可在 Scene 里拖物体，运行时也会保留相对偏移。")]
+        [Tooltip("相对相机默认铺满点的偏移。改这个即可挪背景，且不会被每帧清掉。")]
         public Vector3 manualOffset = Vector3.zero;
 
-        [Tooltip("勾选后不再强制对齐相机朝向，完全使用物体自己的旋转。")]
+        [Tooltip("勾选后不再强制对齐相机朝向。")]
         public bool keepManualRotation = false;
 
         private MeshFilter _meshFilter;
@@ -45,21 +48,29 @@ namespace DeusEx.Rhythm
         private void OnEnable()
         {
             EnsureSetup();
-            Fit();
+            if (ShouldAutoFit()) Fit(applyPosition: true);
+            else Fit(applyPosition: false);
         }
 
         private void Update()
         {
-            if (fitEveryFrame) Fit();
+            if (ShouldAutoFit()) Fit(applyPosition: true);
+            else Fit(applyPosition: false); // 仍更新尺寸，不改位置
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // Inspector 改 offset 时立刻预览
-            if (!Application.isPlaying && fitEveryFrame) Fit();
+            if (!Application.isPlaying && useManualOffset && ShouldAutoFit())
+                Fit(applyPosition: true);
         }
 #endif
+
+        private bool ShouldAutoFit()
+        {
+            if (Application.isPlaying) return fitEveryFrame;
+            return autoFitInEditMode && fitEveryFrame;
+        }
 
         private void EnsureSetup()
         {
@@ -103,8 +114,8 @@ namespace DeusEx.Rhythm
 #endif
         }
 
-        /// <summary>按相机重算铺满尺寸；位置受 manualOffset / fitEveryFrame 控制。</summary>
-        public void Fit()
+        /// <summary>更新铺满尺寸；是否改写位置由 applyPosition / ShouldAutoFit 决定。</summary>
+        public void Fit(bool applyPosition)
         {
             Camera cam = ResolveCamera();
             if (cam == null) return;
@@ -123,12 +134,12 @@ namespace DeusEx.Rhythm
                 width = height * cam.aspect;
             }
 
-            Vector3 fittedPos = cam.transform.position + cam.transform.forward * d;
-            if (useManualOffset) fittedPos += manualOffset;
-
-            if (fitEveryFrame || !Application.isPlaying)
+            if (applyPosition)
+            {
+                Vector3 fittedPos = cam.transform.position + cam.transform.forward * d;
+                if (useManualOffset) fittedPos += manualOffset;
                 transform.position = fittedPos;
-            // fitEveryFrame 关闭时：完全保留你手动拖好的 Transform.position
+            }
 
             if (!keepManualRotation)
                 transform.rotation = cam.transform.rotation;
@@ -136,10 +147,9 @@ namespace DeusEx.Rhythm
             transform.localScale = new Vector3(width * padding, height * padding, 1f);
         }
 
-        /// <summary>
-        /// 在 Scene 视图拖动物体后调用：把当前位置记成相对相机铺满点的 manualOffset，
-        /// 这样开启 fitEveryFrame 时也不会跳回原处。
-        /// </summary>
+        [ContextMenu("Fit Now (apply position)")]
+        public void FitNow() => Fit(applyPosition: true);
+
         [ContextMenu("Capture Offset From Current Position")]
         public void CaptureOffsetFromCurrentTransform()
         {
@@ -149,6 +159,7 @@ namespace DeusEx.Rhythm
             Vector3 fittedPos = cam.transform.position + cam.transform.forward * d;
             manualOffset = transform.position - fittedPos;
             useManualOffset = true;
+            fitEveryFrame = true; // 之后用 offset 跟随，不再丢你的偏移
         }
 
         private static Mesh BuildQuad()
@@ -187,7 +198,7 @@ namespace DeusEx.Rhythm
                 }
             }
             EnsureSetup();
-            Fit();
+            Fit(applyPosition: true);
         }
 #endif
     }

@@ -7,58 +7,65 @@ using UnityEditor;
 namespace DeusEx.Rhythm
 {
     /// <summary>
-    /// Boss glitch：保留腿部青雾材质，并在左下（角色前）/ 右上（角色后）生成实体数据矩形。
+    /// Boss 实体 glitch 方块：稀疏、偶发闪现。
+    /// 位置由 Inspector 的 Center/Size（相对 Boss 精灵 extents）驱动——改数值会立刻改绿色框与方块。
+    /// Scene 里用绿色手柄拖，也会写回这些数值。
     /// </summary>
+    [ExecuteAlways]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class BossGlitchDriver : MonoBehaviour
     {
-        [Tooltip("留空则用 Assets/Scripts/Shaders/BossGlitch.mat 或运行时创建。")]
+        [Tooltip("留空则用 BossGlitch.mat / 运行时创建。")]
         public Material glitchMaterial;
-
-        [Tooltip("实体面板材质。留空则用 BossGlitchPanel / 运行时创建。")]
+        [Tooltip("留空则用 BossGlitchPanel.mat / 运行时创建。")]
         public Material panelMaterial;
 
-        [Header("腿部雾（写到 Boss 材质）")]
+        [Header("腿部雾")]
         [Range(0f, 1f)] public float legTop = 0.42f;
         [Range(0f, 2f)] public float mistStrength = 1.05f;
         [Range(0f, 1f)] public float hideFeet = 0.85f;
         [Range(0f, 0.35f)] public float bodyGlitch = 0.12f;
 
-        [Header("实体方块数量")]
-        [Min(1)] public int frontBlockCount = 7;
-        [Min(0)] public int backBlockCount = 3;
+        [Header("前区（角色前 / 左下）— 改这些数值即可调位置")]
+        [Tooltip("相对精灵中心，单位 = 半宽/半高（-1~1 大致在体内）。")]
+        public Vector2 frontCenter = new Vector2(-0.35f, -0.45f);
+        [Tooltip("相对精灵全宽/全高（0.2~0.6 较合适）。")]
+        public Vector2 frontSize = new Vector2(0.42f, 0.38f);
+        [Range(1, 6)] public int frontMaxBlocks = 4;
 
-        [Header("左下角（角色前面）")]
-        public Vector2 frontAnchor = new Vector2(-0.28f, -0.32f);
-        public Vector2 frontJitter = new Vector2(0.34f, 0.28f);
-        public Vector2 frontSizeMin = new Vector2(0.55f, 0.35f);
-        public Vector2 frontSizeMax = new Vector2(1.85f, 1.55f);
+        [Header("后区（角色后 / 右上）")]
+        public Vector2 backCenter = new Vector2(0.38f, 0.42f);
+        public Vector2 backSize = new Vector2(0.32f, 0.28f);
+        [Range(0, 4)] public int backMaxBlocks = 2;
 
-        [Header("右上角（角色后面）")]
-        public Vector2 backAnchor = new Vector2(0.32f, 0.28f);
-        public Vector2 backJitter = new Vector2(0.3f, 0.22f);
-        public Vector2 backSizeMin = new Vector2(0.85f, 0.55f);
-        public Vector2 backSizeMax = new Vector2(2.2f, 1.8f);
+        [Header("偶发闪现")]
+        [Tooltip("每次闪现最少/最多同时出现的方块数。")]
+        [Range(1, 6)] public int burstMin = 2;
+        [Range(1, 6)] public int burstMax = 5;
+        [Tooltip("方块可见时长（秒）。")]
+        public Vector2 burstVisibleSeconds = new Vector2(0.35f, 0.85f);
+        [Tooltip("两次闪现之间的等待（秒）。")]
+        public Vector2 burstGapSeconds = new Vector2(1.8f, 4.2f);
 
-        [Header("形状")]
-        [Tooltip("越大越容易生成接近正方形的大块。")]
+        [Header("块大小（相对区域框 0~1）")]
+        [Range(0.15f, 0.9f)] public float minSizeFrac = 0.28f;
+        [Range(0.2f, 1f)] public float maxSizeFrac = 0.55f;
         [Range(0f, 1f)] public float squareBias = 0.55f;
+        [Range(0.2f, 1f)] public float panelOpacity = 0.72f;
+        public bool drawZoneGizmos = true;
 
-        [Header("动画")]
-        [Tooltip("每隔多久重新排布一次方块（秒）。")]
-        public float reshuffleSeconds = 1.35f;
-        [Range(0.2f, 1f)] public float panelOpacity = 0.78f;
+        // 运行时区域（由 Center/Size 驱动，勿手拖指望它“持久”，请改上方数值或用 Scene 手柄）
+        [HideInInspector] public Transform frontZone;
+        [HideInInspector] public Transform backZone;
 
         private SpriteRenderer _sr;
         private Material _instance;
         private Material _original;
         private Material _panelSource;
-        private Transform _frontRoot;
-        private Transform _backRoot;
-        private readonly List<PanelItem> _front = new List<PanelItem>();
-        private readonly List<PanelItem> _back = new List<PanelItem>();
-        private float _reshuffleLeft;
+        private readonly List<PanelItem> _pool = new List<PanelItem>();
+        private float _phaseTimer;
+        private bool _burstActive;
         private static Mesh _quadMesh;
 
         private struct PanelItem
@@ -68,69 +75,100 @@ namespace DeusEx.Rhythm
             public Material material;
             public float seed;
             public float phase;
+            public bool front;
         }
 
-        private void Awake() => Apply();
+        private void Awake()
+        {
+            if (Application.isPlaying) Apply();
+        }
 
         private void OnEnable()
         {
+            ApplyZonesFromFields();
+            if (!Application.isPlaying) return;
+
             Apply();
-            EnsureBlocks();
-            ReshuffleAll(force: true);
+            EnsurePool();
+            HideAllPanels();
+            _burstActive = false;
+            _phaseTimer = Random.Range(burstGapSeconds.x, burstGapSeconds.y) * 0.35f;
         }
 
         private void OnDisable()
         {
+            if (!Application.isPlaying) return;
             if (_sr != null && _original != null)
                 _sr.sharedMaterial = _original;
-            SetBlocksActive(false);
         }
 
         private void OnDestroy()
         {
-            if (_instance != null) Destroy(_instance);
-            ClearPanels(_front);
-            ClearPanels(_back);
+            if (_instance != null)
+            {
+                if (Application.isPlaying) Destroy(_instance);
+                else DestroyImmediate(_instance);
+            }
+            ClearPool();
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            frontMaxBlocks = Mathf.Clamp(frontMaxBlocks, 1, 6);
+            backMaxBlocks = Mathf.Clamp(backMaxBlocks, 0, 4);
+            burstMin = Mathf.Clamp(burstMin, 1, 6);
+            burstMax = Mathf.Max(burstMin, Mathf.Clamp(burstMax, 1, 6));
+            frontSize.x = Mathf.Max(0.05f, frontSize.x);
+            frontSize.y = Mathf.Max(0.05f, frontSize.y);
+            backSize.x = Mathf.Max(0.05f, backSize.x);
+            backSize.y = Mathf.Max(0.05f, backSize.y);
+            if (!Application.isPlaying)
+                ApplyZonesFromFields();
+        }
+#endif
 
         private void LateUpdate()
         {
+            // 编辑器与运行时都把数值推到区域框，保证「改数值 = 改位置」
+            ApplyZonesFromFields();
+
+            if (!Application.isPlaying) return;
+
             if (_instance != null)
             {
                 _instance.SetFloat("_LegTop", legTop);
                 _instance.SetFloat("_MistStrength", mistStrength);
                 _instance.SetFloat("_HideFeet", hideFeet);
                 _instance.SetFloat("_BodyGlitch", bodyGlitch);
-                // 减弱 shader 内“噪点格子”，实体方块改由 Mesh 承担
-                _instance.SetFloat("_DataStrength", 0.15f);
-                _instance.SetFloat("_RectChance", 0.05f);
-                _instance.SetFloat("_ScanChance", 0.12f);
-                _instance.SetFloat("_SliceStrength", 0.008f);
+                _instance.SetFloat("_DataStrength", 0.12f);
+                _instance.SetFloat("_RectChance", 0.04f);
+                _instance.SetFloat("_ScanChance", 0.1f);
+                _instance.SetFloat("_SliceStrength", 0.006f);
             }
 
-            SyncBlockRoots();
+            TickBurst(Time.unscaledDeltaTime);
 
-            _reshuffleLeft -= Time.unscaledDeltaTime;
-            if (_reshuffleLeft <= 0f)
+            if (_burstActive)
             {
-                ReshuffleAll(force: false);
-                _reshuffleLeft = reshuffleSeconds;
+                float t = Time.unscaledTime;
+                for (int i = 0; i < _pool.Count; i++)
+                {
+                    if (_pool[i].material == null || _pool[i].renderer == null || !_pool[i].renderer.enabled)
+                        continue;
+                    float baseOp = panelOpacity * (_pool[i].front ? 0.9f : 0.5f);
+                    _pool[i].material.SetFloat("_Opacity",
+                        baseOp * (0.9f + 0.1f * Mathf.Sin(t * 3.5f + _pool[i].phase)));
+                }
             }
-
-            // 轻微呼吸缩放，保持实体感
-            float t = Time.unscaledTime;
-            Pulse(_front, t);
-            Pulse(_back, t);
         }
 
-        [ContextMenu("Reapply Glitch + Blocks")]
+        [ContextMenu("Reapply Glitch Material")]
         public void Apply()
         {
             _sr = GetComponent<SpriteRenderer>();
             if (_sr == null) return;
-
-            if (_original == null)
-                _original = _sr.sharedMaterial;
+            if (_original == null) _original = _sr.sharedMaterial;
 
             Material source = ResolveBossMaterial();
             if (source != null)
@@ -139,79 +177,99 @@ namespace DeusEx.Rhythm
                     _instance = new Material(source) { name = source.name + " (Boss Instance)" };
                 _sr.material = _instance;
             }
-
             _panelSource = ResolvePanelMaterial();
-            EnsureBlocks();
         }
 
-        private void EnsureBlocks()
+        /// <summary>把 Inspector 的 Center/Size 立刻写到区域框（Scene 手柄与运行时都靠它）。</summary>
+        public void ApplyZonesFromFields()
         {
             if (_sr == null) _sr = GetComponent<SpriteRenderer>();
-            if (_frontRoot == null)
-            {
-                _frontRoot = new GameObject("GlitchBlocks_Front").transform;
-                _frontRoot.SetParent(transform, false);
-            }
-            if (_backRoot == null)
-            {
-                _backRoot = new GameObject("GlitchBlocks_Back").transform;
-                _backRoot.SetParent(transform, false);
-            }
-
-            EnsureList(_front, _frontRoot, frontBlockCount, front: true);
-            EnsureList(_back, _backRoot, backBlockCount, front: false);
-            SetBlocksActive(true);
-            SyncBlockRoots();
+            frontZone = ResolveOrCreateZone(frontZone, "GlitchZone_Front");
+            backZone = ResolveOrCreateZone(backZone, "GlitchZone_Back");
+            PlaceZone(frontZone, frontCenter, frontSize, -0.02f);
+            PlaceZone(backZone, backCenter, backSize, 0.05f);
         }
 
-        private void SyncBlockRoots()
+        /// <summary>从当前区域框 Transform 读回 Center/Size（Scene 拖动手柄后调用）。</summary>
+        public void CaptureFieldsFromZones()
         {
-            if (_sr == null) return;
-            int order = _sr.sortingOrder;
-            string layer = _sr.sortingLayerName;
-
-            if (_frontRoot != null)
-            {
-                _frontRoot.localPosition = Vector3.zero;
-                for (int i = 0; i < _front.Count; i++)
-                {
-                    if (_front[i].renderer == null) continue;
-                    _front[i].renderer.sortingLayerName = layer;
-                    _front[i].renderer.sortingOrder = order + 2 + i;
-                }
-            }
-
-            if (_backRoot != null)
-            {
-                _backRoot.localPosition = Vector3.zero;
-                for (int i = 0; i < _back.Count; i++)
-                {
-                    if (_back[i].renderer == null) continue;
-                    _back[i].renderer.sortingLayerName = layer;
-                    _back[i].renderer.sortingOrder = order - 2 - i;
-                }
-            }
+            if (_sr == null) _sr = GetComponent<SpriteRenderer>();
+            if (_sr == null || _sr.sprite == null) return;
+            Bounds sb = _sr.sprite.bounds;
+            if (frontZone != null)
+                ReadZone(frontZone, sb, out frontCenter, out frontSize);
+            if (backZone != null)
+                ReadZone(backZone, sb, out backCenter, out backSize);
         }
 
-        private void EnsureList(List<PanelItem> list, Transform root, int count, bool front)
+        private static void ReadZone(Transform zone, Bounds sb, out Vector2 center, out Vector2 size)
         {
-            while (list.Count > count)
+            float ex = Mathf.Max(1e-4f, sb.extents.x);
+            float ey = Mathf.Max(1e-4f, sb.extents.y);
+            center = new Vector2(
+                (zone.localPosition.x - sb.center.x) / ex,
+                (zone.localPosition.y - sb.center.y) / ey);
+            size = new Vector2(
+                Mathf.Max(0.05f, zone.localScale.x / Mathf.Max(1e-4f, sb.size.x)),
+                Mathf.Max(0.05f, zone.localScale.y / Mathf.Max(1e-4f, sb.size.y)));
+        }
+
+        private Transform ResolveOrCreateZone(Transform current, string name)
+        {
+            if (current == null)
             {
-                int last = list.Count - 1;
-                if (list[last].transform != null) Destroy(list[last].transform.gameObject);
-                if (list[last].material != null) Destroy(list[last].material);
-                list.RemoveAt(last);
+                var found = transform.Find(name);
+                if (found != null) current = found;
             }
 
-            while (list.Count < count)
+            if (current == null)
             {
-                var go = new GameObject(front ? $"FrontPanel_{list.Count}" : $"BackPanel_{list.Count}");
-                go.transform.SetParent(root, false);
-                var mf = go.AddComponent<MeshFilter>();
-                mf.sharedMesh = QuadMesh();
+                var go = new GameObject(name);
+                go.transform.SetParent(transform, false);
+                current = go.transform;
+            }
+
+            EnsureZonePicker(current);
+            return current;
+        }
+
+        private static void EnsureZonePicker(Transform zone)
+        {
+            if (zone == null) return;
+            var box = zone.GetComponent<BoxCollider>();
+            if (box == null) box = zone.gameObject.AddComponent<BoxCollider>();
+            box.size = Vector3.one;
+            box.center = Vector3.zero;
+            box.isTrigger = true;
+        }
+
+        private void PlaceZone(Transform zone, Vector2 center, Vector2 size, float z)
+        {
+            if (zone == null || _sr == null || _sr.sprite == null) return;
+            Bounds sb = _sr.sprite.bounds;
+            zone.localPosition = new Vector3(
+                sb.center.x + center.x * sb.extents.x,
+                sb.center.y + center.y * sb.extents.y,
+                z);
+            zone.localRotation = Quaternion.identity;
+            zone.localScale = new Vector3(
+                Mathf.Max(0.05f, size.x * sb.size.x),
+                Mathf.Max(0.05f, size.y * sb.size.y),
+                1f);
+        }
+
+        private void EnsurePool()
+        {
+            int need = Mathf.Max(frontMaxBlocks + backMaxBlocks, burstMax);
+            while (_pool.Count < need)
+            {
+                var go = new GameObject($"GlitchPanel_{_pool.Count}");
+                go.transform.SetParent(transform, false);
+                go.AddComponent<MeshFilter>().sharedMesh = QuadMesh();
                 var mr = go.AddComponent<MeshRenderer>();
                 mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 mr.receiveShadows = false;
+                mr.enabled = false;
 
                 Material mat = _panelSource != null
                     ? new Material(_panelSource)
@@ -219,7 +277,7 @@ namespace DeusEx.Rhythm
                 mat.name = "BossGlitchPanel (Instance)";
                 mr.sharedMaterial = mat;
 
-                list.Add(new PanelItem
+                _pool.Add(new PanelItem
                 {
                     transform = go.transform,
                     renderer = mr,
@@ -230,137 +288,159 @@ namespace DeusEx.Rhythm
             }
         }
 
-        private void ReshuffleAll(bool force)
+        private void TickBurst(float dt)
         {
-            Bounds b = _sr != null ? _sr.bounds : new Bounds(transform.position, Vector3.one * 2f);
-            // 用本地空间：以 sprite 本地尺寸估算
-            Vector2 localSize = EstimateLocalSize();
+            _phaseTimer -= dt;
+            if (_phaseTimer > 0f) return;
 
-            LayoutCluster(_front, front: true, localSize, force);
-            LayoutCluster(_back, front: false, localSize, force);
-            _reshuffleLeft = reshuffleSeconds;
-        }
-
-        private Vector2 EstimateLocalSize()
-        {
-            if (_sr == null || _sr.sprite == null) return new Vector2(2.5f, 3.5f);
-            Vector2 s = _sr.sprite.bounds.size;
-            Vector3 ls = transform.lossyScale;
-            return new Vector2(Mathf.Abs(s.x * ls.x), Mathf.Abs(s.y * ls.y));
-        }
-
-        private void LayoutCluster(List<PanelItem> list, bool front, Vector2 localSize, bool force)
-        {
-            Vector2 anchor = front ? frontAnchor : backAnchor;
-            Vector2 jitter = front ? frontJitter : backJitter;
-            Vector2 sizeMin = front ? frontSizeMin : backSizeMin;
-            Vector2 sizeMax = front ? frontSizeMax : backSizeMax;
-
-            for (int i = 0; i < list.Count; i++)
+            if (_burstActive)
             {
-                var item = list[i];
+                HideAllPanels();
+                _burstActive = false;
+                _phaseTimer = Random.Range(burstGapSeconds.x, burstGapSeconds.y);
+                return;
+            }
+
+            StartBurst();
+            _burstActive = true;
+            _phaseTimer = Random.Range(burstVisibleSeconds.x, burstVisibleSeconds.y);
+        }
+
+        private void StartBurst()
+        {
+            EnsurePool();
+            ApplyZonesFromFields();
+            HideAllPanels();
+
+            int totalWanted = Random.Range(burstMin, burstMax + 1);
+            int frontWanted = Mathf.Min(frontMaxBlocks, Mathf.Max(1, totalWanted - Random.Range(0, backMaxBlocks + 1)));
+            if (backMaxBlocks <= 0) frontWanted = Mathf.Min(frontMaxBlocks, totalWanted);
+            int backWanted = Mathf.Min(backMaxBlocks, Mathf.Max(0, totalWanted - frontWanted));
+            if (frontWanted + backWanted < totalWanted && frontWanted < frontMaxBlocks)
+                frontWanted = Mathf.Min(frontMaxBlocks, totalWanted - backWanted);
+
+            int used = 0;
+            used = PlaceBurstSubset(used, frontWanted, frontZone, front: true);
+            PlaceBurstSubset(used, backWanted, backZone, front: false);
+        }
+
+        private int PlaceBurstSubset(int poolStart, int count, Transform zone, bool front)
+        {
+            if (zone == null || count <= 0) return poolStart;
+            if (_sr == null) return poolStart;
+
+            int order = _sr.sortingOrder;
+            string layer = _sr.sortingLayerName;
+
+            for (int i = 0; i < count; i++)
+            {
+                int idx = poolStart + i;
+                if (idx >= _pool.Count) break;
+                var item = _pool[idx];
                 if (item.transform == null) continue;
 
-                // 锚点是相对角色中心的归一化偏移（按 sprite 尺寸）
-                float jx = (Random.value - 0.5f) * 2f * jitter.x;
-                float jy = (Random.value - 0.5f) * 2f * jitter.y;
-                Vector3 localPos = new Vector3(
-                    (anchor.x + jx) * localSize.x,
-                    (anchor.y + jy) * localSize.y,
-                    front ? -0.02f : 0.04f);
-
-                // 转成本地坐标（父级是 Boss）
-                if (transform.lossyScale.x != 0f && transform.lossyScale.y != 0f)
+                item.transform.SetParent(zone, false);
+                LayoutOne(ref item, front);
+                if (item.renderer != null)
                 {
-                    localPos.x /= transform.lossyScale.x;
-                    localPos.y /= transform.lossyScale.y;
+                    item.renderer.enabled = true;
+                    item.renderer.sortingLayerName = layer;
+                    item.renderer.sortingOrder = front ? order + 2 + i : order - 2 - i;
                 }
-
-                float w = Mathf.Lerp(sizeMin.x, sizeMax.x, Random.value);
-                float h = Mathf.Lerp(sizeMin.y, sizeMax.y, Random.value);
-
-                // 大块更容易变成接近正方形；小块仍可偏扁长条
-                float sizeNorm = Mathf.InverseLerp(
-                    (sizeMin.x + sizeMin.y) * 0.5f,
-                    (sizeMax.x + sizeMax.y) * 0.5f,
-                    (w + h) * 0.5f);
-                bool makeSquare = Random.value < (squareBias * 0.35f + sizeNorm * squareBias);
-                if (makeSquare)
-                {
-                    float side = Mathf.Max(w, h);
-                    // 大块再略放大一点
-                    if (sizeNorm > 0.55f) side *= Mathf.Lerp(1f, 1.2f, sizeNorm);
-                    w = side;
-                    h = side * Random.Range(0.88f, 1.08f);
-                }
-                else if (front && Random.value < 0.25f)
-                {
-                    // 少量细长条保留层次，但比例不再压得太扁
-                    h *= Random.Range(0.7f, 0.9f);
-                }
-
-                if (!front && !makeSquare) w *= 1.1f;
-
-                if (transform.lossyScale.x != 0f && transform.lossyScale.y != 0f)
-                {
-                    w /= Mathf.Abs(transform.lossyScale.x);
-                    h /= Mathf.Abs(transform.lossyScale.y);
-                }
-
-                item.transform.localPosition = localPos;
-                item.transform.localRotation = Quaternion.identity;
-                item.transform.localScale = new Vector3(w, h, 1f);
-
-                if (item.material != null)
-                {
-                    float seed = force ? item.seed : Random.value * 100f;
-                    item.seed = seed;
-                    item.material.SetFloat("_Seed", seed);
-                    item.material.SetFloat("_Opacity", panelOpacity * (front ? 0.9f : 0.55f));
-                    item.material.SetFloat("_ShowAccent", (front && i == 0) || (!front && i == 0) ? 1f : (Random.value < 0.25f ? 1f : 0f));
-                    var col = front
-                        ? new Color(0.38f, 0.66f, 0.72f, 0.82f)
-                        : new Color(0.48f, 0.62f, 0.70f, 0.45f);
-                    item.material.SetColor("_Color", col);
-                }
-
-                list[i] = item;
+                item.front = front;
+                _pool[idx] = item;
             }
+            return poolStart + count;
         }
 
-        private void Pulse(List<PanelItem> list, float t)
+        private void LayoutOne(ref PanelItem item, bool front)
         {
-            for (int i = 0; i < list.Count; i++)
+            float w = Random.Range(minSizeFrac, maxSizeFrac);
+            float h = Random.Range(minSizeFrac, maxSizeFrac);
+            if (Random.value < squareBias)
             {
-                var item = list[i];
-                if (item.transform == null) continue;
-                float pulse = 1f + Mathf.Sin(t * 1.6f + item.phase) * 0.03f;
-                Vector3 s = item.transform.localScale;
-                // 不改基础尺寸，只做极轻呼吸：用 material opacity
-                if (item.material != null)
-                {
-                    float baseOp = panelOpacity * (item.transform.parent == _frontRoot ? 0.9f : 0.55f);
-                    item.material.SetFloat("_Opacity", baseOp * (0.92f + 0.08f * Mathf.Sin(t * 2.2f + item.phase)));
-                }
-                _ = pulse;
-                _ = s;
+                float side = Mathf.Max(w, h);
+                w = side;
+                h = side * Random.Range(0.88f, 1.05f);
             }
-        }
-
-        private void SetBlocksActive(bool on)
-        {
-            if (_frontRoot != null) _frontRoot.gameObject.SetActive(on);
-            if (_backRoot != null) _backRoot.gameObject.SetActive(on);
-        }
-
-        private void ClearPanels(List<PanelItem> list)
-        {
-            for (int i = 0; i < list.Count; i++)
+            else if (!front)
             {
-                if (list[i].material != null) Destroy(list[i].material);
-                if (list[i].transform != null) Destroy(list[i].transform.gameObject);
+                w = Mathf.Max(w, h * Random.Range(1.05f, 1.35f));
             }
-            list.Clear();
+
+            w = Mathf.Min(w, 0.85f);
+            h = Mathf.Min(h, 0.85f);
+            float halfW = w * 0.5f;
+            float halfH = h * 0.5f;
+            float x = Random.Range(-0.5f + halfW, 0.5f - halfW);
+            float y = Random.Range(-0.5f + halfH, 0.5f - halfH);
+
+            item.transform.localPosition = new Vector3(x, y, 0f);
+            item.transform.localRotation = Quaternion.identity;
+            item.transform.localScale = new Vector3(w, h, 1f);
+
+            if (item.material != null)
+            {
+                item.seed = Random.value * 100f;
+                item.material.SetFloat("_Seed", item.seed);
+                item.material.SetFloat("_Opacity", panelOpacity * (front ? 0.9f : 0.5f));
+                item.material.SetFloat("_ShowAccent", Random.value < 0.25f ? 1f : 0f);
+                item.material.SetColor("_Color", front
+                    ? new Color(0.38f, 0.66f, 0.72f, 0.82f)
+                    : new Color(0.48f, 0.62f, 0.70f, 0.45f));
+            }
+        }
+
+        private void HideAllPanels()
+        {
+            for (int i = 0; i < _pool.Count; i++)
+            {
+                if (_pool[i].renderer != null)
+                    _pool[i].renderer.enabled = false;
+            }
+        }
+
+        private void ClearPool()
+        {
+            for (int i = 0; i < _pool.Count; i++)
+            {
+                if (_pool[i].material != null)
+                {
+                    if (Application.isPlaying) Destroy(_pool[i].material);
+                    else DestroyImmediate(_pool[i].material);
+                }
+                if (_pool[i].transform != null)
+                {
+                    if (Application.isPlaying) Destroy(_pool[i].transform.gameObject);
+                    else DestroyImmediate(_pool[i].transform.gameObject);
+                }
+            }
+            _pool.Clear();
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (!drawZoneGizmos) return;
+            ApplyZonesFromFields();
+            DrawZoneGizmo(frontZone, new Color(0.15f, 1f, 0.25f, 0.2f));
+            DrawZoneGizmo(backZone, new Color(0.2f, 0.9f, 0.45f, 0.16f));
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            DrawZoneGizmo(frontZone, new Color(0.2f, 1f, 0.3f, 0.4f));
+            DrawZoneGizmo(backZone, new Color(0.25f, 0.95f, 0.45f, 0.35f));
+        }
+
+        private static void DrawZoneGizmo(Transform zone, Color color)
+        {
+            if (zone == null) return;
+            Gizmos.color = color;
+            Gizmos.matrix = zone.localToWorldMatrix;
+            Gizmos.DrawCube(Vector3.zero, Vector3.one);
+            Gizmos.color = new Color(color.r, color.g, color.b, 1f);
+            Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            Gizmos.matrix = Matrix4x4.identity;
         }
 
         private Material ResolveBossMaterial()
@@ -371,9 +451,7 @@ namespace DeusEx.Rhythm
             if (glitchMaterial != null) return glitchMaterial;
 #endif
             Shader shader = Shader.Find("DeusEx/BossGlitch");
-            if (shader == null) return null;
-            glitchMaterial = new Material(shader) { name = "BossGlitch (Runtime)" };
-            return glitchMaterial;
+            return shader == null ? null : (glitchMaterial = new Material(shader) { name = "BossGlitch (Runtime)" });
         }
 
         private Material ResolvePanelMaterial()
@@ -384,9 +462,7 @@ namespace DeusEx.Rhythm
             if (panelMaterial != null) return panelMaterial;
 #endif
             Shader shader = Shader.Find("DeusEx/BossGlitchPanel");
-            if (shader == null) return null;
-            panelMaterial = new Material(shader) { name = "BossGlitchPanel (Runtime)" };
-            return panelMaterial;
+            return shader == null ? null : (panelMaterial = new Material(shader) { name = "BossGlitchPanel (Runtime)" });
         }
 
         private static Mesh QuadMesh()
@@ -397,15 +473,12 @@ namespace DeusEx.Rhythm
                 name = "BossGlitchPanelQuad",
                 vertices = new[]
                 {
-                    new Vector3(-0.5f, -0.5f, 0f),
-                    new Vector3( 0.5f, -0.5f, 0f),
-                    new Vector3(-0.5f,  0.5f, 0f),
-                    new Vector3( 0.5f,  0.5f, 0f),
+                    new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f),
+                    new Vector3(-0.5f, 0.5f, 0f), new Vector3(0.5f, 0.5f, 0f),
                 },
                 uv = new[]
                 {
-                    new Vector2(0f, 0f), new Vector2(1f, 0f),
-                    new Vector2(0f, 1f), new Vector2(1f, 1f),
+                    new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1),
                 },
                 triangles = new[] { 0, 2, 1, 2, 3, 1 },
             };

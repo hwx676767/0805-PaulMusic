@@ -80,6 +80,10 @@ namespace DeusEx.Rhythm
         public event System.Action PlayerDied;
         /// <summary>敌人血量归零（战胜）时触发一次。</summary>
         public event System.Action EnemyDefeated;
+        /// <summary>玩家实际掉血时触发（护盾挡住时不触发），参数为本次伤害量。</summary>
+        public event System.Action<float> PlayerTookDamage;
+        /// <summary>敌人实际掉血时触发，参数为本次伤害量。</summary>
+        public event System.Action<float> EnemyTookDamage;
 
         private GUIStyle _barLabel;
         private GUIStyle _bigLabel;
@@ -134,6 +138,7 @@ namespace DeusEx.Rhythm
             if (IsOver || amount <= 0f) return;
             EnemyHealth = Mathf.Max(0f, EnemyHealth - amount);
             EnemyHealthChanged?.Invoke(EnemyHealth, enemyMaxHealth);
+            EnemyTookDamage?.Invoke(amount);
             if (EnemyHealth <= 0f && endRunOnDefeat) EndGame(playerWon: true);
         }
 
@@ -154,6 +159,7 @@ namespace DeusEx.Rhythm
 
             PlayerHealth = Mathf.Max(0f, PlayerHealth - amount);
             PlayerHealthChanged?.Invoke(PlayerHealth, playerMaxHealth);
+            PlayerTookDamage?.Invoke(amount);
             if (PlayerHealth <= 0f && endRunOnDefeat) EndGame(playerWon: false);
         }
 

@@ -29,6 +29,14 @@ namespace DeusEx.Rhythm
         [Tooltip("从出现点落到判定点所需秒数（替代世界距离 / scrollSpeed）。")]
         [Min(0.2f)] public float approachSeconds = 1.55f;
 
+        [Header("由远及近")]
+        [Tooltip(">1：远处更慢、靠近判定点加速。1=匀速。")]
+        [Range(1f, 3f)] public float approachEase = 1.7f;
+        [Tooltip("出现点（远处）相对 noteSize 的缩放。")]
+        [Range(0.15f, 1f)] public float farScale = 0.38f;
+        [Tooltip("判定点（近处）相对 noteSize 的缩放。")]
+        [Range(0.5f, 1.5f)] public float nearScale = 1f;
+
         [Tooltip("音符 UI 父节点；留空则用本物体。")]
         public RectTransform noteRoot;
 
@@ -39,6 +47,21 @@ namespace DeusEx.Rhythm
         public int LaneCount => lanes != null ? lanes.Count : 0;
 
         public RectTransform NoteRoot => noteRoot != null ? noteRoot : transform as RectTransform;
+
+        /// <summary>
+        /// 时间线性 0(刚出现)→1(到判定)：做加速曲线后，再映射为 TrySample 用的 progress（1=出生点，0=判定点）。
+        /// </summary>
+        public float TimeToSampleProgress(float linearFromSpawnToHit)
+        {
+            float t = Mathf.Clamp01(linearFromSpawnToHit);
+            float eased = Mathf.Pow(t, Mathf.Max(1f, approachEase));
+            return 1f - eased;
+        }
+
+        public float ScaleForSampleProgress(float progressFromHitToSpawn)
+        {
+            return Mathf.Lerp(nearScale, farScale, Mathf.Clamp01(progressFromHitToSpawn));
+        }
 
         public bool TrySample(int lane, float progressFromHitToSpawn, out Vector2 anchoredPos)
         {

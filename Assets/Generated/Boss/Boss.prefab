@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9148389216764590247}
   - component: {fileID: 4576635932147480174}
   - component: {fileID: 5829103748291037481}
+  - component: {fileID: 6729103748291037482}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -154,3 +155,38 @@ MonoBehaviour:
   attackDamage: 18
   telegraphTint: {r: 1, g: 0.45, b: 0.35, a: 1}
   showTelegraphHud: 1
+--- !u!114 &6729103748291037482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8544666380365086592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8e9f0a1b2c334567890abcdef789abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeusEx.Rhythm.BossGlitchDriver
+  glitchMaterial: {fileID: 0}
+  panelMaterial: {fileID: 0}
+  legTop: 0.42
+  mistStrength: 1.05
+  hideFeet: 0.85
+  bodyGlitch: 0.12
+  frontCenter: {x: -0.35, y: -0.45}
+  frontSize: {x: 0.42, y: 0.38}
+  frontMaxBlocks: 4
+  backCenter: {x: 0.38, y: 0.42}
+  backSize: {x: 0.32, y: 0.28}
+  backMaxBlocks: 2
+  burstMin: 2
+  burstMax: 5
+  burstVisibleSeconds: {x: 0.35, y: 0.85}
+  burstGapSeconds: {x: 1.8, y: 4.2}
+  minSizeFrac: 0.28
+  maxSizeFrac: 0.55
+  squareBias: 0.55
+  panelOpacity: 0.72
+  drawZoneGizmos: 1
+  frontZone: {fileID: 0}
+  backZone: {fileID: 0}
