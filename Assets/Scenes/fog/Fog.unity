@@ -951,30 +951,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeusEx.Rhythm.RollingStormFog
   fogMaterial: {fileID: 2100000, guid: 9c2e7d4a1b8f4630ae5d91c0f3b6a847, type: 2}
   targetCamera: {fileID: 1933035803}
-  useFixedVolume: 1
-  volumeOffset: {x: 0, y: 0.3, z: 7}
-  volumeSize: {x: 12.42, y: 10.68}
   layerCount: 3
-  nearDistance: 6
-  layerSpacing: 0.45
-  padding: 1.15
+  nearDistance: 8
+  layerSpacing: 2.2
+  padding: 1.25
   fitEveryFrame: 1
-  emitMode: 1
-  emitOriginUV: {x: 0.5, y: 0.12}
-  sourceRadius: 0.241
-  emitReach: 0.535
-  emitStrength: 1.09
-  emitFalloff: 2.34
-  expandSpeed: 0.2
-  billow: 0.35
-  swirl: 0.5
-  opacity: 1.98
-  coverage: 0.463
-  density: 2.35
-  haze: 0.6
-  denseGray: {r: 0.22, g: 0.23, b: 0.25, a: 1}
-  midGray: {r: 0.38, g: 0.39, b: 0.42, a: 0.92}
-  edgeGray: {r: 0.52, g: 0.53, b: 0.56, a: 0.55}
+  opacity: 1.05
+  coverage: 0.78
+  scrollSpeed: {x: 0.028, y: 0.01}
+  billow: 0.22
 --- !u!4 &2100456791
 Transform:
   m_ObjectHideFlags: 0
